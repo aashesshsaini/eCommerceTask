@@ -1,0 +1,10 @@
+{
+	"email is required, password is required": "email is required, password is required",
+	"password length must be at least 8 characters long": "password length must be at least 8 characters long",
+	"Email not found": "Email not found",
+	"Password is Incorrect": "Password is Incorrect",
+	"Success": "Success",
+	"firstName is required, lastName is required, fullName is not allowed": "firstName is required, lastName is required, fullName is not allowed",
+	"Not found": "Not found",
+	"firstName is required, lastName is required": "firstName is required, lastName is required"
+}
