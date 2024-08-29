@@ -18,8 +18,8 @@ const run = () => __awaiter(void 0, void 0, void 0, function* () {
     let password = '12345678';
     password = yield bcryptjs_1.default.hash(password, 8);
     const adminDetails = {
-        name: 'Fitness Admin',
-        email: 'admin@fitness.com',
+        name: 'JamNation Admin',
+        email: 'admin@jamnation.com',
         $setOnInsert: { password },
     };
     createAdmin(adminDetails);

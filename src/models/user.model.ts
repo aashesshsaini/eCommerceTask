@@ -1,6 +1,7 @@
 import mongoose, {Types, Document, Schema} from "mongoose";
 import { USER_TYPE } from "../config/appConstant";
 import { UserDocument } from "../interfaces/user.interface";
+import { string } from "joi";
 
 const userSchema = new Schema<UserDocument>(
     {
@@ -24,6 +25,22 @@ const userSchema = new Schema<UserDocument>(
         countryCode:{
           type: String
         },
+        zipCode: {
+          type: String
+        },
+         genre:{type: String},
+         instrument: {type: String},
+         commitmentlevel:{type: String},
+         repertoire:[{
+          type:string
+         }],
+         bio:{type: String},
+         document:{type: String},
+         proficient:{type: String},
+         improvisationalSkill:{type: String},
+         motivation:{type: String},
+         aboutRepertoire:{type: String},
+         publicExpirence:{type: String},
         isBlocked: {
           type: Boolean,
           default: false,

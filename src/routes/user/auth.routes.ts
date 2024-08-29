@@ -17,13 +17,21 @@ router.post(
     userAuthController.verifyOtp
   );
 
+router.post("/resendOtp", auth(USER_TYPE.USER), validate(validation.resendOtp), userAuthController.resendOtp)
+
+router.post("/createProfile", auth(USER_TYPE.USER), validate(validation.createProfile), userAuthController.createProfile)
+
 router.post('/login', validate(validation.login), userAuthController.login)
 
 router.put('/changePassword', auth(USER_TYPE.USER), validate(validation.changePassword), userAuthController.changePassword)
 
+router.delete("/deleteAccount", auth(USER_TYPE.USER), validate(validation.deleteAccount), userAuthController.deleteAccount)
+
 router.put("/logout", auth(USER_TYPE.USER), validate(validation.logout), userAuthController.logout)
 
 router.put("/editProfile", auth(USER_TYPE.USER), validate(validation.editProfile), userAuthController.editProfile)
+
+router.put("/editQuestionnaire", auth(USER_TYPE.USER), validate(validation.editQuestionnaire), userAuthController.editQuestionnaire)
 
 router.post("/forgotPassword", auth(USER_TYPE.USER), validate(validation.forgotPassword), userAuthController.forgotPassword)
 

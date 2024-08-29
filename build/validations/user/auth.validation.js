@@ -7,13 +7,11 @@ const joi_1 = __importDefault(require("joi"));
 const appConstant_1 = require("../../config/appConstant");
 const signup = {
     body: joi_1.default.object().keys({
-        firstName: joi_1.default.string().required(),
-        lastName: joi_1.default.string().required(),
+        fullName: joi_1.default.string().required(),
         mobileNumber: appConstant_1.JOI.PHONENUMBER,
         countryCode: joi_1.default.string().required(),
         email: appConstant_1.JOI.EMAIL,
         password: appConstant_1.JOI.PASSWORD,
-        profileImage: joi_1.default.string()
     })
 };
 const verifyOtp = {

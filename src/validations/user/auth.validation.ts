@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { JOI } from '../../config/appConstant';
+import { JOI, COMMITMENT_LEVEL} from '../../config/appConstant';
 
  const signup = {
     body: Joi.object().keys({
@@ -17,6 +17,28 @@ const verifyOtp = {
   }),
 };
 
+const resendOtp = {
+  body: Joi.object().keys({})
+}
+
+const createProfile = {
+  body: Joi.object().keys({
+    zipCode: Joi.string(),
+    profileImage: Joi.string(),
+    genre: Joi.string(),
+    instrument: Joi.string(),
+    commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
+    repertoire: Joi.array().items(Joi.string()).max(3),
+    bio: Joi.string(),
+    document: Joi.string(),
+    proficient: Joi.string(),
+    improvisationalSkill: Joi.string(),
+    motivation: Joi.string(),
+    aboutRepertoire: Joi.string(),
+    publicExpirence: Joi.string()
+  })
+}
+
  const login = {
     body: Joi.object().keys({
         email: JOI.EMAIL,
@@ -32,19 +54,41 @@ const verifyOtp = {
     })
 }
 
+const deleteAccount = {
+  query: Joi.object().keys({})
+}
+
  const logout = {
   body: Joi.object().keys({})
 }
 
 const editProfile = {
   body: Joi.object().keys({
-    firstName: Joi.string(),
-    lastName: Joi.string(),
+    fullName: Joi.string().required(),
+    mobileNumber: Joi.string()
+    .min(5)
+    .max(15)
+    .pattern(/^[0-9]+$/),
+    countryCode: Joi.string().required(),
+    email: Joi.string().email().lowercase().trim(),
+    zipCode: Joi.string(),
     profileImage: Joi.string(),
-    // mobileNumber: Joi.string()
-    // .min(5)
-    // .max(15)
-    // .pattern(/^[0-9]+$/),
+    genre: Joi.string(),
+    instrument: Joi.string(),
+    commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
+    repertoire: Joi.array().items(Joi.string()).max(3),
+    bio: Joi.string(),
+    document: Joi.string(),
+  })
+}
+
+const editQuestionnaire = {
+  body: Joi.object().keys({
+    proficient: Joi.string(),
+    improvisationalSkill: Joi.string(),
+    motivation: Joi.string(),
+    aboutRepertoire: Joi.string(),
+    publicExpirence: Joi.string()
   })
 }
 
@@ -73,4 +117,4 @@ const resetForgotPassword = {
   }),
 }
 
-export default {signup, verifyOtp, login , changePassword, logout, editProfile, forgotPassword, forgotPage, resetForgotPassword}
+export default {signup, verifyOtp, resendOtp, createProfile, login , changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword}

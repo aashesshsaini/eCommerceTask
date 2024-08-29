@@ -5,7 +5,6 @@ import userManage from "./admin/userManage.routes"
 
 const router: Router = express.Router();
 
-
 const defaultRoutes = [
     {
       path: "/admin/auth",

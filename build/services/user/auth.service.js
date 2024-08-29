@@ -19,13 +19,13 @@ const appConstant_1 = require("../../config/appConstant");
 const error_1 = require("../../utils/error");
 const sendMails_1 = require("../../libs/sendMails");
 const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, firstName, lastName, mobileNumber, profileImage } = body;
+    const { email, password, fullName, mobileNumber, countryCode } = body;
     const existinguser = yield models_1.User.findOne({ email: email });
     if (existinguser) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.EMAIL_ALREADY_EXIST);
     }
     const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-    const user = yield models_1.User.create({ email, password: hashedPassword, firstName, lastName, mobileNumber, profileImage });
+    const user = yield models_1.User.create({ email, password: hashedPassword, fullName, mobileNumber, countryCode });
     yield user.save();
     return user;
 });
@@ -82,8 +82,8 @@ const logout = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.logout = logout;
 const editProfile = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { firstName, lastName, profileImage } = body;
-    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { firstName, lastName, profileImage }, { lean: true, new: true });
+    const { fullName, profileImage } = body;
+    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { fullName, profileImage }, { lean: true, new: true });
     if (!updatedProfileData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }

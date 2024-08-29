@@ -50,6 +50,29 @@ const signup = catchAsync(async (req: Request, res: Response) => {
     );
   });
 
+  const resendOtp = catchAsync(async (req: Request, res: Response) => {
+    await userAuthService.resendOtp(req.token?.user);
+   
+       return successResponse(
+         req,
+         res,
+         STATUS_CODES.SUCCESS,
+         SUCCESS_MESSAGES.VERIFIED,
+       );
+     });
+
+     const createProfile = catchAsync(async (req: Request, res: Response) => {
+      const userData = await userAuthService.createProfile(req.body, req.token.user._id);
+    
+      return successResponse(
+        req,
+        res,
+        STATUS_CODES.SUCCESS,
+        SUCCESS_MESSAGES.SUCCESS,
+        userData
+      );
+    });
+
   const login = catchAsync(async (req: Request, res: Response) => {
     const userData = await userAuthService.login(req.body);
     const deviceToken = req.body.deviceToken as string ;
@@ -84,6 +107,17 @@ const signup = catchAsync(async (req: Request, res: Response) => {
     );
   });
 
+  const deleteAccount = catchAsync(async (req: Request, res: Response) => {
+    await userAuthService.deleteAccount(req?.token?.user);
+ 
+   return successResponse(
+     req,
+     res,
+     STATUS_CODES.SUCCESS,
+     SUCCESS_MESSAGES.DELETE,
+   );
+ });
+
   const logout = catchAsync(async (req: Request, res: Response) => {
      await userAuthService.logout(req?.token?.user);
   
@@ -104,6 +138,18 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       STATUS_CODES.SUCCESS,
       SUCCESS_MESSAGES.SUCCESS,
       updatedProfileData
+    );
+  });
+
+  const editQuestionnaire = catchAsync(async (req: Request, res: Response) => {
+    const updateQuestionnairedData = await userAuthService.editQuestionnaire(req?.token?.user?._id, req?.body);
+  
+    return successResponse(
+      req,
+      res,
+      STATUS_CODES.SUCCESS,
+      SUCCESS_MESSAGES.SUCCESS,
+      updateQuestionnairedData
     );
   });
 
@@ -192,4 +238,4 @@ const signup = catchAsync(async (req: Request, res: Response) => {
   });
   
 
-  export default { signup, verifyOtp, login, changePassword, logout, editProfile, forgotPassword, forgotPage, resetForgotPassword};
+  export default { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword};

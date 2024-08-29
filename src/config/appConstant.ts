@@ -96,6 +96,10 @@ const STATUS_CODES = {
     GATEWAY_TIMEOUT: 504,
 };
 
+const COMMITMENT_LEVEL = {
+
+}
+
 
 
 export {
@@ -107,4 +111,5 @@ export {
     SUCCESS_MESSAGES,
     ERROR_MESSAGES,
     STATUS_CODES,
+    COMMITMENT_LEVEL,
  };

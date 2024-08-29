@@ -20,6 +20,22 @@ interface signupBody {
     password: string;
   }
 
+  interface createProfileBody {
+    zipCode:string,
+    profileImage:string,
+    genre:string,
+    instrument:string,
+    commitmentlevel:string,
+    repertoire:string[],
+    bio:string,
+    document:string,
+    proficient:string,
+    improvisationalSkill:string,
+    motivation:string,
+    aboutRepertoire:string,
+    publicExpirence:string,
+  }
+
 const signup = async(body:signupBody)=>{
     const { email, password, fullName, mobileNumber, countryCode } = body;
     const existinguser = await User.findOne({ email: email });
@@ -55,6 +71,25 @@ interface loginBody {
       { lean: true, new: true }
     );
   };
+
+  const resendOtp = async(userId:ObjectId)=>{
+    console.log(userId, "userId........")
+   const userData = await User.findById(userId).lean()   
+   const otp = { code: "111111", expiresAt: "2024-09-11T13:24:23.676Z" };
+   const updateOtpInToken = await Token.findOneAndUpdate({user:userId, isDeleted:false}, {$set:{otp:otp}})
+  }
+
+  const createProfile = async(body:createProfileBody, userId:ObjectId)=>{
+  const {zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence} = body
+  const updatedUser = await User.findByIdAndUpdate(userId,{zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence}, {lean:true, new:true})
+  if(!updatedUser){
+    throw new OperationalError(
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.USER_NOT_FOUND
+    )
+  }
+  return updatedUser
+}
 
 const login = async(body:loginBody)=>{
     const {email, password} =  body
@@ -117,13 +152,26 @@ const changePassword = async(body:changePasswordBody, token:TokenDocument)=>{
     return user
 }
 
+const deleteAccount = async(userId:ObjectId)=>{
+  const [deletedUser, deletedToken] = await Promise.all([
+    User.findByIdAndUpdate(userId, {isDeleted:true},{lean:true, new:true}),
+    Token.updateMany({user:userId},{isDeleted:false},{lean:true, new:true})
+  ])
+  if(!deletedUser){
+    throw new OperationalError(
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.USER_NOT_FOUND
+  )
+  }
+}
+
 const logout = async(userId:ObjectId)=>{
    await Token.updateMany({user:userId},{isDeleted:false})
 }
 
 const editProfile = async(user:ObjectId, body:UserDocument)=>{
-  const {fullName, profileImage} = body
-  const updatedProfileData = await User.findByIdAndUpdate(user, {fullName, profileImage},{lean:true,new:true})
+  const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio} = body
+  const updatedProfileData = await User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode ,zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio},{lean:true,new:true})
   if(!updatedProfileData){
    throw new OperationalError(
     STATUS_CODES.NOT_FOUND,
@@ -131,6 +179,18 @@ const editProfile = async(user:ObjectId, body:UserDocument)=>{
    )
   }
   return updatedProfileData
+}
+
+const editQuestionnaire = async(user:ObjectId, body:UserDocument)=>{
+ const { proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence} = body
+ const updateQuestionnairedData = await User.findByIdAndUpdate(user, {proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence},{lean:true, new:true})
+ if(!updateQuestionnairedData){
+  throw new OperationalError(
+   STATUS_CODES.NOT_FOUND,
+   ERROR_MESSAGES.USER_NOT_FOUND
+  )
+ }
+ return updateQuestionnairedData
 }
 
 const forgotPassword = async(token:TokenDocument, body:UserDocument)=>{
@@ -154,4 +214,4 @@ const resetPassword = async(userId:ObjectId, newPassword:string)=>{
   return userData
 }
 
-export { signup, verifyOtp, login, changePassword, logout, editProfile, forgotPassword, resetPassword};
+export { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, resetPassword};

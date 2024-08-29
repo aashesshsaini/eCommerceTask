@@ -6,5 +6,10 @@
 	"Success": "Success",
 	"firstName is required, lastName is required, fullName is not allowed": "firstName is required, lastName is required, fullName is not allowed",
 	"Not found": "Not found",
-	"firstName is required, lastName is required": "firstName is required, lastName is required"
+	"firstName is required, lastName is required": "firstName is required, lastName is required",
+	"This email already exists": {
+		" Please try with another email": "This email already exists. Please try with another email"
+	},
+	"code is required": "code is required",
+	"user verified successfully": "user verified successfully"
 }

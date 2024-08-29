@@ -16,7 +16,7 @@ const universalFunctions_1 = require("../../utils/universalFunctions");
 const signup = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield services_1.userAuthService.signup(req.body);
     //  const otp = await sendOtp(req.body.phoneNumber as string, req.body.countryCode as string)
-    const otp = { code: "111111", expiresAt: "2024-05-11T13:24:23.676Z" };
+    const otp = { code: "111111", expiresAt: "2024-09-11T13:24:23.676Z" };
     const deviceToken = req.body.deviceToken;
     const deviceType = req.body.deviceType;
     const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, user, deviceToken, deviceType, otp);
