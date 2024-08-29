@@ -24,7 +24,6 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
-const joi_1 = require("joi");
 const userSchema = new mongoose_1.Schema({
     fullName: {
         type: String,
@@ -52,7 +51,7 @@ const userSchema = new mongoose_1.Schema({
     instrument: { type: String },
     commitmentlevel: { type: String },
     repertoire: [{
-            type: joi_1.string
+            type: String
         }],
     bio: { type: String },
     document: { type: String },

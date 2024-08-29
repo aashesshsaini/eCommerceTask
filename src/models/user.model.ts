@@ -32,7 +32,7 @@ const userSchema = new Schema<UserDocument>(
          instrument: {type: String},
          commitmentlevel:{type: String},
          repertoire:[{
-          type:string
+          type:String
          }],
          bio:{type: String},
          document:{type: String},
