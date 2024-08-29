@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.editProfile = exports.logout = exports.changePassword = exports.login = exports.verifyOtp = exports.signup = void 0;
+exports.resetPassword = exports.forgotPassword = exports.editQuestionnaire = exports.editProfile = exports.logout = exports.deleteAccount = exports.changePassword = exports.login = exports.createProfile = exports.resendOtp = exports.verifyOtp = exports.signup = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const models_1 = require("../../models");
 const appConstant_1 = require("../../config/appConstant");
@@ -40,6 +40,22 @@ const verifyOtp = (code, tokenId) => __awaiter(void 0, void 0, void 0, function*
     const userData = yield models_1.User.findByIdAndUpdate(tokenData.user, { isVerified: true }, { lean: true, new: true });
 });
 exports.verifyOtp = verifyOtp;
+const resendOtp = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log(userId, "userId........");
+    const userData = yield models_1.User.findById(userId).lean();
+    const otp = { code: "111111", expiresAt: "2024-09-11T13:24:23.676Z" };
+    const updateOtpInToken = yield models_1.Token.findOneAndUpdate({ user: userId, isDeleted: false }, { $set: { otp: otp } });
+});
+exports.resendOtp = resendOtp;
+const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const { zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence } = body;
+    const updatedUser = yield models_1.User.findByIdAndUpdate(userId, { zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence }, { lean: true, new: true });
+    if (!updatedUser) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+    return updatedUser;
+});
+exports.createProfile = createProfile;
 const login = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = body;
     const user = yield models_1.User.findOne({ email: email });
@@ -77,19 +93,38 @@ const changePassword = (body, token) => __awaiter(void 0, void 0, void 0, functi
     return user;
 });
 exports.changePassword = changePassword;
+const deleteAccount = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const [deletedUser, deletedToken] = yield Promise.all([
+        models_1.User.findByIdAndUpdate(userId, { isDeleted: true }, { lean: true, new: true }),
+        models_1.Token.updateMany({ user: userId }, { isDeleted: false }, { lean: true, new: true })
+    ]);
+    if (!deletedUser) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+});
+exports.deleteAccount = deleteAccount;
 const logout = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     yield models_1.Token.updateMany({ user: userId }, { isDeleted: false });
 });
 exports.logout = logout;
 const editProfile = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { fullName, profileImage } = body;
-    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { fullName, profileImage }, { lean: true, new: true });
+    const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio } = body;
+    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio }, { lean: true, new: true });
     if (!updatedProfileData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
     return updatedProfileData;
 });
 exports.editProfile = editProfile;
+const editQuestionnaire = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
+    const { proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence } = body;
+    const updateQuestionnairedData = yield models_1.User.findByIdAndUpdate(user, { proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence }, { lean: true, new: true });
+    if (!updateQuestionnairedData) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+    return updateQuestionnairedData;
+});
+exports.editQuestionnaire = editQuestionnaire;
 const forgotPassword = (token, body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = body;
     const userData = yield models_1.User.findById(token === null || token === void 0 ? void 0 : token.user);

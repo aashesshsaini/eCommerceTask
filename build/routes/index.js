@@ -23,7 +23,6 @@ const defaultRoutes = [
     },
 ];
 defaultRoutes.forEach((route) => {
-    console.log(route, "route.......");
     router.use(route.path, route.route);
 });
 exports.default = router;

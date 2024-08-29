@@ -19,6 +19,26 @@ const verifyOtp = {
         code: joi_1.default.string().required(),
     }),
 };
+const resendOtp = {
+    body: joi_1.default.object().keys({})
+};
+const createProfile = {
+    body: joi_1.default.object().keys({
+        zipCode: joi_1.default.string(),
+        profileImage: joi_1.default.string(),
+        genre: joi_1.default.string(),
+        instrument: joi_1.default.string(),
+        commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
+        repertoire: joi_1.default.array().items(joi_1.default.string()).max(3),
+        bio: joi_1.default.string(),
+        document: joi_1.default.string(),
+        proficient: joi_1.default.string(),
+        improvisationalSkill: joi_1.default.string(),
+        motivation: joi_1.default.string(),
+        aboutRepertoire: joi_1.default.string(),
+        publicExpirence: joi_1.default.string()
+    })
+};
 const login = {
     body: joi_1.default.object().keys({
         email: appConstant_1.JOI.EMAIL,
@@ -31,18 +51,38 @@ const changePassword = {
         oldPassword: appConstant_1.JOI.PASSWORD
     })
 };
+const deleteAccount = {
+    query: joi_1.default.object().keys({})
+};
 const logout = {
     body: joi_1.default.object().keys({})
 };
 const editProfile = {
     body: joi_1.default.object().keys({
-        firstName: joi_1.default.string(),
-        lastName: joi_1.default.string(),
+        fullName: joi_1.default.string().required(),
+        mobileNumber: joi_1.default.string()
+            .min(5)
+            .max(15)
+            .pattern(/^[0-9]+$/),
+        countryCode: joi_1.default.string().required(),
+        email: joi_1.default.string().email().lowercase().trim(),
+        zipCode: joi_1.default.string(),
         profileImage: joi_1.default.string(),
-        // mobileNumber: Joi.string()
-        // .min(5)
-        // .max(15)
-        // .pattern(/^[0-9]+$/),
+        genre: joi_1.default.string(),
+        instrument: joi_1.default.string(),
+        commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
+        repertoire: joi_1.default.array().items(joi_1.default.string()).max(3),
+        bio: joi_1.default.string(),
+        document: joi_1.default.string(),
+    })
+};
+const editQuestionnaire = {
+    body: joi_1.default.object().keys({
+        proficient: joi_1.default.string(),
+        improvisationalSkill: joi_1.default.string(),
+        motivation: joi_1.default.string(),
+        aboutRepertoire: joi_1.default.string(),
+        publicExpirence: joi_1.default.string()
     })
 };
 const forgotPassword = {
@@ -67,4 +107,4 @@ const resetForgotPassword = {
         token: joi_1.default.string().required(),
     }),
 };
-exports.default = { signup, verifyOtp, login, changePassword, logout, editProfile, forgotPassword, forgotPage, resetForgotPassword };
+exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword };

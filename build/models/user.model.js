@@ -24,6 +24,7 @@ var __importStar = (this && this.__importStar) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
+const joi_1 = require("joi");
 const userSchema = new mongoose_1.Schema({
     fullName: {
         type: String,
@@ -44,6 +45,22 @@ const userSchema = new mongoose_1.Schema({
     countryCode: {
         type: String
     },
+    zipCode: {
+        type: String
+    },
+    genre: { type: String },
+    instrument: { type: String },
+    commitmentlevel: { type: String },
+    repertoire: [{
+            type: joi_1.string
+        }],
+    bio: { type: String },
+    document: { type: String },
+    proficient: { type: String },
+    improvisationalSkill: { type: String },
+    motivation: { type: String },
+    aboutRepertoire: { type: String },
+    publicExpirence: { type: String },
     isBlocked: {
         type: Boolean,
         default: false,

@@ -29,6 +29,15 @@ const verifyOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
     yield services_1.userAuthService.verifyOtp(req.body.code, req.token._id);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.VERIFIED);
 }));
+const resendOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    yield services_1.userAuthService.resendOtp((_a = req.token) === null || _a === void 0 ? void 0 : _a.user);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.VERIFIED);
+}));
+const createProfile = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const userData = yield services_1.userAuthService.createProfile(req.body, req.token.user._id);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userData);
+}));
 const login = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield services_1.userAuthService.login(req.body);
     const deviceToken = req.body.deviceToken;
@@ -43,6 +52,11 @@ const changePassword = (0, universalFunctions_1.catchAsync)((req, res) => __awai
     const updatedUser = yield services_1.userAuthService.changePassword(req.body, req === null || req === void 0 ? void 0 : req.token);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS);
 }));
+const deleteAccount = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
+    yield services_1.userAuthService.deleteAccount((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.DELETE);
+}));
 const logout = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     yield services_1.userAuthService.logout((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user);
@@ -52,6 +66,11 @@ const editProfile = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter
     var _a, _b;
     const updatedProfileData = yield services_1.userAuthService.editProfile((_b = (_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id, req === null || req === void 0 ? void 0 : req.body);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, updatedProfileData);
+}));
+const editQuestionnaire = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b;
+    const updateQuestionnairedData = yield services_1.userAuthService.editQuestionnaire((_b = (_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id, req === null || req === void 0 ? void 0 : req.body);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, updateQuestionnairedData);
 }));
 const forgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updatedProfileData = yield services_1.userAuthService.forgotPassword(req === null || req === void 0 ? void 0 : req.token, req === null || req === void 0 ? void 0 : req.body);
@@ -127,4 +146,4 @@ const resetForgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => _
         });
     }
 }));
-exports.default = { signup, verifyOtp, login, changePassword, logout, editProfile, forgotPassword, forgotPage, resetForgotPassword };
+exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword };
