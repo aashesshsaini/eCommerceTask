@@ -11,5 +11,10 @@
 		" Please try with another email": "This email already exists. Please try with another email"
 	},
 	"code is required": "code is required",
-	"user verified successfully": "user verified successfully"
+	"user verified successfully": "user verified successfully",
+	"imstrument is not allowed": "imstrument is not allowed",
+	"newPassword length must be at least 8 characters long": "newPassword length must be at least 8 characters long",
+	"User successfully logged out": "User successfully logged out",
+	"Please authenticate": "Please authenticate",
+	"please fill personal email": "please fill personal email"
 }

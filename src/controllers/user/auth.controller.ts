@@ -57,7 +57,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
          req,
          res,
          STATUS_CODES.SUCCESS,
-         SUCCESS_MESSAGES.VERIFIED,
+         SUCCESS_MESSAGES.SUCCESS,
        );
      });
 

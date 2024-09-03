@@ -1,3 +1,16 @@
-.env
+# Dependencies
 node_modules
-src/middlewares/locales
+
+# Environment varibales
+.env*
+!.env*.example
+
+#test file
+test.js
+test1.js
+example.js
+example2.js
+test5.js
+
+/src/middlewares/locales/
+

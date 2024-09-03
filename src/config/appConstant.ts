@@ -97,7 +97,7 @@ const STATUS_CODES = {
 };
 
 const COMMITMENT_LEVEL = {
-
+  COMMIT:"commit"
 }
 
 

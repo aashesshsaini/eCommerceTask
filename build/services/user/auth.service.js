@@ -127,6 +127,7 @@ const editQuestionnaire = (user, body) => __awaiter(void 0, void 0, void 0, func
 exports.editQuestionnaire = editQuestionnaire;
 const forgotPassword = (token, body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = body;
+    console.log(token, "token.......");
     const userData = yield models_1.User.findById(token === null || token === void 0 ? void 0 : token.user);
     console.log(userData, "userData...........");
     if ((userData === null || userData === void 0 ? void 0 : userData.email) !== email) {

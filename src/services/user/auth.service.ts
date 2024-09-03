@@ -195,6 +195,7 @@ const editQuestionnaire = async(user:ObjectId, body:UserDocument)=>{
 
 const forgotPassword = async(token:TokenDocument, body:UserDocument)=>{
   const {email} = body
+  console.log(token, "token.......")
   const userData = await User.findById(token?.user)
   console.log(userData, "userData...........")
   if(userData?.email !== email){
