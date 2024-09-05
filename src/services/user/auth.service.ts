@@ -193,15 +193,15 @@ const editQuestionnaire = async(user:ObjectId, body:UserDocument)=>{
  return updateQuestionnairedData
 }
 
-const forgotPassword = async(token:TokenDocument, body:UserDocument)=>{
+const forgotPassword = async(body:UserDocument)=>{
   const {email} = body
-  console.log(token, "token.......")
-  const userData = await User.findById(token?.user)
+  const userData = await User.findOne({email:email})
+  const token = await Token.findOne({user:userData?._id})
   console.log(userData, "userData...........")
-  if(userData?.email !== email){
+  if(!userData){
     throw new OperationalError(
       STATUS_CODES.ACTION_FAILED,
-      "please fill personal email"
+      ERROR_MESSAGES.USER_NOT_FOUND
     )
   }
   await forgotPasswordEmail(email, token?.token)

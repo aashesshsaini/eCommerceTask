@@ -154,7 +154,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
   });
 
   const forgotPassword = catchAsync(async (req: Request, res: Response) => {
-    const updatedProfileData = await userAuthService.forgotPassword(req?.token, req?.body);
+    const updatedProfileData = await userAuthService.forgotPassword(req?.body);
   
     return successResponse(
       req,

@@ -26,7 +26,7 @@ interface forgotPasswordEmailInfo {
     html: string;
 }
 
-function forgotPasswordEmail(email: string, token: string): Promise<void> {
+function forgotPasswordEmail(email: string, token: string | undefined): Promise<void> {
     return new Promise((resolve, reject) => {
         console.log(config.baseurl)
         const info: forgotPasswordEmailInfo = {
@@ -36,7 +36,7 @@ function forgotPasswordEmail(email: string, token: string): Promise<void> {
             html: forgotPasswordEmailTemplate({
                 title: "Forgot Password Email",
                 token: token,
-                apiBaseUrl: config.baseurl
+                apiBaseUrl: config.serverurl
             })
         };
 

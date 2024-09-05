@@ -33,7 +33,7 @@ router.put("/editProfile", auth(USER_TYPE.USER), validate(validation.editProfile
 
 router.put("/editQuestionnaire", auth(USER_TYPE.USER), validate(validation.editQuestionnaire), userAuthController.editQuestionnaire)
 
-router.post("/forgotPassword", auth(USER_TYPE.USER), validate(validation.forgotPassword), userAuthController.forgotPassword)
+router.post("/forgotPassword", validate(validation.forgotPassword), userAuthController.forgotPassword)
 
 router.route('/resetPassword').get(validateView(validation.forgotPage), userAuthController.forgotPage).post(validateView(validation.resetForgotPassword), userAuthController.resetForgotPassword)
 
