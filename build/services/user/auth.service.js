@@ -125,19 +125,19 @@ const editQuestionnaire = (user, body) => __awaiter(void 0, void 0, void 0, func
     return updateQuestionnairedData;
 });
 exports.editQuestionnaire = editQuestionnaire;
-const forgotPassword = (token, body) => __awaiter(void 0, void 0, void 0, function* () {
+const forgotPassword = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email } = body;
-    console.log(token, "token.......");
-    const userData = yield models_1.User.findById(token === null || token === void 0 ? void 0 : token.user);
+    const userData = yield models_1.User.findOne({ email: email });
+    const token = yield models_1.Token.findOne({ user: userData === null || userData === void 0 ? void 0 : userData._id });
     console.log(userData, "userData...........");
-    if ((userData === null || userData === void 0 ? void 0 : userData.email) !== email) {
-        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, "please fill personal email");
+    if (!userData) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
     yield (0, sendMails_1.forgotPasswordEmail)(email, token === null || token === void 0 ? void 0 : token.token);
 });
 exports.forgotPassword = forgotPassword;
 const resetPassword = (userId, newPassword) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log(newPassword, 'newPasword.............');
+    // console.log(newPassword, 'newPasword.............')
     const hashedPassword = yield bcryptjs_1.default.hash(newPassword, 10);
     console.log(hashedPassword);
     const userData = yield models_1.User.findOneAndUpdate({ _id: userId }, { $set: { password: hashedPassword } }, { lean: true, new: true });

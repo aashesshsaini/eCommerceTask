@@ -208,7 +208,7 @@ const forgotPassword = async(body:UserDocument)=>{
 }
 
 const resetPassword = async(userId:ObjectId, newPassword:string)=>{
-  console.log(newPassword, 'newPasword.............')
+  // console.log(newPassword, 'newPasword.............')
    const hashedPassword = await bcrypt.hash(newPassword, 10)
    console.log(hashedPassword)
   const userData = await User.findOneAndUpdate({_id:userId},{$set:{password:hashedPassword}},{lean:true,new:true})

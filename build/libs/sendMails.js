@@ -29,7 +29,7 @@ function forgotPasswordEmail(email, token) {
             html: forgotPasswordEmailTemplate({
                 title: "Forgot Password Email",
                 token: token,
-                apiBaseUrl: config_1.default.baseurl
+                apiBaseUrl: config_1.default.serverurl
             })
         };
         transporter.sendMail(info, (error, info) => {
