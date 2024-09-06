@@ -74,7 +74,7 @@ const ERROR_MESSAGES = {
     SERVICE_QUESTION_NOT_FOUND: "This service question not found",
     ACCOUNT_NOT_EXIST: "Account does not exist",
     WRONG_PASSWORD: "Password is Incorrect",
-    ACCOUNT_DELETED: "Your account has been deleted by Admin",
+    ACCOUNT_DELETED: "Your account has been deleted",
     ACCOUNT_BLOCKED: "Your account has been blocked by Admin",
     USER_NOT_FOUND: "User not found",
     FIELD_REQUIRED: "All the fields are required",
