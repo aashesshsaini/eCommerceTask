@@ -215,4 +215,15 @@ const resetPassword = async(userId:ObjectId, newPassword:string)=>{
   return userData
 }
 
-export { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, resetPassword};
+const userInfo = async(userId:ObjectId)=>{
+  const userInfo = await User.findById(userId).lean()
+  if(!userInfo){
+   throw new OperationalError(
+    STATUS_CODES.ACTION_FAILED,
+    ERROR_MESSAGES.USER_NOT_FOUND
+   )
+  }
+  return userInfo
+}
+
+export { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, resetPassword, userInfo};

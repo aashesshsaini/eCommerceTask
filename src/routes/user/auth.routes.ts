@@ -37,4 +37,6 @@ router.post("/forgotPassword", validate(validation.forgotPassword), userAuthCont
 
 router.route('/resetPassword').get(validateView(validation.forgotPage), userAuthController.forgotPage).post(validateView(validation.resetForgotPassword), userAuthController.resetForgotPassword)
 
+router.get('/userInfo', auth(USER_TYPE.USER), validate(validation.userInfo), userAuthController.userInfo)
+
 export default router;

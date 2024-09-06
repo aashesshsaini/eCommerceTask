@@ -107,4 +107,7 @@ const resetForgotPassword = {
         token: joi_1.default.string().required(),
     }),
 };
-exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword };
+const userInfo = {
+    query: joi_1.default.object().keys({})
+};
+exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo };

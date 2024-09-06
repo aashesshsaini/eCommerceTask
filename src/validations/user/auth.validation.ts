@@ -117,4 +117,8 @@ const resetForgotPassword = {
   }),
 }
 
-export default {signup, verifyOtp, resendOtp, createProfile, login , changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword}
+const userInfo = {
+  query: Joi.object().keys({})
+}
+
+export default {signup, verifyOtp, resendOtp, createProfile, login , changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo}

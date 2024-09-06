@@ -22,4 +22,5 @@ router.put("/editProfile", (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0
 router.put("/editQuestionnaire", (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(auth_validation_1.default.editQuestionnaire), auth_controller_1.default.editQuestionnaire);
 router.post("/forgotPassword", (0, validate_1.validate)(auth_validation_1.default.forgotPassword), auth_controller_1.default.forgotPassword);
 router.route('/resetPassword').get((0, validate_1.validateView)(auth_validation_1.default.forgotPage), auth_controller_1.default.forgotPage).post((0, validate_1.validateView)(auth_validation_1.default.resetForgotPassword), auth_controller_1.default.resetForgotPassword);
+router.get('/userInfo', (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(auth_validation_1.default.userInfo), auth_controller_1.default.userInfo);
 exports.default = router;

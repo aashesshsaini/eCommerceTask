@@ -99,7 +99,6 @@ const signup = catchAsync(async (req: Request, res: Response) => {
 
   const changePassword = catchAsync(async (req: Request, res: Response) => {
     const updatedUser = await userAuthService.changePassword(req.body, req?.token);
-  
     return successResponse(
       req,
       res, 
@@ -132,25 +131,25 @@ const signup = catchAsync(async (req: Request, res: Response) => {
 
   const editProfile = catchAsync(async (req: Request, res: Response) => {
     const updatedProfileData = await userAuthService.editProfile(req?.token?.user?._id, req?.body);
-  
+    const formatedUpdatedProfileData = formatUser(updatedProfileData)
     return successResponse(
       req,
       res,
       STATUS_CODES.SUCCESS,
       SUCCESS_MESSAGES.SUCCESS,
-      updatedProfileData
+      formatedUpdatedProfileData
     );
   });
 
   const editQuestionnaire = catchAsync(async (req: Request, res: Response) => {
     const updateQuestionnairedData = await userAuthService.editQuestionnaire(req?.token?.user?._id, req?.body);
-  
+    const formatedUpdateQuestionnairedData = formatUser(updateQuestionnairedData)
     return successResponse(
       req,
       res,
       STATUS_CODES.SUCCESS,
       SUCCESS_MESSAGES.SUCCESS,
-      updateQuestionnairedData
+      formatedUpdateQuestionnairedData
     );
   });
 
@@ -237,6 +236,19 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       });
     }
   });
+
+
+  const userInfo = catchAsync(async (req: Request, res: Response) => {
+    const userInfo = await userAuthService.userInfo(req?.token?.user);
+    const formatedUserInfo = formatUser(userInfo)
+   return successResponse(
+     req,
+     res,
+     STATUS_CODES.SUCCESS,
+     SUCCESS_MESSAGES.DELETE,
+     formatedUserInfo
+   );
+ });
   
 
-  export default { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword};
+  export default { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo};

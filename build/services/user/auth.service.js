@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.forgotPassword = exports.editQuestionnaire = exports.editProfile = exports.logout = exports.deleteAccount = exports.changePassword = exports.login = exports.createProfile = exports.resendOtp = exports.verifyOtp = exports.signup = void 0;
+exports.userInfo = exports.resetPassword = exports.forgotPassword = exports.editQuestionnaire = exports.editProfile = exports.logout = exports.deleteAccount = exports.changePassword = exports.login = exports.createProfile = exports.resendOtp = exports.verifyOtp = exports.signup = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const models_1 = require("../../models");
 const appConstant_1 = require("../../config/appConstant");
@@ -144,3 +144,11 @@ const resetPassword = (userId, newPassword) => __awaiter(void 0, void 0, void 0,
     return userData;
 });
 exports.resetPassword = resetPassword;
+const userInfo = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const userInfo = yield models_1.User.findById(userId).lean();
+    if (!userInfo) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+    return userInfo;
+});
+exports.userInfo = userInfo;
