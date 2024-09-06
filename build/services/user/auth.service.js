@@ -20,7 +20,7 @@ const error_1 = require("../../utils/error");
 const sendMails_1 = require("../../libs/sendMails");
 const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, fullName, mobileNumber, countryCode } = body;
-    const existinguser = yield models_1.User.findOne({ email: email });
+    const existinguser = yield models_1.User.findOne({ email: email, isDeleted: false });
     if (existinguser) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.EMAIL_ALREADY_EXIST);
     }
@@ -95,7 +95,7 @@ const changePassword = (body, token) => __awaiter(void 0, void 0, void 0, functi
 exports.changePassword = changePassword;
 const deleteAccount = (userId) => __awaiter(void 0, void 0, void 0, function* () {
     const [deletedUser, deletedToken] = yield Promise.all([
-        models_1.User.findByIdAndUpdate(userId, { isDeleted: true }, { lean: true, new: true }),
+        models_1.User.findByIdAndUpdate(userId, { isDeleted: true, isVerified: false }, { lean: true, new: true }),
         models_1.Token.updateMany({ user: userId }, { isDeleted: false }, { lean: true, new: true })
     ]);
     if (!deletedUser) {

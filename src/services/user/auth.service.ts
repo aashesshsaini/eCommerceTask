@@ -38,7 +38,7 @@ interface signupBody {
 
 const signup = async(body:signupBody)=>{
     const { email, password, fullName, mobileNumber, countryCode } = body;
-    const existinguser = await User.findOne({ email: email });
+    const existinguser = await User.findOne({ email: email, isDeleted:false});
     if (existinguser) {
       throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,
@@ -154,7 +154,7 @@ const changePassword = async(body:changePasswordBody, token:TokenDocument)=>{
 
 const deleteAccount = async(userId:ObjectId)=>{
   const [deletedUser, deletedToken] = await Promise.all([
-    User.findByIdAndUpdate(userId, {isDeleted:true},{lean:true, new:true}),
+    User.findByIdAndUpdate(userId, {isDeleted:true, isVerified:false},{lean:true, new:true}),
     Token.updateMany({user:userId},{isDeleted:false},{lean:true, new:true})
   ])
   if(!deletedUser){
