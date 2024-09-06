@@ -37,10 +37,10 @@ const verifyCallback = (req, resolve, reject, expectedRole) => (err, token, info
             return reject(new error_1.AuthFailedError());
         }
         if (token.user.isDeleted) {
-            return reject(new error_1.AuthFailedError(appConstant_1.ERROR_MESSAGES.ACCOUNT_DELETED, appConstant_1.STATUS_CODES.ACTION_FAILED));
+            return reject(new error_1.AuthFailedError(appConstant_1.ERROR_MESSAGES.ACCOUNT_DELETED, appConstant_1.STATUS_CODES.AUTH_FAILED));
         }
         if (token.user.isBlocked) {
-            return reject(new error_1.AuthFailedError(appConstant_1.ERROR_MESSAGES.ACCOUNT_BLOCKED, appConstant_1.STATUS_CODES.ACTION_FAILED));
+            return reject(new error_1.AuthFailedError(appConstant_1.ERROR_MESSAGES.ACCOUNT_BLOCKED, appConstant_1.STATUS_CODES.AUTH_FAILED));
         }
     }
     if (token.role === appConstant_1.USER_TYPE.ADMIN) {
