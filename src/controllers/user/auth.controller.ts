@@ -65,13 +65,12 @@ const signup = catchAsync(async (req: Request, res: Response) => {
      const createProfile = catchAsync(async (req: Request, res: Response) => {
       const userData = await userAuthService.createProfile(req.body, req.token.user._id);
       const formatUserData = formatUser(userData)
-      console.log(formatUserData, "formatUserData")
       return successResponse(
         req,
         res,
         STATUS_CODES.SUCCESS,
         SUCCESS_MESSAGES.SUCCESS,
-        userData
+        formatUserData
       );
     });
 

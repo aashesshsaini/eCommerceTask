@@ -38,8 +38,7 @@ const resendOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
 const createProfile = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield services_1.userAuthService.createProfile(req.body, req.token.user._id);
     const formatUserData = (0, formatResponse_1.formatUser)(userData);
-    console.log(formatUserData, "formatUserData");
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userData);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, formatUserData);
 }));
 const login = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield services_1.userAuthService.login(req.body);
