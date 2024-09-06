@@ -7,6 +7,7 @@ import {
   STATUS_CODES,
 } from '../../config/appConstant';
 import { catchAsync } from '../../utils/universalFunctions';
+import {formatUser} from "../../utils/formatResponse";
 import { TokenDocument, UserDocument } from '../../interfaces';
 import { ObjectId } from 'mongoose';
 import sendOtp from "../../libs/sendOtp"
@@ -63,7 +64,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
 
      const createProfile = catchAsync(async (req: Request, res: Response) => {
       const userData = await userAuthService.createProfile(req.body, req.token.user._id);
-    
+      formatUser(userData)
       return successResponse(
         req,
         res,
