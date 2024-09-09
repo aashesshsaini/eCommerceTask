@@ -30,7 +30,7 @@ const userSchema = new Schema<UserDocument>(
         },
          genre:{type: String},
          instrument: {type: String},
-         commitmentlevel:{type: String},
+         commitmentLevel:{type: String},
          repertoire:[{
           type:String
          }],

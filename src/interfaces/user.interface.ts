@@ -10,7 +10,7 @@ export interface UserDocument extends Document {
     zipCode:string,
     genre:string,
     instrument:string,
-    commitmentlevel:string,
+    commitmentLevel:string,
     repertoire:string[],
     bio:string,
     document:string,

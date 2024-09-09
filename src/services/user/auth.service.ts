@@ -25,7 +25,7 @@ interface signupBody {
     profileImage:string,
     genre:string,
     instrument:string,
-    commitmentlevel:string,
+    commitmentLevel:string,
     repertoire:string[],
     bio:string,
     document:string,
@@ -80,11 +80,11 @@ interface loginBody {
   }
 
   const createProfile = async(body:createProfileBody, userId:ObjectId)=>{
-  const {zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence} = body
+  const {zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence} = body
   console.log(body, "body..........")
-  console.log(commitmentlevel, "commitmentlevel.........")
-  const updatedUser = await User.findByIdAndUpdate(userId,body, {lean:true, new:true})
-  console.log(updatedUser?.commitmentlevel, "updateUser...............")
+  console.log(commitmentLevel, "commitmentlevel.........")
+  const updatedUser = await User.findByIdAndUpdate(userId, body, {lean:true, new:true})
+  console.log(updatedUser?.commitmentLevel, "updateUser...............")
   if(!updatedUser){
     throw new OperationalError(
       STATUS_CODES.ACTION_FAILED,
