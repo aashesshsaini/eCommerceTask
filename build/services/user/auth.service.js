@@ -49,6 +49,7 @@ const resendOtp = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 exports.resendOtp = resendOtp;
 const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const { zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence } = body;
+    console.log(body, "body..........");
     console.log(commitmentlevel, "commitmentlevel.........");
     const updatedUser = yield models_1.User.findByIdAndUpdate(userId, { zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence }, { lean: true, new: true });
     console.log(updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.commitmentlevel, "updateUser...............");

@@ -81,6 +81,7 @@ interface loginBody {
 
   const createProfile = async(body:createProfileBody, userId:ObjectId)=>{
   const {zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence} = body
+  console.log(body, "body..........")
   console.log(commitmentlevel, "commitmentlevel.........")
   const updatedUser = await User.findByIdAndUpdate(userId,{zipCode, profileImage, genre, instrument, commitmentlevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence}, {lean:true, new:true})
   console.log(updatedUser?.commitmentlevel, "updateUser...............")
