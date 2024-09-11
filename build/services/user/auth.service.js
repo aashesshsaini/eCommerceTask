@@ -20,7 +20,7 @@ const error_1 = require("../../utils/error");
 const sendMails_1 = require("../../libs/sendMails");
 const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, fullName, mobileNumber, countryCode } = body;
-    const existinguser = yield models_1.User.findOne({ email: email, isDeleted: false });
+    const existinguser = yield models_1.User.findOne({ email: email, isDeleted: false, isVerified: true });
     if (existinguser) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.EMAIL_ALREADY_EXIST);
     }

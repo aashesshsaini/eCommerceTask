@@ -38,7 +38,7 @@ interface signupBody {
 
 const signup = async(body:signupBody)=>{
     const { email, password, fullName, mobileNumber, countryCode } = body;
-    const existinguser = await User.findOne({ email: email, isDeleted:false});
+    const existinguser = await User.findOne({ email: email, isDeleted:false, isVerified:true});
     if (existinguser) {
       throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,
