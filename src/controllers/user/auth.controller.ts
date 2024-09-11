@@ -249,7 +249,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
      req,
      res,
      STATUS_CODES.SUCCESS,
-     SUCCESS_MESSAGES.DELETE,
+     SUCCESS_MESSAGES.SUCCESS,
      formatedUserInfo
    );
  });
