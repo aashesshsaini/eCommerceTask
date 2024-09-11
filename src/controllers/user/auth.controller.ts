@@ -7,7 +7,7 @@ import {
   STATUS_CODES,
 } from '../../config/appConstant';
 import { catchAsync } from '../../utils/universalFunctions';
-import {formatUser} from "../../utils/formatResponse";
+import {formatSignUpUser, formatUser} from "../../utils/formatResponse";
 import { TokenDocument, UserDocument } from '../../interfaces';
 import { ObjectId } from 'mongoose';
 import sendOtp from "../../libs/sendOtp"
@@ -28,7 +28,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       otp
     );
 
-    const formatUserData = formatUser(user)
+    const formatUserData = formatSignUpUser(user)
   
     return successResponse(
       req,
@@ -87,7 +87,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       deviceType
     );
 
-    const formatUserData = formatUser(userData)
+    const formatUserData = formatSignUpUser(userData)
   
     return successResponse(
       req,

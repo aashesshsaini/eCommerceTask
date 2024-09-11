@@ -6,6 +6,13 @@ const formatUser = (user: UserDocument) => {
     delete (userCopy as any).password;
     return userCopy;
   };
+
+  const formatSignUpUser = (user: UserDocument) => {
+    const userCopy = user.toObject(); // Convert Mongoose document to plain object
+    delete userCopy.__v;
+    delete userCopy.password;
+    return userCopy;
+  };
   
 //   const formatAdmin = (admin:AdminDocument) => {
 //     delete admin.__v;
@@ -13,4 +20,4 @@ const formatUser = (user: UserDocument) => {
 //     return admin;
 //   };
 
- export {formatUser}
+ export {formatUser, formatSignUpUser}
