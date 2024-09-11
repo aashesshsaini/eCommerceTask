@@ -97,6 +97,7 @@ interface loginBody {
 const login = async(body:loginBody)=>{
     const {email, password} =  body
     const user = await User.findOne({email:email})
+    console.log(user)
     if(!user){
         throw new OperationalError(
             STATUS_CODES.NOT_FOUND,
@@ -109,6 +110,7 @@ const login = async(body:loginBody)=>{
           ERROR_MESSAGES.ACCOUNT_BLOCKED
       )
   }
+  console.log(user, "user.........")
   if(user.isDeleted){
     throw new OperationalError(
         STATUS_CODES.NOT_FOUND,
