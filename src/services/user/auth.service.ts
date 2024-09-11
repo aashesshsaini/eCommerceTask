@@ -96,7 +96,7 @@ interface loginBody {
 
 const login = async(body:loginBody)=>{
     const {email, password} =  body
-    const user = await User.findOne({email:email})
+    const user = await User.findOne({email:email, isDeleted:false})
     console.log(user)
     if(!user){
         throw new OperationalError(

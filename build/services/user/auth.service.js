@@ -61,7 +61,7 @@ const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, functi
 exports.createProfile = createProfile;
 const login = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = body;
-    const user = yield models_1.User.findOne({ email: email });
+    const user = yield models_1.User.findOne({ email: email, isDeleted: false });
     console.log(user);
     if (!user) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
