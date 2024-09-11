@@ -22,5 +22,6 @@ export interface UserDocument extends Document {
     isBlocked:boolean,
     isDeleted:boolean,
     isVerified:boolean,
+    isRegistered:boolean,
     isPayment:boolean,
 }

@@ -72,6 +72,10 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false
     },
+    isRegistered: {
+        type: Boolean,
+        default: false
+    },
     isPayment: {
         type: Boolean,
         default: false,

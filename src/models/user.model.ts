@@ -53,6 +53,10 @@ const userSchema = new Schema<UserDocument>(
           type: Boolean,
           default: false
         },
+        isRegistered: {
+          type: Boolean,
+          default: false
+        },
         isPayment: {
           type: Boolean,
           default: false,
