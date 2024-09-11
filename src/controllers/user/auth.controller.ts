@@ -27,6 +27,8 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       deviceType,
       otp
     );
+
+    const formatUserData = formatUser(user)
   
     return successResponse(
       req,
@@ -35,7 +37,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       SUCCESS_MESSAGES.SUCCESS,
       {
         tokenData: accessToken,
-        user,
+        formatUserData,
       }
     );
   });
@@ -84,6 +86,8 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       deviceToken,
       deviceType
     );
+
+    const formatUserData = formatUser(userData)
   
     return successResponse(
       req,
@@ -92,7 +96,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       SUCCESS_MESSAGES.SUCCESS,
       {
         tokenData: accessToken,
-        userData,
+        formatUserData,
       }
     );
   });

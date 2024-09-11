@@ -21,9 +21,10 @@ const signup = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void
     const deviceToken = req.body.deviceToken;
     const deviceType = req.body.deviceType;
     const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, user, deviceToken, deviceType, otp);
+    const formatUserData = (0, formatResponse_1.formatUser)(user);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, {
         tokenData: accessToken,
-        user,
+        formatUserData,
     });
 }));
 const verifyOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,9 +46,10 @@ const login = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 
     const deviceToken = req.body.deviceToken;
     const deviceType = req.body.deviceType;
     const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, userData, deviceToken, deviceType);
+    const formatUserData = (0, formatResponse_1.formatUser)(userData);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, {
         tokenData: accessToken,
-        userData,
+        formatUserData,
     });
 }));
 const changePassword = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -97,7 +97,9 @@ const STATUS_CODES = {
 };
 
 const COMMITMENT_LEVEL = {
-  COMMIT:"commit"
+  FOCUSED:"Focused, serious practice",
+  JOYFUL_GROUP:"Joyful group music session",
+  SOMETIMES:"Sometimes one, sometimes the other"
 }
 
 
