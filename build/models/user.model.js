@@ -49,6 +49,7 @@ const userSchema = new mongoose_1.Schema({
     },
     genre: { type: String },
     instrument: { type: String },
+    //  commitmentLevel:{type: String},
     repertoire: [{
             type: String
         }],
