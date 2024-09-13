@@ -80,11 +80,9 @@ interface loginBody {
   }
 
   const createProfile = async(body:createProfileBody, userId:ObjectId)=>{
-  const {zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence} = body
+  const {zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence} = body
   console.log(body, "body..........")
-  console.log(commitmentLevel, "commitmentlevel.........")
-  const updatedUser = await User.findByIdAndUpdate(userId, {zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, isRegistered:true}, {lean:true, new:true})
-  console.log(updatedUser?.commitmentLevel, "updateUser...............")
+  const updatedUser = await User.findByIdAndUpdate(userId, {zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, isRegistered:true}, {lean:true, new:true})
   if(!updatedUser){
     throw new OperationalError(
       STATUS_CODES.ACTION_FAILED,
@@ -175,8 +173,8 @@ const logout = async(userId:ObjectId)=>{
 }
 
 const editProfile = async(user:ObjectId, body:UserDocument)=>{
-  const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio} = body
-  const updatedProfileData = await User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode ,zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio},{lean:true,new:true})
+  const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio} = body
+  const updatedProfileData = await User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode ,zipCode, profileImage, genre, instrument, repertoire, document, bio},{lean:true,new:true})
   if(!updatedProfileData){
    throw new OperationalError(
     STATUS_CODES.NOT_FOUND,

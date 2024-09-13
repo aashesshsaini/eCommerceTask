@@ -48,11 +48,9 @@ const resendOtp = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.resendOtp = resendOtp;
 const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const { zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence } = body;
+    const { zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence } = body;
     console.log(body, "body..........");
-    console.log(commitmentLevel, "commitmentlevel.........");
-    const updatedUser = yield models_1.User.findByIdAndUpdate(userId, { zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, isRegistered: true }, { lean: true, new: true });
-    console.log(updatedUser === null || updatedUser === void 0 ? void 0 : updatedUser.commitmentLevel, "updateUser...............");
+    const updatedUser = yield models_1.User.findByIdAndUpdate(userId, { zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, isRegistered: true }, { lean: true, new: true });
     if (!updatedUser) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
@@ -113,8 +111,8 @@ const logout = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.logout = logout;
 const editProfile = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio } = body;
-    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, commitmentLevel, repertoire, document, bio }, { lean: true, new: true });
+    const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio } = body;
+    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio }, { lean: true, new: true });
     if (!updatedProfileData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
