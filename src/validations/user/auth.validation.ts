@@ -27,7 +27,7 @@ const createProfile = {
     profileImage: Joi.string(),
     genre: Joi.string(),
     instrument: Joi.string(),
-    // commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
+    commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
     repertoire: Joi.array().items(Joi.string()).max(3),
     bio: Joi.string(),
     document: Joi.string(),
@@ -76,6 +76,7 @@ const editProfile = {
     genre: Joi.string(),
     instrument: Joi.string(),
     repertoire: Joi.array().items(Joi.string()).max(3),
+    commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
     bio: Joi.string(),
     document: Joi.string(),
   })
