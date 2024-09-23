@@ -63,6 +63,7 @@ const ERROR_MESSAGES = {
     AUTHENTICATION_FAILED: "Please authenticate",
     UNAUTHORIZED: "You are not authorized to perform this action",
     EMAIL_ALREADY_EXIST: "This email already exists. Please try with another email",
+    MOBILE_ALREADY_EXIST: "This mobile number already exists. Please try with another mobile number",
     EMAIL_NOT_FOUND: "Email not found",
     BLOG_NOT_FOUND: "Blog not found",
     SERVICE_NOT_FOUND: "Service not found",
@@ -74,6 +75,7 @@ const ERROR_MESSAGES = {
     USER_NOT_FOUND: "User not found",
     FIELD_REQUIRED: "All the fields are required",
     ALREADY_DONE: "you have already sent the data for approval",
+    JAM_NOT_FOUND: "Jam not found"
 };
 
 const STATUS_CODES = {
@@ -100,6 +102,12 @@ const COMMITMENT_LEVEL = {
   FOCUSED:"Focused, serious practice",
   JOYFUL_GROUP:"Joyful group music session",
   SOMETIMES:"Sometimes one, sometimes the other"
+};
+
+const GENRE = {
+    JAZZ: "Jazz",
+    ROCK:"Rock",
+    BLUES:"Blues",
 }
 
 
@@ -114,4 +122,5 @@ export {
     ERROR_MESSAGES,
     STATUS_CODES,
     COMMITMENT_LEVEL,
+    GENRE
  };

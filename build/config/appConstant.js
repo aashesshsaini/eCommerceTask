@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.COMMITMENT_LEVEL = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
+exports.GENRE = exports.COMMITMENT_LEVEL = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
 const joi_1 = __importDefault(require("joi"));
 const custom_validation_1 = require("../validations/custom.validation");
 const TOKEN_TYPE = {
@@ -68,6 +68,7 @@ const ERROR_MESSAGES = {
     AUTHENTICATION_FAILED: "Please authenticate",
     UNAUTHORIZED: "You are not authorized to perform this action",
     EMAIL_ALREADY_EXIST: "This email already exists. Please try with another email",
+    MOBILE_ALREADY_EXIST: "This mobile number already exists. Please try with another mobile number",
     EMAIL_NOT_FOUND: "Email not found",
     BLOG_NOT_FOUND: "Blog not found",
     SERVICE_NOT_FOUND: "Service not found",
@@ -79,6 +80,7 @@ const ERROR_MESSAGES = {
     USER_NOT_FOUND: "User not found",
     FIELD_REQUIRED: "All the fields are required",
     ALREADY_DONE: "you have already sent the data for approval",
+    JAM_NOT_FOUND: "Jam not found"
 };
 exports.ERROR_MESSAGES = ERROR_MESSAGES;
 const STATUS_CODES = {
@@ -105,3 +107,9 @@ const COMMITMENT_LEVEL = {
     SOMETIMES: "Sometimes one, sometimes the other"
 };
 exports.COMMITMENT_LEVEL = COMMITMENT_LEVEL;
+const GENRE = {
+    JAZZ: "Jazz",
+    ROCK: "Rock",
+    BLUES: "Blues",
+};
+exports.GENRE = GENRE;

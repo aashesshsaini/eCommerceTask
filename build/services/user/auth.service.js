@@ -20,9 +20,15 @@ const error_1 = require("../../utils/error");
 const sendMails_1 = require("../../libs/sendMails");
 const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, fullName, mobileNumber, countryCode } = body;
-    const existinguser = yield models_1.User.findOne({ email: email, isDeleted: false, isVerified: true });
-    if (existinguser) {
+    const [existinguserByEmail, existinguserByMobileNumber] = yield Promise.all([
+        models_1.User.findOne({ email: email, isDeleted: false, isVerified: true }),
+        models_1.User.findOne({ mobileNumber: mobileNumber, isDeleted: false, isVerified: true }),
+    ]);
+    if (existinguserByEmail) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.EMAIL_ALREADY_EXIST);
+    }
+    if (existinguserByMobileNumber) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.MOBILE_ALREADY_EXIST);
     }
     const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
     const user = yield models_1.User.create({ email, password: hashedPassword, fullName, mobileNumber, countryCode });
@@ -58,8 +64,14 @@ const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.createProfile = createProfile;
 const login = (body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password } = body;
-    const user = yield models_1.User.findOne({ email: email, isDeleted: false });
+    const { email, password, mobileNumber } = body;
+    console.log(body, "body............");
+    if (email) {
+        var user = yield models_1.User.findOne({ email: email, isDeleted: false });
+    }
+    else {
+        var user = yield models_1.User.findOne({ mobileNumber, isDeleted: false });
+    }
     console.log(user);
     if (!user) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);

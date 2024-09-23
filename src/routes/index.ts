@@ -2,6 +2,7 @@ import express, { Router } from "express"
 import adminAuth from "./admin/auth.routes"
 import userAuth from "./user/auth.routes"
 import userManage from "./admin/userManage.routes"
+import userJam from "./user/jam.routes"
 
 const router: Router = express.Router();
 
@@ -17,6 +18,10 @@ const defaultRoutes = [
       {
         path: "/admin/userManage",
         route: userManage,
+      },
+      {
+        path: "/user/jam",
+        route: userJam,
       },
   ];
 

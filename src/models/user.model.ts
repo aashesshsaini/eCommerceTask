@@ -20,7 +20,7 @@ const userSchema = new Schema<UserDocument>(
             type: String,
           },
         mobileNumber: {
-          type: Number,
+          type: String,
         },
         countryCode:{
           type: String

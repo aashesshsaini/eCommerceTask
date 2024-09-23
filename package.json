@@ -4,9 +4,9 @@
   "description": "jamnation Backend API's",
   "main": "index.js",
   "scripts": {
-   "start": "node ./build/index.js",
+    "start": "node ./build/index.js",
     "lint": "tslint -p tsconfig.json -c tslint.json",
-    "dev":"tsc-watch --onSuccess \"npm start\""
+    "dev": "tsc-watch --onSuccess \"npm start\""
   },
   "keywords": [],
   "author": "Aashish Saini",
@@ -24,6 +24,7 @@
     "@types/nodemailer": "^6.4.15",
     "@types/passport": "^1.0.16",
     "@types/passport-jwt": "^4.0.1",
+    "@types/qrcode": "^1.5.5",
     "bcryptjs": "^2.4.3",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
@@ -34,10 +35,12 @@
     "i18n": "^0.15.1",
     "joi": "^17.13.3",
     "moment": "^2.30.1",
+    "moment-timezone": "^0.5.45",
     "morgan": "^1.10.0",
     "nodemailer": "^6.9.14",
     "passport": "^0.7.0",
     "passport-jwt": "^4.0.1",
+    "qrcode": "^1.5.4",
     "winston": "^3.13.1"
   },
   "devDependencies": {

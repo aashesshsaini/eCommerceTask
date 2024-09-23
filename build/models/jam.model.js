@@ -23,10 +23,54 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userJamService = exports.userCommonService = exports.userManageService = exports.adminAuthService = exports.userAuthService = exports.tokenService = void 0;
-exports.tokenService = __importStar(require("./token.service"));
-exports.userAuthService = __importStar(require("./user/auth.service"));
-exports.adminAuthService = __importStar(require("./admin/auth.service"));
-exports.userManageService = __importStar(require("./admin/userManage.service"));
-exports.userCommonService = __importStar(require("./user/common.service"));
-exports.userJamService = __importStar(require("./user/jam.service"));
+const mongoose_1 = __importStar(require("mongoose"));
+const jamSchema = new mongoose_1.Schema({
+    user: {
+        type: mongoose_1.Schema.Types.ObjectId, ref: 'users'
+    },
+    jamName: {
+        type: String
+    },
+    date: {
+        type: Date
+    },
+    time: [{
+            type: String
+        }],
+    genre: {
+        type: String
+    },
+    repertoire: {
+        type: String
+    },
+    bandFormation: [{
+            type: String
+        }],
+    city: {
+        type: String
+    },
+    region: {
+        type: String
+    },
+    landmark: {
+        type: String
+    },
+    description: {
+        type: String
+    },
+    qrCode: {
+        type: String
+    },
+    allowMusicians: {
+        type: Boolean
+    },
+    notifyFavMusicians: {
+        type: Boolean
+    },
+    isDeleted: {
+        type: Boolean
+    }
+}, { timestamps: true });
+const Jam = mongoose_1.default.model("jams", jamSchema);
+jamSchema.index({ loc: "2dsphere" });
+exports.default = Jam;

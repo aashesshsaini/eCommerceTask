@@ -16,5 +16,14 @@
 	"newPassword length must be at least 8 characters long": "newPassword length must be at least 8 characters long",
 	"User successfully logged out": "User successfully logged out",
 	"Please authenticate": "Please authenticate",
-	"please fill personal email": "please fill personal email"
+	"please fill personal email": "please fill personal email",
+	"email must be a valid email": "email must be a valid email",
+	"User not found": "User not found",
+	"phoneNumber with value 7456863769": {
+		"0 fails to match the required pattern": " /^[0-9]+$/"
+	},
+	"phoneNumber is not allowed": "phoneNumber is not allowed",
+	"This mobile number already exists": {
+		" Please try with another mobile number": "This mobile number already exists. Please try with another mobile number"
+	}
 }

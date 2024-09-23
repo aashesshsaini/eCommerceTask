@@ -39,7 +39,7 @@ const userSchema = new mongoose_1.Schema({
         type: String,
     },
     mobileNumber: {
-        type: Number,
+        type: String,
     },
     countryCode: {
         type: String

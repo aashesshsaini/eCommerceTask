@@ -41,7 +41,11 @@ const createProfile = {
 };
 const login = {
     body: joi_1.default.object().keys({
-        email: appConstant_1.JOI.EMAIL,
+        mobileNumber: joi_1.default.string()
+            .min(5)
+            .max(15)
+            .pattern(/^[0-9]+$/),
+        email: joi_1.default.string().email().lowercase().trim(),
         password: appConstant_1.JOI.PASSWORD
     })
 };

@@ -5,7 +5,7 @@ export interface UserDocument extends Document {
     email:string,
     password:string,
     profileImage:string,
-    mobileNumber:number,
+    mobileNumber:string,
     countryCode:string,
     zipCode:string,
     genre:string,

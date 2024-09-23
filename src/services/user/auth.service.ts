@@ -38,11 +38,22 @@ interface signupBody {
 
 const signup = async(body:signupBody)=>{
     const { email, password, fullName, mobileNumber, countryCode } = body;
-    const existinguser = await User.findOne({ email: email, isDeleted:false, isVerified:true});
-    if (existinguser) {
+    const [existinguserByEmail, existinguserByMobileNumber] = await Promise.all([
+     User.findOne({ email: email, isDeleted:false, isVerified:true}),
+     User.findOne({ mobileNumber: mobileNumber, isDeleted:false, isVerified:true}),
+    ])
+
+    if (existinguserByEmail) {
       throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,
         ERROR_MESSAGES.EMAIL_ALREADY_EXIST
+      );
+    }
+
+      if (existinguserByMobileNumber) {
+      throw new OperationalError(
+        STATUS_CODES.ACTION_FAILED,
+        ERROR_MESSAGES.MOBILE_ALREADY_EXIST
       );
     }
   
@@ -57,6 +68,7 @@ const signup = async(body:signupBody)=>{
 interface loginBody {
     email: string;
     password: string;
+    mobileNumber:string;
   }
 
   const verifyOtp = async (code:string, tokenId:ObjectId) => {
@@ -93,8 +105,14 @@ interface loginBody {
 }
 
 const login = async(body:loginBody)=>{
-    const {email, password} =  body
-    const user = await User.findOne({email:email, isDeleted:false})
+    const {email, password, mobileNumber} =  body
+    console.log(body, "body............")
+    if(email){
+       var user = await User.findOne({email:email, isDeleted:false})
+    }else{
+     var user = await User.findOne({mobileNumber, isDeleted:false})
+    }
+   
     console.log(user)
     if(!user){
         throw new OperationalError(
