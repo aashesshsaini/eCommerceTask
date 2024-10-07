@@ -7,7 +7,7 @@ import { USER_TYPE } from '../../config/appConstant';
 
 const router: Router = express.Router();
 
-router.route('/jam')
+router.route('/')
 .post(
     auth(USER_TYPE.USER),
     validate(validation.jamCreate),
@@ -27,6 +27,32 @@ router.route('/jam')
     auth(USER_TYPE.USER),
     validate(validation.jamDelete),
     jamController.jamDelete
+)
+
+router.get('/users', auth(USER_TYPE.USER), validate(validation.getUsers), jamController.getUsers)
+
+router.route('/favMember')
+.put(
+     auth(USER_TYPE.USER), 
+     validate(validation.favMember),
+     jamController.favMember
+    )
+.get(
+    auth(USER_TYPE.USER),
+    validate(validation.favMemberGet),
+    jamController.favMemberGet
+)
+
+router.route("/inviteMembers")
+.post( 
+    auth(USER_TYPE.USER), 
+    validate(validation.inviteMembers), 
+    jamController.inviteMembers
+)
+.put(
+    auth(USER_TYPE.USER),
+    validate(validation.acceptJam),
+    jamController.acceptJam
 )
 
 

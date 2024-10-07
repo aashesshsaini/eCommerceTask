@@ -60,6 +60,7 @@ const userSchema = new mongoose_1.Schema({
     motivation: { type: String },
     aboutRepertoire: { type: String },
     publicExpirence: { type: String },
+    favMembers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'users' }],
     isBlocked: {
         type: Boolean,
         default: false,

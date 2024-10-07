@@ -35,7 +35,12 @@ const jamSchema = new mongoose_1.Schema({
         type: Date
     },
     time: [{
-            type: String
+            startTime: {
+                type: String
+            },
+            endTime: {
+                type: String
+            },
         }],
     genre: {
         type: String
@@ -61,6 +66,9 @@ const jamSchema = new mongoose_1.Schema({
     qrCode: {
         type: String
     },
+    members: [{
+            type: mongoose_1.Schema.Types.ObjectId, ref: 'users'
+        }],
     allowMusicians: {
         type: Boolean
     },
@@ -68,7 +76,8 @@ const jamSchema = new mongoose_1.Schema({
         type: Boolean
     },
     isDeleted: {
-        type: Boolean
+        type: Boolean,
+        default: false
     }
 }, { timestamps: true });
 const Jam = mongoose_1.default.model("jams", jamSchema);

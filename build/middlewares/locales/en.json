@@ -25,5 +25,14 @@
 	"phoneNumber is not allowed": "phoneNumber is not allowed",
 	"This mobile number already exists": {
 		" Please try with another mobile number": "This mobile number already exists. Please try with another mobile number"
-	}
+	},
+	"mobileNumber length must be less than or equal to 15 characters long, mobileNumber with value ajaysaini1@yopmail": {
+		"com fails to match the required pattern": " /^[0-9]+$/"
+	},
+	"mobileNumber length must be less than or equal to 15 characters long, mobileNumber with value ajaysaini@yopmail": {
+		"com fails to match the required pattern": " /^[0-9]+$/"
+	},
+	"limit is not allowed": "limit is not allowed",
+	"Jam delete successfully": "Jam delete successfully",
+	"Jam not found": "Jam not found"
 }

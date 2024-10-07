@@ -1,4 +1,4 @@
-  import { Document, Schema, Types } from "mongoose";
+  import { Document, Schema, Types, ObjectId } from "mongoose";
 
 export interface JamDocument extends Document {
     user: Schema.Types.ObjectId,
@@ -13,6 +13,7 @@ export interface JamDocument extends Document {
     landmark:string,
     description:string,
     qrCode:string,
+    members:ObjectId[],
     allowMusicians:boolean,
     notifyFavMusicians:boolean,
     isDeleted:Boolean

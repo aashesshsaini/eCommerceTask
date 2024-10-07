@@ -29,7 +29,7 @@ const jamGet = {
       latitude: Joi.number().default(0).min(-90).max(90),
       longitude: Joi.number().default(0).min(-180).max(180),
       page: JOI.PAGE,
-      limti: JOI.PAGE
+      limit: JOI.LIMIT
    })
 }
 
@@ -60,4 +60,39 @@ const jamDelete = {
    })
 }
 
-export default {jamCreate, jamGet, jamUpdate, jamDelete}
+const getUsers = {
+   query: Joi.object().keys({
+      page: JOI.PAGE,
+      limit: JOI.LIMIT,
+      search: Joi.string().allow("", null)
+   })
+}
+
+const favMember = {
+   body: Joi.object().keys({
+      favMemId: JOI.OBJECTID,
+   })
+}
+
+const favMemberGet = {
+   query: Joi.object().keys({
+      page: JOI.PAGE,
+      limit: JOI.LIMIT
+   })
+}
+
+const inviteMembers = {
+body: Joi.object().keys({
+   memberId: Joi.array().items(JOI.OBJECTID),
+   jamId: JOI.OBJECTID
+})
+}
+
+const acceptJam = {
+   body: Joi.object().keys({
+      jamId: JOI.OBJECTID,
+      case: Joi.string().valid('accept', 'reject')
+   })
+}
+
+export default {jamCreate, jamGet, jamUpdate, jamDelete, getUsers,favMember, favMemberGet, inviteMembers, acceptJam}

@@ -15,7 +15,12 @@ const jamSchema = new Schema<JamDocument>(
         type:Date
        },
        time:[{
+        startTime:{
         type:String
+        },
+        endTime:{
+        type:String
+        },
        }],
        genre:{
         type:String
@@ -41,7 +46,9 @@ const jamSchema = new Schema<JamDocument>(
        qrCode: {
         type: String
        },
-
+       members:[{
+       type: Schema.Types.ObjectId, ref: 'users' 
+       }],
        allowMusicians:{
         type:Boolean
        },
@@ -49,7 +56,8 @@ const jamSchema = new Schema<JamDocument>(
         type:Boolean
        },
        isDeleted:{
-        type:Boolean
+        type:Boolean,
+        default:false
        }
       },
       { timestamps: true }

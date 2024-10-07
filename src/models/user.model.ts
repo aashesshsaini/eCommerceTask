@@ -41,6 +41,7 @@ const userSchema = new Schema<UserDocument>(
          motivation:{type: String},
          aboutRepertoire:{type: String},
          publicExpirence:{type: String},
+         favMembers:[{type: Schema.Types.ObjectId, ref: 'users' }],
         isBlocked: {
           type: Boolean,
           default: false,

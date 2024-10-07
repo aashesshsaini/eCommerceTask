@@ -1,4 +1,4 @@
-import { Document } from "mongoose";
+import { Document, ObjectId } from "mongoose";
 
 export interface UserDocument extends Document {
     fullName:string,
@@ -19,6 +19,7 @@ export interface UserDocument extends Document {
     motivation:string,
     aboutRepertoire:string,
     publicExpirence:string,
+    favMembers:ObjectId[],
     isBlocked:boolean,
     isDeleted:boolean,
     isVerified:boolean,

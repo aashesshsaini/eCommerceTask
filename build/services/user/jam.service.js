@@ -12,13 +12,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.jamDelete = exports.jamUpdate = exports.jamGet = exports.jamCreate = void 0;
+exports.acceptJam = exports.inviteMembers = exports.favMemberGet = exports.favMember = exports.getUsers = exports.jamDelete = exports.jamUpdate = exports.jamGet = exports.jamCreate = void 0;
 const models_1 = require("../../models");
 const appConstant_1 = require("../../config/appConstant");
 const error_1 = require("../../utils/error");
 const universalFunctions_1 = require("../../utils/universalFunctions");
 const moment_timezone_1 = __importDefault(require("moment-timezone"));
 const qrcode_1 = __importDefault(require("qrcode"));
+// import sendPushNotification from '../../utils/notification';
 const getDateInTimeZone = (date, timeZone) => {
     return moment_timezone_1.default.tz(date, timeZone);
 };
@@ -35,22 +36,35 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
 exports.jamCreate = jamCreate;
 const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, genre, date, search, latitude, longitude } = query;
-    var filter = { isDeleted: false };
+    var filter = {
+        isDeleted: false,
+        $or: [
+            { user: user },
+            { members: { $in: [user] } }
+        ]
+    };
+    var nearByJamsFilter = {
+        isDeleted: false,
+        allowMusicians: true
+    };
     if (genre) {
-        filter = Object.assign(Object.assign({}, filter), { genre });
+        filter = Object.assign(Object.assign({}, filter), { genre }),
+            nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { genre });
     }
     if (date) {
         const dateInTimeZone = timeZone ? getDateInTimeZone(date, timeZone) : (0, moment_timezone_1.default)(date);
-        const formatedDate = dateInTimeZone.format("YYYY-MM-DD");
-        filter = Object.assign(Object.assign({}, filter), { date: formatedDate });
+        const startOfDay = dateInTimeZone.startOf('day').toDate();
+        const endOfDay = dateInTimeZone.endOf('day').toDate();
+        filter = Object.assign(Object.assign({}, filter), { date: { $gte: startOfDay, $lte: endOfDay } });
     }
     else {
         const today = timeZone ? getDateInTimeZone(new Date(), timeZone) : (0, moment_timezone_1.default)().startOf('day');
-        const formattedToday = today.format("YYYY-MM-DD");
-        filter = Object.assign(Object.assign({}, filter), { date: { $gte: formattedToday } });
+        const startOfToday = today.startOf('day').toDate();
+        filter = Object.assign(Object.assign({}, filter), { date: { $gte: startOfToday } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { date: { $gte: startOfToday } });
     }
     if (latitude && longitude) {
-        filter = Object.assign(Object.assign({}, filter), { $near: {
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { $near: {
                 $geometry: { type: "Point", coordinates: [longitude, latitude] },
                 $maxDistance: 10000,
                 $minDistance: 0
@@ -61,11 +75,14 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
                 { jamName: { $regex: RegExp(search, "i") } },
             ] });
     }
-    const [jams, jamsCount] = yield Promise.all([
+    console.log(filter, "filter,,,,,,,,,,,,,");
+    const [jams, jamsCount, nearByJams, nearByJamsCount] = yield Promise.all([
         models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
-        models_1.Jam.countDocuments(filter)
+        models_1.Jam.countDocuments(filter),
+        models_1.Jam.find(nearByJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.countDocuments(),
     ]);
-    return { jams, jamsCount };
+    return { jams, jamsCount, nearByJams, nearByJamsCount };
 });
 exports.jamGet = jamGet;
 const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {
@@ -85,3 +102,85 @@ const jamDelete = (query, user) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.jamDelete = jamDelete;
+const getUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page, limit, search } = query;
+    let userQuery = { isDeleted: false, isVerified: true };
+    if (search) {
+        userQuery = Object.assign(Object.assign({}, userQuery), { $or: [
+                { fullName: { $regex: RegExp(search, "i") } },
+                { email: { $regex: RegExp(search, "i") } },
+            ] });
+    }
+    console.log(userQuery, "suerQuery...........");
+    const [Users, countUser] = yield Promise.all([
+        models_1.User.find(userQuery, { password: 0 }, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.User.countDocuments(userQuery)
+    ]);
+    if (!Users || countUser === 0) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.NOT_FOUND);
+    }
+    return { Users, countUser };
+});
+exports.getUsers = getUsers;
+const favMember = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const { favMemId } = body;
+    const user = yield models_1.User.findOne({
+        _id: userId,
+        isDeleted: false,
+    });
+    if (user) {
+        const isFavMember = user.favMembers.includes(favMemId);
+        let updateUser;
+        if (isFavMember) {
+            updateUser = yield models_1.User.findByIdAndUpdate({ _id: userId, isBlocked: false }, { $pull: { favMembers: favMemId } }, { lean: true, new: true });
+            return { message: "Removed from favorites" };
+        }
+        else {
+            updateUser = yield models_1.User.findByIdAndUpdate({ _id: userId, isBlocked: false }, { $addToSet: { favMembers: favMemId } }, { lean: true, new: true });
+            return { message: "Added to favorites" };
+        }
+    }
+    else {
+        return { message: "User not found or already deleted" };
+    }
+});
+exports.favMember = favMember;
+const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page, limit } = query;
+    const favMemList = yield models_1.User.findById(userId, { favMembers: 1, _id: 0 }).populate({
+        path: 'favMembers',
+        options: {
+            limit: limit,
+            skip: page * limit,
+        }
+    })
+        .lean();
+    const favMemCount = yield models_1.User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
+    return { favMemList, favMemCount };
+});
+exports.favMemberGet = favMemberGet;
+const inviteMembers = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const { members, jamId } = body;
+    const [deviceTokens, jamData] = yield Promise.all([
+        models_1.Token.find({
+            user: { $in: members },
+            isDeleted: false,
+        }).distinct("device.token"),
+        models_1.Jam.findOne({ _id: jamId, isDeleted: false })
+    ]);
+    //  sendPushNotification("invitation from the jam", "message", deviceTokens)
+});
+exports.inviteMembers = inviteMembers;
+const acceptJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const { jamId, case: action } = body;
+    switch (action) {
+        case "accept":
+            yield models_1.Jam.findOneAndUpdate({ _id: jamId, isDeleted: false }, { $addToSet: { members: userId } }, { lean: true, new: true });
+            return { message: "User added to the jam successfully." };
+        case "reject":
+            return { message: "User added to the jam successfully." };
+        default:
+            return { message: "Invalid case action." };
+    }
+});
+exports.acceptJam = acceptJam;

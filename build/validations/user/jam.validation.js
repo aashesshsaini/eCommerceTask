@@ -32,7 +32,7 @@ const jamGet = {
         latitude: joi_1.default.number().default(0).min(-90).max(90),
         longitude: joi_1.default.number().default(0).min(-180).max(180),
         page: appConstant_1.JOI.PAGE,
-        limti: appConstant_1.JOI.PAGE
+        limit: appConstant_1.JOI.LIMIT
     })
 };
 const jamUpdate = {
@@ -60,4 +60,34 @@ const jamDelete = {
         jamId: appConstant_1.JOI.OBJECTID
     })
 };
-exports.default = { jamCreate, jamGet, jamUpdate, jamDelete };
+const getUsers = {
+    query: joi_1.default.object().keys({
+        page: appConstant_1.JOI.PAGE,
+        limit: appConstant_1.JOI.LIMIT,
+        search: joi_1.default.string().allow("", null)
+    })
+};
+const favMember = {
+    body: joi_1.default.object().keys({
+        favMemId: appConstant_1.JOI.OBJECTID,
+    })
+};
+const favMemberGet = {
+    query: joi_1.default.object().keys({
+        page: appConstant_1.JOI.PAGE,
+        limit: appConstant_1.JOI.LIMIT
+    })
+};
+const inviteMembers = {
+    body: joi_1.default.object().keys({
+        memberId: joi_1.default.array().items(appConstant_1.JOI.OBJECTID),
+        jamId: appConstant_1.JOI.OBJECTID
+    })
+};
+const acceptJam = {
+    body: joi_1.default.object().keys({
+        jamId: appConstant_1.JOI.OBJECTID,
+        case: joi_1.default.string().valid('accept', 'reject')
+    })
+};
+exports.default = { jamCreate, jamGet, jamUpdate, jamDelete, getUsers, favMember, favMemberGet, inviteMembers, acceptJam };
