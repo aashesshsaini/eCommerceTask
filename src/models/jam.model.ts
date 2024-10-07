@@ -55,6 +55,10 @@ const jamSchema = new Schema<JamDocument>(
        notifyFavMusicians:{
         type:Boolean
        },
+       isCancelled:{
+        type:Boolean,
+        default:false
+       },
        isDeleted:{
         type:Boolean,
         default:false

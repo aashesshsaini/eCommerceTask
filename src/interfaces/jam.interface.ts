@@ -16,5 +16,6 @@ export interface JamDocument extends Document {
     members:ObjectId[],
     allowMusicians:boolean,
     notifyFavMusicians:boolean,
+    isCancelled:Boolean,
     isDeleted:Boolean
 }

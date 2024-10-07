@@ -37,6 +37,7 @@ const qrCode = await QRCode.toDataURL(address);
 
  var filter: Dictionary = {
   isDeleted: false,
+  isCancelled:false,
   $or: [
     { user: user },                 
     { members: { $in: [user] } } 
@@ -45,6 +46,7 @@ const qrCode = await QRCode.toDataURL(address);
 
 var nearByJamsFilter: Dictionary = {
   isDeleted:false,
+  isCancelled:false,
   allowMusicians:true
 }
 
@@ -133,6 +135,18 @@ const jamDelete = async(query:Dictionary, user:ObjectId)=>{
         ERROR_MESSAGES.JAM_NOT_FOUND
     )
   }
+}
+
+const cancelJam = async(body: Dictionary, userId:ObjectId)=>{
+  const {jamId} = body
+  const cancelledJamData = await Jam.findOneAndUpdate({_id:jamId, user:userId, isDeleted:false, isCancelled:false},{isCancelled:true},{lean:true, new:true})
+  if(!cancelledJamData){
+    throw new OperationalError(
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.JAM_NOT_FOUND
+    )
+  }
+  return cancelledJamData
 }
 
 const getUsers = async(query:Dictionary)=>{
@@ -232,4 +246,4 @@ const acceptJam = async(body: Dictionary, userId:ObjectId)=>{
   }
 }
 
-export {jamCreate, jamGet, jamUpdate, jamDelete, getUsers, favMember, favMemberGet, inviteMembers, acceptJam}
+export {jamCreate, jamGet, jamUpdate, jamDelete, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam}

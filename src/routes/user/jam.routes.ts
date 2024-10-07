@@ -29,6 +29,8 @@ router.route('/')
     jamController.jamDelete
 )
 
+router.put('/cancelJam', auth(USER_TYPE.USER), validate(validation.cancelJam), jamController.cancelJam)
+
 router.get('/users', auth(USER_TYPE.USER), validate(validation.getUsers), jamController.getUsers)
 
 router.route('/favMember')

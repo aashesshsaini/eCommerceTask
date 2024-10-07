@@ -13,4 +13,4 @@ example2.js
 test5.js
 
 /src/middlewares/locales/
-
+build/middlewares/locales

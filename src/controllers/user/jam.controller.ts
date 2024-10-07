@@ -53,6 +53,17 @@ const jamCreate = catchAsync(async (req: Request, res: Response) => {
     );
   });
 
+  const cancelJam = catchAsync(async (req: Request, res: Response) => {
+    const jamUpdatedData = await userJamService.cancelJam(req.body, req.token.user._id);  
+    return successResponse(
+      req,
+      res,
+      STATUS_CODES.SUCCESS,
+      SUCCESS_MESSAGES.SUCCESS,
+      jamUpdatedData
+    );
+  });
+
    const getUsers = catchAsync(async (req: Request, res: Response) => {
     const{Users, countUser} = await userJamService.getUsers(req.query);  
     return successResponse(
@@ -110,4 +121,4 @@ const jamCreate = catchAsync(async (req: Request, res: Response) => {
   });
 
 
-  export default {jamCreate, jamGet, jamUpdate, jamDelete, getUsers, favMember, favMemberGet, inviteMembers, acceptJam}
+  export default {jamCreate, jamGet, jamUpdate, jamDelete, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam}

@@ -60,6 +60,11 @@ const jamDelete = {
         jamId: appConstant_1.JOI.OBJECTID
     })
 };
+const cancelJam = {
+    body: joi_1.default.object().keys({
+        jamId: appConstant_1.JOI.OBJECTID
+    })
+};
 const getUsers = {
     query: joi_1.default.object().keys({
         page: appConstant_1.JOI.PAGE,
@@ -90,4 +95,4 @@ const acceptJam = {
         case: joi_1.default.string().valid('accept', 'reject')
     })
 };
-exports.default = { jamCreate, jamGet, jamUpdate, jamDelete, getUsers, favMember, favMemberGet, inviteMembers, acceptJam };
+exports.default = { jamCreate, jamGet, jamUpdate, jamDelete, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam };

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.acceptJam = exports.inviteMembers = exports.favMemberGet = exports.favMember = exports.getUsers = exports.jamDelete = exports.jamUpdate = exports.jamGet = exports.jamCreate = void 0;
+exports.acceptJam = exports.inviteMembers = exports.favMemberGet = exports.favMember = exports.getUsers = exports.cancelJam = exports.jamDelete = exports.jamUpdate = exports.jamGet = exports.jamCreate = void 0;
 const models_1 = require("../../models");
 const appConstant_1 = require("../../config/appConstant");
 const error_1 = require("../../utils/error");
@@ -38,6 +38,7 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
     const { page, limit, genre, date, search, latitude, longitude } = query;
     var filter = {
         isDeleted: false,
+        isCancelled: false,
         $or: [
             { user: user },
             { members: { $in: [user] } }
@@ -45,6 +46,7 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
     };
     var nearByJamsFilter = {
         isDeleted: false,
+        isCancelled: false,
         allowMusicians: true
     };
     if (genre) {
@@ -102,6 +104,15 @@ const jamDelete = (query, user) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.jamDelete = jamDelete;
+const cancelJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const { jamId } = body;
+    const cancelledJamData = yield models_1.Jam.findOneAndUpdate({ _id: jamId, user: userId, isDeleted: false, isCancelled: false }, { isCancelled: true }, { lean: true, new: true });
+    if (!cancelledJamData) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
+    }
+    return cancelledJamData;
+});
+exports.cancelJam = cancelJam;
 const getUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, search } = query;
     let userQuery = { isDeleted: false, isVerified: true };
