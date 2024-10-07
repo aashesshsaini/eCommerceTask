@@ -137,6 +137,18 @@ const jamDelete = async(query:Dictionary, user:ObjectId)=>{
   }
 }
 
+const jamInfo = async(query:Dictionary, user:ObjectId)=>{
+  const {jamId} = query
+  const jamData = await Jam.findOne({_id:jamId,isDeleted:false})
+  if(!jamData){
+     throw new OperationalError(
+        STATUS_CODES.ACTION_FAILED,
+        ERROR_MESSAGES.JAM_NOT_FOUND
+    )
+  }
+  return jamData
+}
+
 const cancelJam = async(body: Dictionary, userId:ObjectId)=>{
   const {jamId} = body
   const cancelledJamData = await Jam.findOneAndUpdate({_id:jamId, user:userId, isDeleted:false, isCancelled:false},{isCancelled:true},{lean:true, new:true})
@@ -246,4 +258,4 @@ const acceptJam = async(body: Dictionary, userId:ObjectId)=>{
   }
 }
 
-export {jamCreate, jamGet, jamUpdate, jamDelete, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam}
+export {jamCreate, jamGet, jamUpdate, jamDelete, jamInfo, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam}

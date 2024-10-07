@@ -29,6 +29,8 @@ router.route('/')
     jamController.jamDelete
 )
 
+router.get('/jamInfo', auth(USER_TYPE.USER), validate(validation.jamInfo), jamController.jamInfo)
+
 router.put('/cancelJam', auth(USER_TYPE.USER), validate(validation.cancelJam), jamController.cancelJam)
 
 router.get('/users', auth(USER_TYPE.USER), validate(validation.getUsers), jamController.getUsers)

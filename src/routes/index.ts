@@ -3,6 +3,7 @@ import adminAuth from "./admin/auth.routes"
 import userAuth from "./user/auth.routes"
 import userManage from "./admin/userManage.routes"
 import userJam from "./user/jam.routes"
+// import adminJamManage from "./admin/"
 
 const router: Router = express.Router();
 

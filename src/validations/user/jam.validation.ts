@@ -60,6 +60,12 @@ const jamDelete = {
    })
 }
 
+const jamInfo = {
+   query: Joi.object().keys({
+      jamId:JOI.OBJECTID
+   })
+}
+
 const cancelJam = {
    body: Joi.object().keys({
       jamId:JOI.OBJECTID
@@ -101,4 +107,4 @@ const acceptJam = {
    })
 }
 
-export default {jamCreate, jamGet, jamUpdate, jamDelete, cancelJam, getUsers,favMember, favMemberGet, inviteMembers, acceptJam}
+export default {jamCreate, jamGet, jamUpdate, jamDelete, jamInfo, cancelJam, getUsers,favMember, favMemberGet, inviteMembers, acceptJam}

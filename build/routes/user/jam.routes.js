@@ -15,6 +15,7 @@ router.route('/')
     .get((0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(jam_validation_1.default.jamGet), jam_controller_1.default.jamGet)
     .put((0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(jam_validation_1.default.jamUpdate), jam_controller_1.default.jamUpdate)
     .delete((0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(jam_validation_1.default.jamDelete), jam_controller_1.default.jamDelete);
+router.get('/jamInfo', (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(jam_validation_1.default.jamInfo), jam_controller_1.default.jamInfo);
 router.put('/cancelJam', (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(jam_validation_1.default.cancelJam), jam_controller_1.default.cancelJam);
 router.get('/users', (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(jam_validation_1.default.getUsers), jam_controller_1.default.getUsers);
 router.route('/favMember')

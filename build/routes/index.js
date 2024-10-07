@@ -8,6 +8,7 @@ const auth_routes_1 = __importDefault(require("./admin/auth.routes"));
 const auth_routes_2 = __importDefault(require("./user/auth.routes"));
 const userManage_routes_1 = __importDefault(require("./admin/userManage.routes"));
 const jam_routes_1 = __importDefault(require("./user/jam.routes"));
+// import adminJamManage from "./admin/"
 const router = express_1.default.Router();
 const defaultRoutes = [
     {

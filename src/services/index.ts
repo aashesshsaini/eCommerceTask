@@ -4,5 +4,6 @@ export * as adminAuthService from './admin/auth.service';
 export * as userManageService from './admin/userManage.service';
 export * as userCommonService from './user/common.service';
 export * as userJamService from './user/jam.service';
+export * as adminJamService from './admin/jamAdmin.service';
 
 

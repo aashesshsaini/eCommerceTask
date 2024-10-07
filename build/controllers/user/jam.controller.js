@@ -31,6 +31,10 @@ const jamDelete = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
     yield services_1.userJamService.jamDelete(req.query, req.token.user._id);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, "Jam delete successfully");
 }));
+const jamInfo = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const jamdData = yield services_1.userJamService.jamInfo(req.query, req.token.user._id);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, jamdData);
+}));
 const cancelJam = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const jamUpdatedData = yield services_1.userJamService.cancelJam(req.body, req.token.user._id);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, jamUpdatedData);
@@ -55,4 +59,4 @@ const acceptJam = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
     const members = yield services_1.userJamService.acceptJam(req.body, req.token.user._id);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, members);
 }));
-exports.default = { jamCreate, jamGet, jamUpdate, jamDelete, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam };
+exports.default = { jamCreate, jamGet, jamUpdate, jamDelete, jamInfo, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam };
