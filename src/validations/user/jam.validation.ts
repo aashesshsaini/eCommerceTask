@@ -30,6 +30,8 @@ import { JOI, GENRE} from '../../config/appConstant';
        city:Joi.string().required(),
        region:Joi.string().required(),
        landmark:Joi.string().required(),
+       latitude: Joi.number().default(0).min(-90).max(90),
+       longitude: Joi.number().default(0).min(-180).max(180),
        description:Joi.string().required(),
        allowMusicians:Joi.boolean().required(),
        notifyFavMusicians:Joi.boolean().required()

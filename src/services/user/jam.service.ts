@@ -15,13 +15,13 @@ const getDateInTimeZone = (date:Date, timeZone:string) => {
   return moment.tz(date, timeZone);
 };
 
-const jamCreate = async(body:JamDocument, user:ObjectId)=>{
-  const {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians} = body
+const jamCreate = async(body:Dictionary, user:ObjectId)=>{
+  const {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians} = body
 
 const address = `${city}, ${region}, ${landmark}`;
 const qrCode = await QRCode.toDataURL(address);
 
-  const jamData = Jam.create({user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, qrCode, allowMusicians, notifyFavMusicians})
+  const jamData = Jam.create({user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark,  loc: { type: "Point", coordinates: [longitude, latitude] }, description, qrCode, allowMusicians, notifyFavMusicians})
   if(!jamData){
     throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,

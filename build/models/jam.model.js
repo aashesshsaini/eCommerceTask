@@ -73,6 +73,13 @@ const jamSchema = new mongoose_1.Schema({
     landmark: {
         type: String
     },
+    loc: {
+        type: { type: String, default: "Point" },
+        coordinates: {
+            type: [Number],
+            default: [0, 0],
+        },
+    },
     description: {
         type: String
     },

@@ -30,6 +30,8 @@ const jamCreate = {
         city: joi_1.default.string().required(),
         region: joi_1.default.string().required(),
         landmark: joi_1.default.string().required(),
+        latitude: joi_1.default.number().default(0).min(-90).max(90),
+        longitude: joi_1.default.number().default(0).min(-180).max(180),
         description: joi_1.default.string().required(),
         allowMusicians: joi_1.default.boolean().required(),
         notifyFavMusicians: joi_1.default.boolean().required()

@@ -24,10 +24,10 @@ const getDateInTimeZone = (date, timeZone) => {
     return moment_timezone_1.default.tz(date, timeZone);
 };
 const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {
-    const { jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians } = body;
+    const { jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians } = body;
     const address = `${city}, ${region}, ${landmark}`;
     const qrCode = yield qrcode_1.default.toDataURL(address);
-    const jamData = models_1.Jam.create({ user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, qrCode, allowMusicians, notifyFavMusicians });
+    const jamData = models_1.Jam.create({ user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, loc: { type: "Point", coordinates: [longitude, latitude] }, description, qrCode, allowMusicians, notifyFavMusicians });
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }

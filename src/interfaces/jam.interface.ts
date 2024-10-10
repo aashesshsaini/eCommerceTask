@@ -20,6 +20,10 @@ export interface JamDocument extends Document {
   city: string;
   region: string;
   landmark: string;
+   loc?: {
+    type: "Point"; // Should always be "Point" for geospatial data
+    coordinates: [number, number]; // [longitude, latitude]
+  };
   description: string;
   qrCode: string;
   members: ObjectId[]; // Array of User IDs (ObjectId)
