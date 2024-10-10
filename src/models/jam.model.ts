@@ -11,23 +11,36 @@ const jamSchema = new Schema<JamDocument>(
        jamName:{
         type:String
        },
-       date:{
-        type:Date
-       },
-       time:[{
-        startTime:{
-        type:String
+       availableDates: [
+      {
+        date: {
+          type: Date,
         },
-        endTime:{
-        type:String
-        },
-       }],
+        slots: [
+          {
+            startTime: { type: String },
+            endTime: { type: String },
+          },
+        ],
+      },
+    ],
+    //    date:{
+    //     type:Date
+    //    },
+    //    time:[{
+    //     startTime:{
+    //     type:String
+    //     },
+    //     endTime:{
+    //     type:String
+    //     },
+    //    }],
        genre:{
         type:String
        },
-       repertoire:{
+       repertoire:[{
         type:String
-       },
+       }],
        bandFormation: [{
         type:String
        }],

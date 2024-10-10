@@ -16,12 +16,12 @@ const getDateInTimeZone = (date:Date, timeZone:string) => {
 };
 
 const jamCreate = async(body:JamDocument, user:ObjectId)=>{
-  const {jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians} = body
+  const {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians} = body
 
 const address = `${city}, ${region}, ${landmark}`;
 const qrCode = await QRCode.toDataURL(address);
 
-  const jamData = Jam.create({user, jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, qrCode, allowMusicians, notifyFavMusicians})
+  const jamData = Jam.create({user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, qrCode, allowMusicians, notifyFavMusicians})
   if(!jamData){
     throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,
@@ -68,22 +68,26 @@ if (date) {
 
   filter = {
     ...filter,
-    date: { $gte: startOfDay, $lte: endOfDay }  
+      'availableDates.date': { $gte: startOfDay, $lte: endOfDay } 
   };
+  nearByJamsFilter = {
+    ...nearByJamsFilter,
+    'availableDates.date': { $gte: startOfDay, $lte: endOfDay }  
+  };
+
 } else {
   const today = timeZone ? getDateInTimeZone(new Date(), timeZone) : moment().startOf('day');
   const startOfToday = today.startOf('day').toDate();
 
   filter = {
     ...filter,
-    date: { $gte: startOfToday } 
+    'availableDates.date': { $gte: startOfToday }  
   };
 nearByJamsFilter = {
     ...nearByJamsFilter,
-    date: { $gte: startOfToday } 
+    'availableDates.date': { $gte: startOfToday }  
   };
 }
-
 
     if (latitude && longitude) {
       nearByJamsFilter = {
@@ -115,8 +119,8 @@ nearByJamsFilter = {
   }
 
 const jamUpdate = async(body:Dictionary, user:ObjectId)=>{
- const { jamId, jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians} = body
- const jamUpdatedData = await Jam.findOneAndUpdate({_id:jamId, user, isDeleted:false}, {jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians},{lean:true, new:true})
+ const { jamId, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians} = body
+ const jamUpdatedData = await Jam.findOneAndUpdate({_id:jamId, user, isDeleted:false}, {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians},{lean:true, new:true})
  if(!jamUpdatedData){
    throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,

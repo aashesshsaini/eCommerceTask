@@ -1,21 +1,31 @@
-  import { Document, Schema, Types, ObjectId } from "mongoose";
+import { Document, Schema, ObjectId } from "mongoose";
+
+export interface JamSlot {
+  startTime: string;
+  endTime: string;
+}
+
+export interface JamAvailableDate {
+  date: Date;
+  slots: JamSlot[];
+}
 
 export interface JamDocument extends Document {
-    user: Schema.Types.ObjectId,
-    jamName:string,
-    date:Date,
-    time: object[],
-    genre:string,
-    repertoire:string,
-    bandFormation:string[],
-    city:string,
-    region:string,
-    landmark:string,
-    description:string,
-    qrCode:string,
-    members:ObjectId[],
-    allowMusicians:boolean,
-    notifyFavMusicians:boolean,
-    isCancelled:Boolean,
-    isDeleted:Boolean
+  user: ObjectId; 
+  jamName: string;
+  availableDates: JamAvailableDate[]; 
+  genre: string;
+  repertoire: string[];
+  bandFormation: string[];
+  city: string;
+  region: string;
+  landmark: string;
+  description: string;
+  qrCode: string;
+  members: ObjectId[]; // Array of User IDs (ObjectId)
+  allowMusicians: boolean;
+  notifyFavMusicians: boolean;
+  isCancelled: boolean;
+  isDeleted: boolean;
 }
+

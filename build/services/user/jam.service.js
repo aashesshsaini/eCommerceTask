@@ -24,10 +24,10 @@ const getDateInTimeZone = (date, timeZone) => {
     return moment_timezone_1.default.tz(date, timeZone);
 };
 const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {
-    const { jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians } = body;
+    const { jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians } = body;
     const address = `${city}, ${region}, ${landmark}`;
     const qrCode = yield qrcode_1.default.toDataURL(address);
-    const jamData = models_1.Jam.create({ user, jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, qrCode, allowMusicians, notifyFavMusicians });
+    const jamData = models_1.Jam.create({ user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, qrCode, allowMusicians, notifyFavMusicians });
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }
@@ -57,13 +57,14 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         const dateInTimeZone = timeZone ? getDateInTimeZone(date, timeZone) : (0, moment_timezone_1.default)(date);
         const startOfDay = dateInTimeZone.startOf('day').toDate();
         const endOfDay = dateInTimeZone.endOf('day').toDate();
-        filter = Object.assign(Object.assign({}, filter), { date: { $gte: startOfDay, $lte: endOfDay } });
+        filter = Object.assign(Object.assign({}, filter), { 'availableDates.date': { $gte: startOfDay, $lte: endOfDay } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { 'availableDates.date': { $gte: startOfDay, $lte: endOfDay } });
     }
     else {
         const today = timeZone ? getDateInTimeZone(new Date(), timeZone) : (0, moment_timezone_1.default)().startOf('day');
         const startOfToday = today.startOf('day').toDate();
-        filter = Object.assign(Object.assign({}, filter), { date: { $gte: startOfToday } });
-        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { date: { $gte: startOfToday } });
+        filter = Object.assign(Object.assign({}, filter), { 'availableDates.date': { $gte: startOfToday } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { 'availableDates.date': { $gte: startOfToday } });
     }
     if (latitude && longitude) {
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { $near: {
@@ -88,8 +89,8 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
 });
 exports.jamGet = jamGet;
 const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {
-    const { jamId, jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians } = body;
-    const jamUpdatedData = yield models_1.Jam.findOneAndUpdate({ _id: jamId, user, isDeleted: false }, { jamName, date, time, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians }, { lean: true, new: true });
+    const { jamId, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians } = body;
+    const jamUpdatedData = yield models_1.Jam.findOneAndUpdate({ _id: jamId, user, isDeleted: false }, { jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians }, { lean: true, new: true });
     if (!jamUpdatedData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }

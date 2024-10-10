@@ -8,13 +8,24 @@ const appConstant_1 = require("../../config/appConstant");
 const jamCreate = {
     body: joi_1.default.object().keys({
         jamName: joi_1.default.string().required(),
-        date: joi_1.default.date().required(),
-        time: joi_1.default.array().items({
-            startTime: joi_1.default.string().required(),
-            endTime: joi_1.default.string().required()
-        }),
+        availableDates: joi_1.default.array()
+            .items(joi_1.default.object({
+            date: joi_1.default.date().required(),
+            slots: joi_1.default.array()
+                .items(joi_1.default.object({
+                startTime: joi_1.default.string().required(),
+                endTime: joi_1.default.string().required(),
+            }))
+                .required(),
+        }))
+            .required(),
+        //  date: Joi.date().required(),
+        //  time: Joi.array().items({
+        //   startTime: Joi.string().required(),
+        //   endTime: Joi.string().required()
+        //  }),
         genre: joi_1.default.string().valid(...Object.values(appConstant_1.GENRE)).required(),
-        repertoire: joi_1.default.string().required(),
+        repertoire: joi_1.default.array().items(joi_1.default.string().required()),
         bandFormation: joi_1.default.array().items(joi_1.default.string().required()),
         city: joi_1.default.string().required(),
         region: joi_1.default.string().required(),
@@ -39,13 +50,17 @@ const jamUpdate = {
     body: joi_1.default.object().keys({
         jamId: appConstant_1.JOI.OBJECTID,
         jamName: joi_1.default.string(),
-        date: joi_1.default.date(),
-        time: joi_1.default.array().items({
-            startTime: joi_1.default.string(),
-            endTime: joi_1.default.string()
-        }),
+        availableDates: joi_1.default.array()
+            .items(joi_1.default.object({
+            date: joi_1.default.date(),
+            slots: joi_1.default.array()
+                .items(joi_1.default.object({
+                startTime: joi_1.default.string(),
+                endTime: joi_1.default.string(),
+            }))
+        })),
         genre: joi_1.default.string(),
-        repertoire: joi_1.default.string(),
+        repertoire: joi_1.default.array().items(joi_1.default.string()),
         bandFormation: joi_1.default.array().items(joi_1.default.string()),
         city: joi_1.default.string(),
         region: joi_1.default.string(),

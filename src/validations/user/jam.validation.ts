@@ -4,13 +4,28 @@ import { JOI, GENRE} from '../../config/appConstant';
  const jamCreate = {
     body: Joi.object().keys({
        jamName: Joi.string().required(),
-       date: Joi.date().required(),
-       time: Joi.array().items({
-        startTime: Joi.string().required(),
-        endTime: Joi.string().required()
-       }),
+        availableDates: Joi.array()
+      .items(
+        Joi.object({
+          date: Joi.date().required(),
+          slots: Joi.array()
+            .items(
+              Joi.object({
+                startTime: Joi.string().required(),
+                endTime: Joi.string().required(),
+              })
+            )
+            .required(),
+        })
+      )
+      .required(),
+      //  date: Joi.date().required(),
+      //  time: Joi.array().items({
+      //   startTime: Joi.string().required(),
+      //   endTime: Joi.string().required()
+      //  }),
        genre:Joi.string().valid(...Object.values(GENRE)).required(),
-       repertoire:Joi.string().required(),
+       repertoire:Joi.array().items(Joi.string().required()),
        bandFormation:Joi.array().items(Joi.string().required()),
        city:Joi.string().required(),
        region:Joi.string().required(),
@@ -37,13 +52,21 @@ const jamUpdate = {
    body: Joi.object().keys({
       jamId: JOI.OBJECTID,
       jamName: Joi.string(),
-       date: Joi.date(),
-       time: Joi.array().items({
-        startTime: Joi.string(),
-        endTime: Joi.string()
-       }),
+       availableDates: Joi.array()
+      .items(
+        Joi.object({
+          date: Joi.date(),
+          slots: Joi.array()
+            .items(
+              Joi.object({
+                startTime: Joi.string(),
+                endTime: Joi.string(),
+              })
+            )
+        })
+      ),
        genre:Joi.string(),
-       repertoire:Joi.string(),
+       repertoire:Joi.array().items(Joi.string()),
        bandFormation:Joi.array().items(Joi.string()),
        city:Joi.string(),
        region:Joi.string(),
