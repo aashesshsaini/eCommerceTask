@@ -24,10 +24,10 @@ const getDateInTimeZone = (date, timeZone) => {
     return moment_timezone_1.default.tz(date, timeZone);
 };
 const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {
-    const { jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians } = body;
+    const { jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, city, region, landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians } = body;
     const address = `${city}, ${region}, ${landmark}`;
     const qrCode = yield qrcode_1.default.toDataURL(address);
-    const jamData = models_1.Jam.create({ user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, loc: { type: "Point", coordinates: [longitude, latitude] }, description, qrCode, allowMusicians, notifyFavMusicians });
+    const jamData = models_1.Jam.create({ user, jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, city, region, landmark, loc: { type: "Point", coordinates: [longitude, latitude] }, description, qrCode, allowMusicians, notifyFavMusicians });
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }
@@ -48,6 +48,14 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         isDeleted: false,
         isCancelled: false,
         allowMusicians: true
+    };
+    var hostedJamsFilter = {
+        user,
+        isDeleted: false,
+    };
+    var attendedJamsFilter = {
+        $in: { members: user },
+        isDeleted: false,
     };
     if (genre) {
         filter = Object.assign(Object.assign({}, filter), { genre }),
@@ -78,17 +86,24 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
     if (search) {
         filter = Object.assign(Object.assign({}, filter), { $or: [
                 { jamName: { $regex: RegExp(search, "i") } },
+                { genre: { $regex: RegExp(search, "i") } },
+                { commitmentLevel: { $regex: RegExp(search, "i") } },
+                { bandFormation: { $regex: RegExp(search, "i") } },
             ] });
     }
     console.log(filter, "filter,,,,,,,,,,,,,");
-    const [jams, jamsCount, nearByJams] = yield Promise.all([
+    const [jams, jamsCount, nearByJams, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = yield Promise.all([
         models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.Jam.countDocuments(filter),
         models_1.Jam.find(nearByJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.countDocuments(hostedJamsFilter),
+        models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.countDocuments(attendedJamsFilter),
         // Jam.countDocuments(nearByJamsFilter),
     ]);
     const nearByJamsCount = nearByJams.length;
-    return { jams, jamsCount, nearByJams, nearByJamsCount };
+    return { jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount };
 });
 exports.jamGet = jamGet;
 const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {

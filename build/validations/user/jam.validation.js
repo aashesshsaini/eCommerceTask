@@ -26,6 +26,8 @@ const jamCreate = {
         //  }),
         genre: joi_1.default.string().valid(...Object.values(appConstant_1.GENRE)).required(),
         repertoire: joi_1.default.array().items(joi_1.default.string().required()),
+        commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)).required(),
+        image: joi_1.default.string(),
         bandFormation: joi_1.default.array().items(joi_1.default.string().required()),
         city: joi_1.default.string().required(),
         region: joi_1.default.string().required(),

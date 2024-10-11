@@ -1,5 +1,5 @@
 import Joi from 'joi';
-import { JOI, GENRE} from '../../config/appConstant';
+import { JOI, GENRE, COMMITMENT_LEVEL} from '../../config/appConstant';
 
  const jamCreate = {
     body: Joi.object().keys({
@@ -26,6 +26,8 @@ import { JOI, GENRE} from '../../config/appConstant';
       //  }),
        genre:Joi.string().valid(...Object.values(GENRE)).required(),
        repertoire:Joi.array().items(Joi.string().required()),
+       commitmentLevel:Joi.string().valid(...Object.values(COMMITMENT_LEVEL)).required(),
+       image: Joi.string(),
        bandFormation:Joi.array().items(Joi.string().required()),
        city:Joi.string().required(),
        region:Joi.string().required(),

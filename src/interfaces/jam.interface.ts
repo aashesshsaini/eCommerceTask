@@ -1,4 +1,5 @@
 import { Document, Schema, ObjectId } from "mongoose";
+import { StringifyOptions } from "querystring";
 
 export interface JamSlot {
   startTime: string;
@@ -16,6 +17,8 @@ export interface JamDocument extends Document {
   availableDates: JamAvailableDate[]; 
   genre: string;
   repertoire: string[];
+  commitmentLevel:string,
+  image:string,
   bandFormation: string[];
   city: string;
   region: string;

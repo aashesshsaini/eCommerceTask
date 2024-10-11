@@ -44,23 +44,18 @@ const jamSchema = new mongoose_1.Schema({
             ],
         },
     ],
-    //    date:{
-    //     type:Date
-    //    },
-    //    time:[{
-    //     startTime:{
-    //     type:String
-    //     },
-    //     endTime:{
-    //     type:String
-    //     },
-    //    }],
     genre: {
         type: String
     },
     repertoire: [{
             type: String
         }],
+    commitmentLevel: {
+        type: String
+    },
+    image: {
+        type: String
+    },
     bandFormation: [{
             type: String
         }],

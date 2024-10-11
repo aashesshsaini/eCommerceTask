@@ -22,13 +22,13 @@ const jamCreate = catchAsync(async (req: Request, res: Response) => {
 
     const jamGet = catchAsync(async (req: Request, res: Response) => {
     const timeZone: string = (req.headers.timezone as string) ?? "Asia/Kolkata";
-      const {jams, jamsCount, nearByJams, nearByJamsCount} = await userJamService.jamGet(req.query, req.token.user._id, timeZone);  
+      const {jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount} = await userJamService.jamGet(req.query, req.token.user._id, timeZone);  
       return successResponse(
         req,
         res,
         STATUS_CODES.SUCCESS,
         SUCCESS_MESSAGES.SUCCESS,
-        {jams, jamsCount, nearByJams, nearByJamsCount}
+        {jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount}
       );
     });
 

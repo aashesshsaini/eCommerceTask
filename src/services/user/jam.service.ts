@@ -16,12 +16,12 @@ const getDateInTimeZone = (date:Date, timeZone:string) => {
 };
 
 const jamCreate = async(body:Dictionary, user:ObjectId)=>{
-  const {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians} = body
+  const {jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, city, region, landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians} = body
 
 const address = `${city}, ${region}, ${landmark}`;
 const qrCode = await QRCode.toDataURL(address);
 
-  const jamData = Jam.create({user, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark,  loc: { type: "Point", coordinates: [longitude, latitude] }, description, qrCode, allowMusicians, notifyFavMusicians})
+  const jamData = Jam.create({user, jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, city, region, landmark,  loc: { type: "Point", coordinates: [longitude, latitude] }, description, qrCode, allowMusicians, notifyFavMusicians})
   if(!jamData){
     throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,
@@ -48,6 +48,16 @@ var nearByJamsFilter: Dictionary = {
   isDeleted:false,
   isCancelled:false,
   allowMusicians:true
+}
+
+var hostedJamsFilter: Dictionary = {
+  user,
+  isDeleted:false,
+}
+
+var attendedJamsFilter: Dictionary = {
+  $in:{members:user},
+  isDeleted:false,
 }
 
   if(genre){
@@ -107,18 +117,25 @@ nearByJamsFilter = {
         ...filter,
         $or: [
             { jamName: { $regex: RegExp(search, "i") } },
+            { genre: { $regex: RegExp(search, "i") } },
+            { commitmentLevel: { $regex: RegExp(search, "i") } },
+            { bandFormation: { $regex: RegExp(search, "i") } },
           ],
       }
     }
   console.log(filter, "filter,,,,,,,,,,,,,")
-  const [jams, jamsCount, nearByJams] = await Promise.all([
+  const [jams, jamsCount, nearByJams, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = await Promise.all([
     Jam.find(filter,{}, paginationOptions(page, limit)),
     Jam.countDocuments(filter),
     Jam.find(nearByJamsFilter, {},paginationOptions(page, limit)),
+    Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)),
+    Jam.countDocuments(hostedJamsFilter),
+    Jam.find(attendedJamsFilter, {},paginationOptions(page, limit)),
+    Jam.countDocuments(attendedJamsFilter),  
     // Jam.countDocuments(nearByJamsFilter),
   ])
   const nearByJamsCount = nearByJams.length
-  return {jams, jamsCount, nearByJams, nearByJamsCount}
+  return {jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount}
   }
 
 const jamUpdate = async(body:Dictionary, user:ObjectId)=>{
