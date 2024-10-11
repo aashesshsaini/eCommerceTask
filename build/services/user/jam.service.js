@@ -85,7 +85,7 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.Jam.countDocuments(filter),
         models_1.Jam.find(nearByJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
-        models_1.Jam.countDocuments(),
+        models_1.Jam.countDocuments(nearByJamsFilter),
     ]);
     return { jams, jamsCount, nearByJams, nearByJamsCount };
 });

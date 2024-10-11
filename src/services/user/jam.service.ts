@@ -115,7 +115,7 @@ nearByJamsFilter = {
     Jam.find(filter,{}, paginationOptions(page, limit)),
     Jam.countDocuments(filter),
     Jam.find(nearByJamsFilter, {},paginationOptions(page, limit)),
-    Jam.countDocuments(),
+    Jam.countDocuments(nearByJamsFilter),
   ])
   return {jams, jamsCount, nearByJams, nearByJamsCount}
   }
