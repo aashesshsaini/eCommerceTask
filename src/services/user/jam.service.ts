@@ -92,11 +92,13 @@ nearByJamsFilter = {
     if (latitude && longitude) {
       nearByJamsFilter = {
         ...nearByJamsFilter,
+        loc:{
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
           $maxDistance: 10000, 
           $minDistance: 0  
         },
+      }
       };
     }
 

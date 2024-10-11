@@ -67,10 +67,12 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { 'availableDates.date': { $gte: startOfToday } });
     }
     if (latitude && longitude) {
-        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { $near: {
-                $geometry: { type: "Point", coordinates: [longitude, latitude] },
-                $maxDistance: 10000,
-                $minDistance: 0
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { loc: {
+                $near: {
+                    $geometry: { type: "Point", coordinates: [longitude, latitude] },
+                    $maxDistance: 10000,
+                    $minDistance: 0
+                },
             } });
     }
     if (search) {
