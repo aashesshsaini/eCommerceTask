@@ -111,12 +111,13 @@ nearByJamsFilter = {
       }
     }
   console.log(filter, "filter,,,,,,,,,,,,,")
-  const [jams, jamsCount, nearByJams, nearByJamsCount] = await Promise.all([
+  const [jams, jamsCount, nearByJams] = await Promise.all([
     Jam.find(filter,{}, paginationOptions(page, limit)),
     Jam.countDocuments(filter),
     Jam.find(nearByJamsFilter, {},paginationOptions(page, limit)),
-    Jam.countDocuments(nearByJamsFilter),
+    // Jam.countDocuments(nearByJamsFilter),
   ])
+  const nearByJamsCount = nearByJams.length
   return {jams, jamsCount, nearByJams, nearByJamsCount}
   }
 

@@ -81,12 +81,13 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
             ] });
     }
     console.log(filter, "filter,,,,,,,,,,,,,");
-    const [jams, jamsCount, nearByJams, nearByJamsCount] = yield Promise.all([
+    const [jams, jamsCount, nearByJams] = yield Promise.all([
         models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.Jam.countDocuments(filter),
         models_1.Jam.find(nearByJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
-        models_1.Jam.countDocuments(nearByJamsFilter),
+        // Jam.countDocuments(nearByJamsFilter),
     ]);
+    const nearByJamsCount = nearByJams.length;
     return { jams, jamsCount, nearByJams, nearByJamsCount };
 });
 exports.jamGet = jamGet;
