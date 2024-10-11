@@ -54,8 +54,8 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         isDeleted: false,
     };
     var attendedJamsFilter = {
-        $in: { members: user },
-        isDeleted: false,
+        members: { $in: [user] },
+        isDeleted: false
     };
     if (genre) {
         filter = Object.assign(Object.assign({}, filter), { genre }),

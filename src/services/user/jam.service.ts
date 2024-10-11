@@ -55,10 +55,10 @@ var hostedJamsFilter: Dictionary = {
   isDeleted:false,
 }
 
-var attendedJamsFilter: Dictionary = {
-  $in:{members:user},
-  isDeleted:false,
-}
+var attendedJamsFilter = {
+  members: { $in: [user] },  
+  isDeleted: false           
+};
 
   if(genre){
     filter = {
