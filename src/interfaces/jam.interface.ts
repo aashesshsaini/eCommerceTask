@@ -19,7 +19,10 @@ export interface JamDocument extends Document {
   repertoire: string[];
   commitmentLevel:string,
   image:string,
-  bandFormation: string[];
+  bandFormation: [{
+    instrument: string,
+    type:string
+  }];
   city: string;
   region: string;
   landmark: string;

@@ -33,7 +33,7 @@ const qrCode = await QRCode.toDataURL(address);
 }
 
   const jamGet = async(query:Dictionary, user:ObjectId, timeZone ? :string)=>{
-  const {page, limit, genre, date, search, latitude, longitude} = query
+  const {page, limit, genre, date, search, latitude, longitude, commitmentLevel, instrument} = query
 
  var filter: Dictionary = {
   isDeleted: false,
@@ -112,6 +112,28 @@ nearByJamsFilter = {
       };
     }
 
+    if(commitmentLevel){
+       filter = {
+      ...filter,
+      commitmentLevel
+    },
+    nearByJamsFilter = {
+      ...nearByJamsFilter,
+      commitmentLevel
+    }
+    }
+
+    if(instrument){
+       filter = {
+      ...filter,
+      $elemMatch: { instrument: instrument },
+    },
+    nearByJamsFilter = {
+      ...nearByJamsFilter,
+      $elemMatch: { instrument: instrument },
+    }
+    }
+
     if(search){
       filter = {
         ...filter,
@@ -125,9 +147,9 @@ nearByJamsFilter = {
     }
   console.log(filter, "filter,,,,,,,,,,,,,")
   const [jams, jamsCount, nearByJams, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = await Promise.all([
-    Jam.find(filter,{}, paginationOptions(page, limit)),
+    Jam.find(filter,{}, paginationOptions(page, limit)).populate("user"),
     Jam.countDocuments(filter),
-    Jam.find(nearByJamsFilter, {},paginationOptions(page, limit)),
+    Jam.find(nearByJamsFilter, {},paginationOptions(page, limit)).populate("user"),
     Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)),
     Jam.countDocuments(hostedJamsFilter),
     Jam.find(attendedJamsFilter, {},paginationOptions(page, limit)),

@@ -112,6 +112,9 @@ const resetForgotPassword = {
     }),
 };
 const userInfo = {
-    query: joi_1.default.object().keys({})
+    query: joi_1.default.object().keys({
+        page: appConstant_1.JOI.PAGE,
+        limit: appConstant_1.JOI.LIMIT
+    })
 };
 exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo };

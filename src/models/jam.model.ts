@@ -37,7 +37,12 @@ const jamSchema = new Schema<JamDocument>(
          type:String
        },
        bandFormation: [{
-        type:String
+        instrument:{
+          type:String
+        },
+        type:{
+          type:String
+        }
        }],
        city:{
         type:String

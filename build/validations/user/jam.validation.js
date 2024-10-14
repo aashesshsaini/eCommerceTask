@@ -28,7 +28,10 @@ const jamCreate = {
         repertoire: joi_1.default.array().items(joi_1.default.string().required()),
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)).required(),
         image: joi_1.default.string(),
-        bandFormation: joi_1.default.array().items(joi_1.default.string().required()),
+        bandFormation: joi_1.default.array().items(joi_1.default.object().keys({
+            instrument: joi_1.default.string().required(),
+            type: joi_1.default.string().valid("mandatory", "optional")
+        })),
         city: joi_1.default.string().required(),
         region: joi_1.default.string().required(),
         landmark: joi_1.default.string().required(),
@@ -47,7 +50,9 @@ const jamGet = {
         latitude: joi_1.default.number().default(0).min(-90).max(90),
         longitude: joi_1.default.number().default(0).min(-180).max(180),
         page: appConstant_1.JOI.PAGE,
-        limit: appConstant_1.JOI.LIMIT
+        limit: appConstant_1.JOI.LIMIT,
+        commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
+        instrument: joi_1.default.string()
     })
 };
 const jamUpdate = {

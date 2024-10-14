@@ -154,8 +154,8 @@ const resetForgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => _
 }));
 const userInfo = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const userInfo = yield services_1.userAuthService.userInfo((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user);
-    const formatedUserInfo = (0, formatResponse_1.formatUser)(userInfo);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, formatedUserInfo);
+    const userInfo = yield services_1.userAuthService.userInfo((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user, req.query);
+    // const formatedUserInfo = formatUser(userInfo.userInfo)
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userInfo);
 }));
 exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo };

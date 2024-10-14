@@ -18,6 +18,7 @@ const models_1 = require("../../models");
 const appConstant_1 = require("../../config/appConstant");
 const error_1 = require("../../utils/error");
 const sendMails_1 = require("../../libs/sendMails");
+const universalFunctions_1 = require("../../utils/universalFunctions");
 const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, fullName, mobileNumber, countryCode } = body;
     const [existinguserByEmail, existinguserByMobileNumber] = yield Promise.all([
@@ -159,11 +160,26 @@ const resetPassword = (userId, newPassword) => __awaiter(void 0, void 0, void 0,
     return userData;
 });
 exports.resetPassword = resetPassword;
-const userInfo = (userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const userInfo = yield models_1.User.findById(userId).lean();
+const userInfo = (userId, query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page, limit } = query;
+    var hostedJamsFilter = {
+        user: userId,
+        isDeleted: false,
+    };
+    var attendedJamsFilter = {
+        members: { $in: [userId] },
+        isDeleted: false
+    };
+    const [userInfo, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = yield Promise.all([
+        models_1.User.findById(userId).lean(),
+        models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.countDocuments(hostedJamsFilter),
+        models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.countDocuments(attendedJamsFilter),
+    ]);
     if (!userInfo) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
-    return userInfo;
+    return { userInfo, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount };
 });
 exports.userInfo = userInfo;

@@ -35,7 +35,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.jamCreate = jamCreate;
 const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, limit, genre, date, search, latitude, longitude } = query;
+    const { page, limit, genre, date, search, latitude, longitude, commitmentLevel, instrument } = query;
     var filter = {
         isDeleted: false,
         isCancelled: false,
@@ -83,6 +83,14 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
                 },
             } });
     }
+    if (commitmentLevel) {
+        filter = Object.assign(Object.assign({}, filter), { commitmentLevel }),
+            nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { commitmentLevel });
+    }
+    if (instrument) {
+        filter = Object.assign(Object.assign({}, filter), { $elemMatch: { instrument: instrument } }),
+            nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { $elemMatch: { instrument: instrument } });
+    }
     if (search) {
         filter = Object.assign(Object.assign({}, filter), { $or: [
                 { jamName: { $regex: RegExp(search, "i") } },
@@ -93,9 +101,9 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
     }
     console.log(filter, "filter,,,,,,,,,,,,,");
     const [jams, jamsCount, nearByJams, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = yield Promise.all([
-        models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
         models_1.Jam.countDocuments(filter),
-        models_1.Jam.find(nearByJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.find(nearByJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
         models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.Jam.countDocuments(hostedJamsFilter),
         models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),

@@ -57,7 +57,12 @@ const jamSchema = new mongoose_1.Schema({
         type: String
     },
     bandFormation: [{
-            type: String
+            instrument: {
+                type: String
+            },
+            type: {
+                type: String
+            }
         }],
     city: {
         type: String

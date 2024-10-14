@@ -28,7 +28,12 @@ import { JOI, GENRE, COMMITMENT_LEVEL} from '../../config/appConstant';
        repertoire:Joi.array().items(Joi.string().required()),
        commitmentLevel:Joi.string().valid(...Object.values(COMMITMENT_LEVEL)).required(),
        image: Joi.string(),
-       bandFormation:Joi.array().items(Joi.string().required()),
+       bandFormation:Joi.array().items(
+         Joi.object().keys({
+            instrument: Joi.string().required(),
+            type: Joi.string().valid("mandatory", "optional")
+         })
+      ),
        city:Joi.string().required(),
        region:Joi.string().required(),
        landmark:Joi.string().required(),
@@ -48,7 +53,9 @@ const jamGet = {
       latitude: Joi.number().default(0).min(-90).max(90),
       longitude: Joi.number().default(0).min(-180).max(180),
       page: JOI.PAGE,
-      limit: JOI.LIMIT
+      limit: JOI.LIMIT,
+      commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
+      instrument: Joi.string()
    })
 }
 

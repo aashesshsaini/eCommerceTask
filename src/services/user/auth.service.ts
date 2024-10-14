@@ -1,5 +1,5 @@
 import bcrypt from 'bcryptjs';
-import { Admin, Token, User } from '../../models';
+import { Admin, Token, User, Jam } from '../../models';
 import { STATUS_CODES, ERROR_MESSAGES } from '../../config/appConstant';
 import { OperationalError } from '../../utils/error';
 // import Stripe from "stripe"
@@ -9,6 +9,7 @@ import { TokenDocument } from '../../interfaces/token.interface';
 import { UserDocument } from '../../interfaces/user.interface';
 import {forgotPasswordEmail} from "../../libs/sendMails"
 import { ObjectId } from 'mongoose';
+import { paginationOptions } from '../../utils/universalFunctions';
 
 // const stripe = new Stripe(config.stripe.secretKey);
 
@@ -236,15 +237,31 @@ const resetPassword = async(userId:ObjectId, newPassword:string)=>{
   return userData
 }
 
-const userInfo = async(userId:ObjectId)=>{
-  const userInfo = await User.findById(userId).lean()
+const userInfo = async(userId:ObjectId, query:Dictionary)=>{
+  const {page, limit} = query
+  var hostedJamsFilter: Dictionary = {
+  user:userId,
+  isDeleted:false,
+}
+
+var attendedJamsFilter = {
+  members: { $in: [userId] },  
+  isDeleted: false           
+};
+  const [userInfo, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = await Promise.all([
+    User.findById(userId).lean(),
+    Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)),
+    Jam.countDocuments(hostedJamsFilter),
+    Jam.find(attendedJamsFilter, {},paginationOptions(page, limit)),
+    Jam.countDocuments(attendedJamsFilter), 
+  ])
   if(!userInfo){
    throw new OperationalError(
     STATUS_CODES.ACTION_FAILED,
     ERROR_MESSAGES.USER_NOT_FOUND
    )
   }
-  return userInfo
+  return {userInfo, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount}
 }
 
 export { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, resetPassword, userInfo};

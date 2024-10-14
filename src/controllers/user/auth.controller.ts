@@ -243,14 +243,15 @@ const signup = catchAsync(async (req: Request, res: Response) => {
 
 
   const userInfo = catchAsync(async (req: Request, res: Response) => {
-    const userInfo = await userAuthService.userInfo(req?.token?.user);
-    const formatedUserInfo = formatUser(userInfo)
+    const userInfo = await userAuthService.userInfo(req?.token?.user, req.query);
+    // const formatedUserInfo = formatUser(userInfo.userInfo)
+
    return successResponse(
      req,
      res,
      STATUS_CODES.SUCCESS,
      SUCCESS_MESSAGES.SUCCESS,
-     formatedUserInfo
+     userInfo
    );
  });
   
