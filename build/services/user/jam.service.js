@@ -96,7 +96,7 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
                 { jamName: { $regex: RegExp(search, "i") } },
                 { genre: { $regex: RegExp(search, "i") } },
                 { commitmentLevel: { $regex: RegExp(search, "i") } },
-                { bandFormation: { $regex: RegExp(search, "i") } },
+                { "bandFormation.instrument": { $regex: RegExp(search, "i") } }, // Added specific path
             ] });
     }
     console.log(filter, "filter,,,,,,,,,,,,,");

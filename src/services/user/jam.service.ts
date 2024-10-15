@@ -134,17 +134,18 @@ nearByJamsFilter = {
     }
     }
 
-    if(search){
-      filter = {
-        ...filter,
-        $or: [
-            { jamName: { $regex: RegExp(search, "i") } },
-            { genre: { $regex: RegExp(search, "i") } },
-            { commitmentLevel: { $regex: RegExp(search, "i") } },
-            { bandFormation: { $regex: RegExp(search, "i") } },
-          ],
-      }
-    }
+    if (search) {
+  filter = {
+    ...filter,
+    $or: [
+      { jamName: { $regex: RegExp(search, "i") } },
+      { genre: { $regex: RegExp(search, "i") } },
+      { commitmentLevel: { $regex: RegExp(search, "i") } },
+      { "bandFormation.instrument": { $regex: RegExp(search, "i") } }, // Added specific path
+    ],
+  };
+}
+
   console.log(filter, "filter,,,,,,,,,,,,,")
   const [jams, jamsCount, nearByJams, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = await Promise.all([
     Jam.find(filter,{}, paginationOptions(page, limit)).populate("user"),
