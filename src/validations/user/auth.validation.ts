@@ -3,7 +3,8 @@ import { JOI, COMMITMENT_LEVEL} from '../../config/appConstant';
 
  const signup = {
     body: Joi.object().keys({
-        fullName: Joi.string().required(),
+        firstName: Joi.string().required(),
+        lastName: Joi.string().required(),
         mobileNumber: JOI.PHONENUMBER,
         countryCode: Joi.string().required(),
         email: JOI.EMAIL,
@@ -46,7 +47,9 @@ const createProfile = {
         .max(15)
         .pattern(/^[0-9]+$/),
         email: Joi.string().email().lowercase().trim(),
-        password: JOI.PASSWORD
+        password: JOI.PASSWORD,
+        page:JOI.PAGE,
+        limit:JOI.LIMIT
     })
 }
 
@@ -59,7 +62,9 @@ const createProfile = {
 }
 
 const deleteAccount = {
-  query: Joi.object().keys({})
+  query: Joi.object().keys({
+    password: JOI.PASSWORD
+  })
 }
 
  const logout = {
@@ -68,12 +73,13 @@ const deleteAccount = {
 
 const editProfile = {
   body: Joi.object().keys({
-    fullName: Joi.string().required(),
+    firstName: Joi.string(),
+    lastName: Joi.string(),
     mobileNumber: Joi.string()
     .min(5)
     .max(15)
     .pattern(/^[0-9]+$/),
-    countryCode: Joi.string().required(),
+    countryCode: Joi.string(),
     email: Joi.string().email().lowercase().trim(),
     zipCode: Joi.string(),
     profileImage: Joi.string(),

@@ -1,7 +1,8 @@
 import { Document, ObjectId } from "mongoose";
 
 export interface UserDocument extends Document {
-    fullName:string,
+    firstName:string,
+    lastName:string,
     email:string,
     password:string,
     profileImage:string,

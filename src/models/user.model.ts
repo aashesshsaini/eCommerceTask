@@ -5,7 +5,11 @@ import { string } from "joi";
 
 const userSchema = new Schema<UserDocument>(
     {
-        fullName: {
+        firstName: {
+          type: String,
+          trim: true,
+        },
+         lastName: {
           type: String,
           trim: true,
         },

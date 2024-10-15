@@ -7,7 +7,8 @@ const joi_1 = __importDefault(require("joi"));
 const appConstant_1 = require("../../config/appConstant");
 const signup = {
     body: joi_1.default.object().keys({
-        fullName: joi_1.default.string().required(),
+        firstName: joi_1.default.string().required(),
+        lastName: joi_1.default.string().required(),
         mobileNumber: appConstant_1.JOI.PHONENUMBER,
         countryCode: joi_1.default.string().required(),
         email: appConstant_1.JOI.EMAIL,
@@ -46,7 +47,9 @@ const login = {
             .max(15)
             .pattern(/^[0-9]+$/),
         email: joi_1.default.string().email().lowercase().trim(),
-        password: appConstant_1.JOI.PASSWORD
+        password: appConstant_1.JOI.PASSWORD,
+        page: appConstant_1.JOI.PAGE,
+        limit: appConstant_1.JOI.LIMIT
     })
 };
 const changePassword = {
@@ -56,19 +59,22 @@ const changePassword = {
     })
 };
 const deleteAccount = {
-    query: joi_1.default.object().keys({})
+    query: joi_1.default.object().keys({
+        password: appConstant_1.JOI.PASSWORD
+    })
 };
 const logout = {
     body: joi_1.default.object().keys({})
 };
 const editProfile = {
     body: joi_1.default.object().keys({
-        fullName: joi_1.default.string().required(),
+        firstName: joi_1.default.string(),
+        lastName: joi_1.default.string(),
         mobileNumber: joi_1.default.string()
             .min(5)
             .max(15)
             .pattern(/^[0-9]+$/),
-        countryCode: joi_1.default.string().required(),
+        countryCode: joi_1.default.string(),
         email: joi_1.default.string().email().lowercase().trim(),
         zipCode: joi_1.default.string(),
         profileImage: joi_1.default.string(),

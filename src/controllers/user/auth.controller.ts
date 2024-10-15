@@ -38,6 +38,8 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       {
         tokenData: accessToken,
         formatUserData,
+        hostedJams:[],
+        attendedJams:[]
       }
     );
   });
@@ -82,12 +84,12 @@ const signup = catchAsync(async (req: Request, res: Response) => {
     const deviceType = req.body.deviceType as string ;
     const accessToken = await tokenService.generateAuthToken(
       USER_TYPE.USER,
-      userData,
+      userData.user,
       deviceToken,
       deviceType
     );
 
-    const formatUserData = formatSignUpUser(userData)
+    const formatUserData = formatSignUpUser(userData.user)
   
     return successResponse(
       req,
@@ -97,6 +99,10 @@ const signup = catchAsync(async (req: Request, res: Response) => {
       {
         tokenData: accessToken,
         formatUserData,
+        hostedJams: userData.hostedJams,
+        hostedJamsCount: userData.hostedJamsCount,
+        attendedJams: userData.attendedJams,
+        attendedJamsCount: userData.attendedJamsCount
       }
     );
   });
@@ -112,7 +118,7 @@ const signup = catchAsync(async (req: Request, res: Response) => {
   });
 
   const deleteAccount = catchAsync(async (req: Request, res: Response) => {
-    await userAuthService.deleteAccount(req?.token?.user);
+    await userAuthService.deleteAccount(req?.token?.user, req.query);
  
    return successResponse(
      req,

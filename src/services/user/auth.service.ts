@@ -37,8 +37,8 @@ interface signupBody {
     publicExpirence:string,
   }
 
-const signup = async(body:signupBody)=>{
-    const { email, password, fullName, mobileNumber, countryCode } = body;
+const signup = async(body:UserDocument)=>{
+    const { email, password, firstName, lastName, mobileNumber, countryCode } = body;
     const [existinguserByEmail, existinguserByMobileNumber] = await Promise.all([
      User.findOne({ email: email, isDeleted:false, isVerified:true}),
      User.findOne({ mobileNumber: mobileNumber, isDeleted:false, isVerified:true}),
@@ -59,7 +59,7 @@ const signup = async(body:signupBody)=>{
     }
   
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = await User.create({ email, password: hashedPassword,fullName, mobileNumber, countryCode});
+    const user = await User.create({ email, password: hashedPassword,firstName, lastName, mobileNumber, countryCode});
     
     await user.save();
   
@@ -105,8 +105,8 @@ interface loginBody {
   return updatedUser
 }
 
-const login = async(body:loginBody)=>{
-    const {email, password, mobileNumber} =  body
+const login = async(body:Dictionary)=>{
+    const {email, password, mobileNumber, page, limit} =  body
     console.log(body, "body............")
     if(email){
        var user = await User.findOne({email:email, isDeleted:false})
@@ -142,7 +142,24 @@ const login = async(body:loginBody)=>{
             ERROR_MESSAGES.WRONG_PASSWORD
         )
     }
-    return user
+  var hostedJamsFilter: Dictionary = {
+  user:user._id,
+  isDeleted:false,
+}
+
+var attendedJamsFilter = {
+  members: { $in: [user._id] },  
+  isDeleted: false           
+};
+
+const [hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = await Promise.all([
+    Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)),
+    Jam.countDocuments(hostedJamsFilter),
+    Jam.find(attendedJamsFilter, {},paginationOptions(page, limit)),
+    Jam.countDocuments(attendedJamsFilter), 
+  ])
+
+    return {user, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount}
 }
 
 interface changePasswordBody {
@@ -174,7 +191,19 @@ const changePassword = async(body:changePasswordBody, token:TokenDocument)=>{
     return user
 }
 
-const deleteAccount = async(userId:ObjectId)=>{
+const deleteAccount = async(userId:ObjectId, query:Dictionary)=>{
+  const {password} = query
+  const user = await User.findById(userId) as UserDocument
+   
+    const passwordMatch = await bcrypt.compare(password, user.password)
+    console.log(passwordMatch)
+    if(!passwordMatch){
+      throw new OperationalError(
+        STATUS_CODES.ACTION_FAILED,
+        ERROR_MESSAGES.WRONG_PASSWORD
+      )
+    }
+
   const [deletedUser, deletedToken] = await Promise.all([
     User.findByIdAndUpdate(userId, {isDeleted:true, isVerified:false},{lean:true, new:true}),
     Token.updateMany({user:userId},{isDeleted:false},{lean:true, new:true})
@@ -192,8 +221,8 @@ const logout = async(userId:ObjectId)=>{
 }
 
 const editProfile = async(user:ObjectId, body:UserDocument)=>{
-  const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio} = body
-  const updatedProfileData = await User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode ,zipCode, profileImage, genre, instrument, repertoire, document, bio},{lean:true,new:true})
+  const { email, firstName, lastName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio} = body
+  const updatedProfileData = await User.findByIdAndUpdate(user, { email, firstName, lastName, mobileNumber, countryCode ,zipCode, profileImage, genre, instrument, repertoire, document, bio},{lean:true,new:true})
   if(!updatedProfileData){
    throw new OperationalError(
     STATUS_CODES.NOT_FOUND,

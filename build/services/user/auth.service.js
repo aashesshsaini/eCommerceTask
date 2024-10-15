@@ -20,7 +20,7 @@ const error_1 = require("../../utils/error");
 const sendMails_1 = require("../../libs/sendMails");
 const universalFunctions_1 = require("../../utils/universalFunctions");
 const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, fullName, mobileNumber, countryCode } = body;
+    const { email, password, firstName, lastName, mobileNumber, countryCode } = body;
     const [existinguserByEmail, existinguserByMobileNumber] = yield Promise.all([
         models_1.User.findOne({ email: email, isDeleted: false, isVerified: true }),
         models_1.User.findOne({ mobileNumber: mobileNumber, isDeleted: false, isVerified: true }),
@@ -32,7 +32,7 @@ const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.MOBILE_ALREADY_EXIST);
     }
     const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-    const user = yield models_1.User.create({ email, password: hashedPassword, fullName, mobileNumber, countryCode });
+    const user = yield models_1.User.create({ email, password: hashedPassword, firstName, lastName, mobileNumber, countryCode });
     yield user.save();
     return user;
 });
@@ -65,7 +65,7 @@ const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.createProfile = createProfile;
 const login = (body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, password, mobileNumber } = body;
+    const { email, password, mobileNumber, page, limit } = body;
     console.log(body, "body............");
     if (email) {
         var user = yield models_1.User.findOne({ email: email, isDeleted: false });
@@ -88,7 +88,21 @@ const login = (body) => __awaiter(void 0, void 0, void 0, function* () {
     if (!matchPassword) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.WRONG_PASSWORD);
     }
-    return user;
+    var hostedJamsFilter = {
+        user: user._id,
+        isDeleted: false,
+    };
+    var attendedJamsFilter = {
+        members: { $in: [user._id] },
+        isDeleted: false
+    };
+    const [hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = yield Promise.all([
+        models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.countDocuments(hostedJamsFilter),
+        models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.countDocuments(attendedJamsFilter),
+    ]);
+    return { user, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount };
 });
 exports.login = login;
 const changePassword = (body, token) => __awaiter(void 0, void 0, void 0, function* () {
@@ -109,7 +123,14 @@ const changePassword = (body, token) => __awaiter(void 0, void 0, void 0, functi
     return user;
 });
 exports.changePassword = changePassword;
-const deleteAccount = (userId) => __awaiter(void 0, void 0, void 0, function* () {
+const deleteAccount = (userId, query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { password } = query;
+    const user = yield models_1.User.findById(userId);
+    const passwordMatch = yield bcryptjs_1.default.compare(password, user.password);
+    console.log(passwordMatch);
+    if (!passwordMatch) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.WRONG_PASSWORD);
+    }
     const [deletedUser, deletedToken] = yield Promise.all([
         models_1.User.findByIdAndUpdate(userId, { isDeleted: true, isVerified: false }, { lean: true, new: true }),
         models_1.Token.updateMany({ user: userId }, { isDeleted: false }, { lean: true, new: true })
@@ -124,8 +145,8 @@ const logout = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.logout = logout;
 const editProfile = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio } = body;
-    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { email, fullName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio }, { lean: true, new: true });
+    const { email, firstName, lastName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio } = body;
+    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { email, firstName, lastName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio }, { lean: true, new: true });
     if (!updatedProfileData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }

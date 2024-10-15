@@ -25,6 +25,8 @@ const signup = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, {
         tokenData: accessToken,
         formatUserData,
+        hostedJams: [],
+        attendedJams: []
     });
 }));
 const verifyOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -45,11 +47,15 @@ const login = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 
     const userData = yield services_1.userAuthService.login(req.body);
     const deviceToken = req.body.deviceToken;
     const deviceType = req.body.deviceType;
-    const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, userData, deviceToken, deviceType);
-    const formatUserData = (0, formatResponse_1.formatSignUpUser)(userData);
+    const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, userData.user, deviceToken, deviceType);
+    const formatUserData = (0, formatResponse_1.formatSignUpUser)(userData.user);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, {
         tokenData: accessToken,
         formatUserData,
+        hostedJams: userData.hostedJams,
+        hostedJamsCount: userData.hostedJamsCount,
+        attendedJams: userData.attendedJams,
+        attendedJamsCount: userData.attendedJamsCount
     });
 }));
 const changePassword = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -58,7 +64,7 @@ const changePassword = (0, universalFunctions_1.catchAsync)((req, res) => __awai
 }));
 const deleteAccount = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    yield services_1.userAuthService.deleteAccount((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user);
+    yield services_1.userAuthService.deleteAccount((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user, req.query);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.DELETE);
 }));
 const logout = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
