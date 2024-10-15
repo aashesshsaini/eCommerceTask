@@ -123,16 +123,21 @@ nearByJamsFilter = {
     }
     }
 
-    if(instrument){
-       filter = {
-      ...filter,
-      $elemMatch: { instrument: instrument },
-    },
-    nearByJamsFilter = {
-      ...nearByJamsFilter,
-      $elemMatch: { instrument: instrument },
+    if (instrument) {
+  filter = {
+    ...filter,
+    bandFormation: { 
+      $elemMatch: { instrument: instrument }
     }
+  };
+
+  nearByJamsFilter = {
+    ...nearByJamsFilter,
+    bandFormation: { 
+      $elemMatch: { instrument: instrument } 
     }
+  };
+}
 
     if (search) {
   filter = {

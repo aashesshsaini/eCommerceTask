@@ -88,8 +88,12 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
             nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { commitmentLevel });
     }
     if (instrument) {
-        filter = Object.assign(Object.assign({}, filter), { $elemMatch: { instrument: instrument } }),
-            nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { $elemMatch: { instrument: instrument } });
+        filter = Object.assign(Object.assign({}, filter), { bandFormation: {
+                $elemMatch: { instrument: instrument }
+            } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { bandFormation: {
+                $elemMatch: { instrument: instrument }
+            } });
     }
     if (search) {
         filter = Object.assign(Object.assign({}, filter), { $or: [
