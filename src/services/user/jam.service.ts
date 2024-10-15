@@ -167,8 +167,8 @@ nearByJamsFilter = {
   }
 
 const jamUpdate = async(body:Dictionary, user:ObjectId)=>{
- const { jamId, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians} = body
- const jamUpdatedData = await Jam.findOneAndUpdate({_id:jamId, user, isDeleted:false}, {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians},{lean:true, new:true})
+ const { jamId, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians} = body
+ const jamUpdatedData = await Jam.findOneAndUpdate({_id:jamId, user, isDeleted:false}, {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians},{lean:true, new:true})
  if(!jamUpdatedData){
    throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,

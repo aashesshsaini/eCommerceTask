@@ -74,6 +74,8 @@ const jamUpdate = {
         city: joi_1.default.string(),
         region: joi_1.default.string(),
         landmark: joi_1.default.string(),
+        commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
+        image: joi_1.default.string(),
         description: joi_1.default.string(),
         allowMusicians: joi_1.default.boolean(),
         notifyFavMusicians: joi_1.default.boolean()

@@ -119,8 +119,8 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
 });
 exports.jamGet = jamGet;
 const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {
-    const { jamId, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians } = body;
-    const jamUpdatedData = yield models_1.Jam.findOneAndUpdate({ _id: jamId, user, isDeleted: false }, { jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, description, allowMusicians, notifyFavMusicians }, { lean: true, new: true });
+    const { jamId, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians } = body;
+    const jamUpdatedData = yield models_1.Jam.findOneAndUpdate({ _id: jamId, user, isDeleted: false }, { jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians }, { lean: true, new: true });
     if (!jamUpdatedData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }
