@@ -255,8 +255,9 @@ if (search) {
  Users.map((user:Dictionary)=>{
   const isFav = userData?.favMembers?.includes(user._id)
   console.log(isFav, "isFav........")
-  return {...user, isFav}
+  return {...user, isFav:isFav}
  })
+ console.log(Users)
  return {Users, countUser}
 }
 

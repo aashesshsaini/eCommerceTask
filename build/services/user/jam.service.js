@@ -185,8 +185,9 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
         var _a;
         const isFav = (_a = userData === null || userData === void 0 ? void 0 : userData.favMembers) === null || _a === void 0 ? void 0 : _a.includes(user._id);
         console.log(isFav, "isFav........");
-        return Object.assign(Object.assign({}, user), { isFav });
+        return Object.assign(Object.assign({}, user), { isFav: isFav });
     });
+    console.log(Users);
     return { Users, countUser };
 });
 exports.getUsers = getUsers;
