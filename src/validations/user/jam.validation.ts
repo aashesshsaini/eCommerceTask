@@ -112,7 +112,11 @@ const getUsers = {
    query: Joi.object().keys({
       page: JOI.PAGE,
       limit: JOI.LIMIT,
-      search: Joi.string().allow("", null)
+      search: Joi.string().allow("", null),
+      latitude: Joi.number().default(0).min(-90).max(90),
+      longitude: Joi.number().default(0).min(-180).max(180),
+      commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
+      instrument: Joi.string()
    })
 }
 

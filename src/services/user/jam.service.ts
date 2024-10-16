@@ -3,7 +3,7 @@ import { STATUS_CODES, ERROR_MESSAGES } from '../../config/appConstant';
 import { OperationalError } from '../../utils/error';
 import config from "../../config/config"
 import { Dictionary } from '../../types';
-import { JamDocument } from '../../interfaces';
+import { JamDocument, UserDocument } from '../../interfaces';
 import { ObjectId } from 'mongoose';
 import { objectId } from '../../validations/custom.validation';
 import { paginationOptions } from '../../utils/universalFunctions';
@@ -213,9 +213,23 @@ const cancelJam = async(body: Dictionary, userId:ObjectId)=>{
   return cancelledJamData
 }
 
-const getUsers = async(query:Dictionary)=>{
- const {page, limit, search} = query
- let userQuery : {isDeleted:boolean, isVerified:boolean, $or?: Array<{ fullName?: { $regex: RegExp } } |{ email?: { $regex: RegExp } }>} = {isDeleted:false, isVerified:true}
+const getUsers = async(query:Dictionary, userId:ObjectId)=>{
+ const {page, limit, search, latitude, longitude, instrument, commitmentLevel} = query
+ let userQuery : Dictionary = {isDeleted:false, isVerified:true}
+  //  if(commitmentLevel){
+  //      userQuery = {
+  //     ...userQuery,
+  //     commitmentLevel
+  //   }
+  //  }
+
+    if (instrument) {
+  userQuery = {
+    ...userQuery,
+      instrument
+  };
+}
+
 if (search) {
       userQuery = {
         ...userQuery,
@@ -226,9 +240,10 @@ if (search) {
       };
     }
     console.log(userQuery, "suerQuery...........")
- const [Users, countUser] = await Promise.all([
+ const [Users, countUser, userData] = await Promise.all([
   User.find(userQuery, {password:0},paginationOptions(page, limit)),
-  User.countDocuments(userQuery)
+  User.countDocuments(userQuery),
+  User.findById(userId).select("favMembers")
  ])
  if(!Users || countUser===0){
   throw new OperationalError(
@@ -236,6 +251,10 @@ if (search) {
     ERROR_MESSAGES.NOT_FOUND
   )
  }
+ Users.map((user:Dictionary)=>{
+  const isFav = userData?.favMembers?.includes(user._id)
+  return {...user, isFav}
+ })
  return {Users, countUser}
 }
 

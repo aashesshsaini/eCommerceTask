@@ -76,7 +76,7 @@ const jamCreate = catchAsync(async (req: Request, res: Response) => {
   });
 
    const getUsers = catchAsync(async (req: Request, res: Response) => {
-    const{Users, countUser} = await userJamService.getUsers(req.query);  
+    const{Users, countUser} = await userJamService.getUsers(req.query, req.token.user._id);  
     return successResponse(
       req,
       res,

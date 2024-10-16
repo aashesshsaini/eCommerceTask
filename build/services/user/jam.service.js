@@ -153,9 +153,18 @@ const cancelJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
     return cancelledJamData;
 });
 exports.cancelJam = cancelJam;
-const getUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, limit, search } = query;
+const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page, limit, search, latitude, longitude, instrument, commitmentLevel } = query;
     let userQuery = { isDeleted: false, isVerified: true };
+    //  if(commitmentLevel){
+    //      userQuery = {
+    //     ...userQuery,
+    //     commitmentLevel
+    //   }
+    //  }
+    if (instrument) {
+        userQuery = Object.assign(Object.assign({}, userQuery), { instrument });
+    }
     if (search) {
         userQuery = Object.assign(Object.assign({}, userQuery), { $or: [
                 { fullName: { $regex: RegExp(search, "i") } },
@@ -163,13 +172,19 @@ const getUsers = (query) => __awaiter(void 0, void 0, void 0, function* () {
             ] });
     }
     console.log(userQuery, "suerQuery...........");
-    const [Users, countUser] = yield Promise.all([
+    const [Users, countUser, userData] = yield Promise.all([
         models_1.User.find(userQuery, { password: 0 }, (0, universalFunctions_1.paginationOptions)(page, limit)),
-        models_1.User.countDocuments(userQuery)
+        models_1.User.countDocuments(userQuery),
+        models_1.User.findById(userId).select("favMembers")
     ]);
     if (!Users || countUser === 0) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.NOT_FOUND);
     }
+    Users.map((user) => {
+        var _a;
+        const isFav = (_a = userData === null || userData === void 0 ? void 0 : userData.favMembers) === null || _a === void 0 ? void 0 : _a.includes(user._id);
+        return Object.assign(Object.assign({}, user), { isFav });
+    });
     return { Users, countUser };
 });
 exports.getUsers = getUsers;

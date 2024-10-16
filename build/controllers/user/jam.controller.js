@@ -40,7 +40,7 @@ const cancelJam = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, jamUpdatedData);
 }));
 const getUsers = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { Users, countUser } = yield services_1.userJamService.getUsers(req.query);
+    const { Users, countUser } = yield services_1.userJamService.getUsers(req.query, req.token.user._id);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, { Users, countUser });
 }));
 const favMember = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {

@@ -100,7 +100,11 @@ const getUsers = {
     query: joi_1.default.object().keys({
         page: appConstant_1.JOI.PAGE,
         limit: appConstant_1.JOI.LIMIT,
-        search: joi_1.default.string().allow("", null)
+        search: joi_1.default.string().allow("", null),
+        latitude: joi_1.default.number().default(0).min(-90).max(90),
+        longitude: joi_1.default.number().default(0).min(-180).max(180),
+        commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
+        instrument: joi_1.default.string()
     })
 };
 const favMember = {
