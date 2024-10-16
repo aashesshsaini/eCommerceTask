@@ -251,8 +251,10 @@ if (search) {
     ERROR_MESSAGES.NOT_FOUND
   )
  }
+ console.log(userData, "userData...........`")
  Users.map((user:Dictionary)=>{
   const isFav = userData?.favMembers?.includes(user._id)
+  console.log(isFav, "isFav........")
   return {...user, isFav}
  })
  return {Users, countUser}
