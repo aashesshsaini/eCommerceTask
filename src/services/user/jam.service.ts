@@ -252,13 +252,14 @@ if (search) {
   )
  }
  console.log(userData, "userData...........`")
- Users.map((user:Dictionary)=>{
-  const isFav = userData?.favMembers?.includes(user._id)
-  console.log(isFav, "isFav........")
-  return {...user, isFav:isFav}
- })
- console.log(Users)
- return {Users, countUser}
+  const updatedUsers = Users.map((user: Dictionary) => {
+    const isFav = userData?.favMembers?.includes(user._id);
+    console.log(isFav, "isFav........");
+    return { ...user, isFav }; 
+  });
+
+  console.log(updatedUsers);
+ return {Users:updatedUsers, countUser}
 }
 
 const favMember = async(body:Dictionary, userId:ObjectId)=>{

@@ -181,14 +181,14 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.NOT_FOUND);
     }
     console.log(userData, "userData...........`");
-    Users.map((user) => {
+    const updatedUsers = Users.map((user) => {
         var _a;
         const isFav = (_a = userData === null || userData === void 0 ? void 0 : userData.favMembers) === null || _a === void 0 ? void 0 : _a.includes(user._id);
         console.log(isFav, "isFav........");
-        return Object.assign(Object.assign({}, user), { isFav: isFav });
+        return Object.assign(Object.assign({}, user), { isFav });
     });
-    console.log(Users);
-    return { Users, countUser };
+    console.log(updatedUsers);
+    return { Users: updatedUsers, countUser };
 });
 exports.getUsers = getUsers;
 const favMember = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
