@@ -46,7 +46,7 @@ const jamGet = {
     query: joi_1.default.object().keys({
         genre: joi_1.default.string().valid(...Object.values(appConstant_1.GENRE)),
         date: joi_1.default.date(),
-        startDate: joi_1.default.date,
+        startDate: joi_1.default.date(),
         endDate: joi_1.default.date(),
         search: joi_1.default.string().allow(" ", null),
         latitude: joi_1.default.number().default(0).min(-90).max(90),
