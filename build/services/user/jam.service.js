@@ -79,9 +79,11 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
     if (startDate && endDate) {
         const start = startDate ? (timeZone ? getDateInTimeZone(startDate, timeZone) : (0, moment_timezone_1.default)(startDate).startOf('day')) : null;
         const end = endDate ? (timeZone ? getDateInTimeZone(endDate, timeZone) : (0, moment_timezone_1.default)(endDate).endOf('day')) : null;
+        console.log(start, endDate);
         filter = Object.assign(Object.assign({}, filter), { 'availableDates.date': Object.assign(Object.assign({}, (start ? { $gte: start.toDate() } : {})), (end ? { $lte: end.toDate() } : {})) });
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { 'availableDates.date': Object.assign(Object.assign({}, (start ? { $gte: start.toDate() } : {})), (end ? { $lte: end.toDate() } : {})) });
     }
+    console.log(filter, "filter.............");
     if (latitude && longitude) {
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { loc: {
                 $near: {

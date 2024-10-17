@@ -105,7 +105,7 @@ nearByJamsFilter = {
 if(startDate && endDate){
   const start = startDate ? (timeZone ? getDateInTimeZone(startDate, timeZone) : moment(startDate).startOf('day')) : null;
     const end = endDate ? (timeZone ? getDateInTimeZone(endDate, timeZone) : moment(endDate).endOf('day')) : null;
-
+console.log(start, endDate)
     filter = {
       ...filter,
       'availableDates.date': {
@@ -122,6 +122,8 @@ if(startDate && endDate){
       }
     };
 }
+
+console.log(filter, "filter.............")
 
     if (latitude && longitude) {
       nearByJamsFilter = {
