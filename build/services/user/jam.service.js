@@ -35,7 +35,9 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.jamCreate = jamCreate;
 const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, limit, genre, date, search, latitude, longitude, commitmentLevel, instrument } = query;
+    const { page, limit, genre, date, startDate, endDate, search, latitude, longitude, commitmentLevel, instrument } = query;
+    const currentUser = yield models_1.User.findById(user);
+    const favMembers = (currentUser === null || currentUser === void 0 ? void 0 : currentUser.favMembers) || [];
     var filter = {
         isDeleted: false,
         isCancelled: false,
@@ -73,6 +75,12 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         const startOfToday = today.startOf('day').toDate();
         filter = Object.assign(Object.assign({}, filter), { 'availableDates.date': { $gte: startOfToday } });
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { 'availableDates.date': { $gte: startOfToday } });
+    }
+    if (startDate && endDate) {
+        const start = startDate ? (timeZone ? getDateInTimeZone(startDate, timeZone) : (0, moment_timezone_1.default)(startDate).startOf('day')) : null;
+        const end = endDate ? (timeZone ? getDateInTimeZone(endDate, timeZone) : (0, moment_timezone_1.default)(endDate).endOf('day')) : null;
+        filter = Object.assign(Object.assign({}, filter), { 'availableDates.date': Object.assign(Object.assign({}, (start ? { $gte: start.toDate() } : {})), (end ? { $lte: end.toDate() } : {})) });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { 'availableDates.date': Object.assign(Object.assign({}, (start ? { $gte: start.toDate() } : {})), (end ? { $lte: end.toDate() } : {})) });
     }
     if (latitude && longitude) {
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { loc: {
@@ -114,8 +122,13 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         models_1.Jam.countDocuments(attendedJamsFilter),
         // Jam.countDocuments(nearByJamsFilter),
     ]);
+    const addIsFav = (jamList) => {
+        return jamList.map(jam => (Object.assign(Object.assign({}, jam.toObject()), { user: Object.assign(Object.assign({}, jam.user.toObject()), { isFav: favMembers.includes(jam.user._id) ? true : false }) })));
+    };
+    const jamsWithFav = addIsFav(jams);
+    const nearByJamsWithFav = addIsFav(nearByJams);
     const nearByJamsCount = nearByJams.length;
-    return { jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount };
+    return { jams: jamsWithFav, jamsCount, nearByJams: nearByJamsWithFav, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount };
 });
 exports.jamGet = jamGet;
 const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* () {
@@ -215,6 +228,7 @@ const favMember = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.favMember = favMember;
 const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a;
     const { page, limit } = query;
     const favMemList = yield models_1.User.findById(userId, { favMembers: 1, _id: 0 }).populate({
         path: 'favMembers',
@@ -224,7 +238,8 @@ const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, functi
         }
     })
         .lean();
-    const favMemCount = yield models_1.User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
+    // const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
+    const favMemCount = (_a = favMemList === null || favMemList === void 0 ? void 0 : favMemList.favMembers) === null || _a === void 0 ? void 0 : _a.length;
     return { favMemList, favMemCount };
 });
 exports.favMemberGet = favMemberGet;

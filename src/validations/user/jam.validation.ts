@@ -49,6 +49,8 @@ const jamGet = {
    query: Joi.object().keys({
       genre: Joi.string().valid(...Object.values(GENRE)),
       date: Joi.date(),
+      startDate: Joi.date,
+      endDate: Joi.date(),
       search: Joi.string().allow(" ", null),
       latitude: Joi.number().default(0).min(-90).max(90),
       longitude: Joi.number().default(0).min(-180).max(180),

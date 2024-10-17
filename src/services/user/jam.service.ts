@@ -33,7 +33,10 @@ const qrCode = await QRCode.toDataURL(address);
 }
 
   const jamGet = async(query:Dictionary, user:ObjectId, timeZone ? :string)=>{
-  const {page, limit, genre, date, search, latitude, longitude, commitmentLevel, instrument} = query
+  const {page, limit, genre, date, startDate, endDate, search, latitude, longitude, commitmentLevel, instrument} = query
+ 
+const currentUser = await User.findById(user);
+  const favMembers = currentUser?.favMembers || [];
 
  var filter: Dictionary = {
   isDeleted: false,
@@ -99,6 +102,27 @@ nearByJamsFilter = {
   };
 }
 
+if(startDate && endDate){
+  const start = startDate ? (timeZone ? getDateInTimeZone(startDate, timeZone) : moment(startDate).startOf('day')) : null;
+    const end = endDate ? (timeZone ? getDateInTimeZone(endDate, timeZone) : moment(endDate).endOf('day')) : null;
+
+    filter = {
+      ...filter,
+      'availableDates.date': {
+        ...(start ? { $gte: start.toDate() } : {}),
+        ...(end ? { $lte: end.toDate() } : {})
+      }
+    };
+
+    nearByJamsFilter = {
+      ...nearByJamsFilter,
+      'availableDates.date': {
+        ...(start ? { $gte: start.toDate() } : {}),
+        ...(end ? { $lte: end.toDate() } : {})
+      }
+    };
+}
+
     if (latitude && longitude) {
       nearByJamsFilter = {
         ...nearByJamsFilter,
@@ -162,8 +186,24 @@ nearByJamsFilter = {
     Jam.countDocuments(attendedJamsFilter),  
     // Jam.countDocuments(nearByJamsFilter),
   ])
-  const nearByJamsCount = nearByJams.length
-  return {jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount}
+   
+
+  const addIsFav = (jamList: any[]) => {
+    return jamList.map(jam => ({
+      ...jam.toObject(),
+      user: {
+        ...jam.user.toObject(),
+        isFav: favMembers.includes(jam.user._id) ? true : false
+      }
+    }));
+  };
+
+  const jamsWithFav = addIsFav(jams);
+  const nearByJamsWithFav = addIsFav(nearByJams);
+
+  const nearByJamsCount = nearByJams.length;
+
+  return {jams:jamsWithFav, jamsCount, nearByJams:nearByJamsWithFav, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount}
   }
 
 const jamUpdate = async(body:Dictionary, user:ObjectId)=>{
@@ -304,7 +344,8 @@ const favMemberGet = async(query:Dictionary, userId:ObjectId)=>{
     })
     .lean();
 
-  const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
+  // const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
+  const favMemCount = favMemList?.favMembers?.length
   return {favMemList, favMemCount}
 }
 
