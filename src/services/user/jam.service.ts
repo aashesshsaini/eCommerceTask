@@ -102,26 +102,29 @@ nearByJamsFilter = {
   };
 }
 
-if(startDate && endDate){
-  const start = startDate ? (timeZone ? getDateInTimeZone(startDate, timeZone) : moment(startDate).startOf('day')) : null;
-    const end = endDate ? (timeZone ? getDateInTimeZone(endDate, timeZone) : moment(endDate).endOf('day')) : null;
-console.log(start, endDate)
-    filter = {
-      ...filter,
-      'availableDates.date': {
-        ...(start ? { $gte: start.toDate() } : {}),
-        ...(end ? { $lte: end.toDate() } : {})
-      }
-    };
+if (startDate && endDate) {
+  const start = timeZone ? getDateInTimeZone(startDate, timeZone) : moment(startDate).startOf('day');
+  const end = timeZone ? getDateInTimeZone(endDate, timeZone) : moment(endDate).endOf('day');
 
-    nearByJamsFilter = {
-      ...nearByJamsFilter,
-      'availableDates.date': {
-        ...(start ? { $gte: start.toDate() } : {}),
-        ...(end ? { $lte: end.toDate() } : {})
-      }
-    };
+  console.log(start, end);  // Check the start and end dates after processing
+
+  filter = {
+    ...filter,
+    'availableDates.date': {
+      ...(start ? { $gte: start.startOf('day').toDate() } : {}),
+      ...(end ? { $lte: end.endOf('day').toDate() } : {})
+    }
+  };
+
+  nearByJamsFilter = {
+    ...nearByJamsFilter,
+    'availableDates.date': {
+      ...(start ? { $gte: start.startOf('day').toDate() } : {}),
+      ...(end ? { $lte: end.endOf('day').toDate() } : {})
+    }
+  };
 }
+
 
 console.log(filter, "filter.............")
 
