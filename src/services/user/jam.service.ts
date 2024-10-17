@@ -190,9 +190,9 @@ if(startDate && endDate){
 
   const addIsFav = (jamList: any[]) => {
     return jamList.map(jam => ({
-      ...jam.toObject(),
+      ...jam,
       user: {
-        ...jam.user.toObject(),
+        ...jam.user,
         isFav: favMembers.includes(jam.user._id) ? true : false
       }
     }));

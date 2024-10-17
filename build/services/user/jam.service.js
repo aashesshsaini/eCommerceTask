@@ -123,7 +123,7 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         // Jam.countDocuments(nearByJamsFilter),
     ]);
     const addIsFav = (jamList) => {
-        return jamList.map(jam => (Object.assign(Object.assign({}, jam.toObject()), { user: Object.assign(Object.assign({}, jam.user.toObject()), { isFav: favMembers.includes(jam.user._id) ? true : false }) })));
+        return jamList.map(jam => (Object.assign(Object.assign({}, jam), { user: Object.assign(Object.assign({}, jam.user), { isFav: favMembers.includes(jam.user._id) ? true : false }) })));
     };
     const jamsWithFav = addIsFav(jams);
     const nearByJamsWithFav = addIsFav(nearByJams);
