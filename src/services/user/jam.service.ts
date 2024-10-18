@@ -236,7 +236,7 @@ const jamDelete = async(query:Dictionary, user:ObjectId)=>{
 
 const jamInfo = async(query:Dictionary, user:ObjectId)=>{
   const {jamId} = query
-  const jamData = await Jam.findOne({_id:jamId,isDeleted:false})
+  const jamData = await Jam.findOne({_id:jamId,isDeleted:false}).populate("user")
   if(!jamData){
      throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,

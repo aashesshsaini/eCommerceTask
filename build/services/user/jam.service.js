@@ -152,7 +152,7 @@ const jamDelete = (query, user) => __awaiter(void 0, void 0, void 0, function* (
 exports.jamDelete = jamDelete;
 const jamInfo = (query, user) => __awaiter(void 0, void 0, void 0, function* () {
     const { jamId } = query;
-    const jamData = yield models_1.Jam.findOne({ _id: jamId, isDeleted: false });
+    const jamData = yield models_1.Jam.findOne({ _id: jamId, isDeleted: false }).populate("user");
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }
