@@ -150,13 +150,20 @@ const jamDelete = (query, user) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.jamDelete = jamDelete;
-const jamInfo = (query, user) => __awaiter(void 0, void 0, void 0, function* () {
+const jamInfo = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
+    var _a, _b, _c;
     const { jamId } = query;
-    const jamData = yield models_1.Jam.findOne({ _id: jamId, isDeleted: false }).populate("user");
+    const [jamData, userData] = yield Promise.all([
+        models_1.Jam.findOne({ _id: jamId, isDeleted: false }).populate("user"),
+        models_1.User.findById(userId)
+    ]);
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }
-    return jamData;
+    const isFav = (_a = userData === null || userData === void 0 ? void 0 : userData.favMembers) === null || _a === void 0 ? void 0 : _a.includes((_b = jamData.user) === null || _b === void 0 ? void 0 : _b._id);
+    console.log(isFav, "isFav..............");
+    return Object.assign(Object.assign({}, jamData._doc), { user: Object.assign(Object.assign({}, (_c = jamData === null || jamData === void 0 ? void 0 : jamData.user) === null || _c === void 0 ? void 0 : _c._doc), { isFav: isFav // Add the isFav field
+         }) });
 });
 exports.jamInfo = jamInfo;
 const cancelJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {

@@ -234,16 +234,28 @@ const jamDelete = async(query:Dictionary, user:ObjectId)=>{
   }
 }
 
-const jamInfo = async(query:Dictionary, user:ObjectId)=>{
+const jamInfo = async(query:Dictionary, userId:ObjectId)=>{
   const {jamId} = query
-  const jamData = await Jam.findOne({_id:jamId,isDeleted:false}).populate("user")
+  const [jamData, userData] = await Promise.all([
+      Jam.findOne({_id:jamId,isDeleted:false}).populate("user") as Dictionary,
+      User.findById(userId)
+  ]) 
   if(!jamData){
      throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,
         ERROR_MESSAGES.JAM_NOT_FOUND
     )
   }
-  return jamData
+  const isFav = userData?.favMembers?.includes(jamData.user?._id);
+  console.log(isFav, "isFav..............")
+
+   return {
+    ...jamData._doc, // Spread the jamData's document fields
+    user: {
+      ...jamData?.user?._doc, // Spread the jamData's user document fields
+      isFav: isFav // Add the isFav field
+    }
+  };
 }
 
 const cancelJam = async(body: Dictionary, userId:ObjectId)=>{
