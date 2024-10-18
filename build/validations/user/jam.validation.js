@@ -72,11 +72,16 @@ const jamUpdate = {
         })),
         genre: joi_1.default.string(),
         repertoire: joi_1.default.array().items(joi_1.default.string()),
-        bandFormation: joi_1.default.array().items(joi_1.default.string()),
+        bandFormation: joi_1.default.array().items(joi_1.default.object().keys({
+            instrument: joi_1.default.string().required(),
+            type: joi_1.default.string().valid("mandatory", "optional")
+        })),
         city: joi_1.default.string(),
         region: joi_1.default.string(),
         landmark: joi_1.default.string(),
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
+        latitude: joi_1.default.number().default(0).min(-90).max(90),
+        longitude: joi_1.default.number().default(0).min(-180).max(180),
         image: joi_1.default.string(),
         description: joi_1.default.string(),
         allowMusicians: joi_1.default.boolean(),

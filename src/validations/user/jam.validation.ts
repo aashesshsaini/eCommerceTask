@@ -80,11 +80,18 @@ const jamUpdate = {
       ),
        genre:Joi.string(),
        repertoire:Joi.array().items(Joi.string()),
-       bandFormation:Joi.array().items(Joi.string()),
+       bandFormation:Joi.array().items(
+         Joi.object().keys({
+            instrument: Joi.string().required(),
+            type: Joi.string().valid("mandatory", "optional")
+         })
+      ),
        city:Joi.string(),
        region:Joi.string(),
        landmark:Joi.string(),
        commitmentLevel:Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
+       latitude: Joi.number().default(0).min(-90).max(90),
+       longitude: Joi.number().default(0).min(-180).max(180),
        image: Joi.string(),
        description:Joi.string(),
        allowMusicians:Joi.boolean(),
