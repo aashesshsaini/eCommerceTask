@@ -170,7 +170,7 @@ const cancelJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
 exports.cancelJam = cancelJam;
 const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, search, latitude, longitude, instrument, commitmentLevel } = query;
-    let userQuery = { isDeleted: false, isVerified: true };
+    let userQuery = { isDeleted: false, isVerified: true, _id: { $ne: userId } };
     //  if(commitmentLevel){
     //      userQuery = {
     //     ...userQuery,
@@ -192,16 +192,32 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
         models_1.User.countDocuments(userQuery),
         models_1.User.findById(userId).select("favMembers")
     ]);
-    if (!Users || countUser === 0) {
-        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.NOT_FOUND);
-    }
+    //  if(!Users || countUser===0){
+    //   throw new OperationalError(
+    //     STATUS_CODES.ACTION_FAILED,
+    //     ERROR_MESSAGES.USER_NOT_FOUND
+    //   )
+    //  }
     console.log(userData, "userData...........`");
-    const updatedUsers = Users.map((user) => {
+    const updatedUsers = yield Promise.all(Users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;
         const isFav = (_a = userData === null || userData === void 0 ? void 0 : userData.favMembers) === null || _a === void 0 ? void 0 : _a.includes(user._id);
-        console.log(isFav, "isFav........");
-        return Object.assign(Object.assign({}, user), { isFav });
-    });
+        const hostedJamsFilter = { user: user._id, isDeleted: false };
+        const [hostedJams, hostedJamsCount] = yield Promise.all([
+            models_1.Jam.find(hostedJamsFilter),
+            models_1.Jam.countDocuments(hostedJamsFilter),
+        ]);
+        const attendedJamsFilter = { members: { $in: [user._id] }, isDeleted: false };
+        const [attendedJams, attendedJamsCount] = yield Promise.all([
+            models_1.Jam.find(attendedJamsFilter),
+            models_1.Jam.countDocuments(attendedJamsFilter),
+        ]);
+        return Object.assign(Object.assign({}, user), { isFav,
+            hostedJams,
+            hostedJamsCount,
+            attendedJams,
+            attendedJamsCount });
+    })));
     console.log(updatedUsers);
     return { Users: updatedUsers, countUser };
 });

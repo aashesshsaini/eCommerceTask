@@ -260,7 +260,7 @@ const cancelJam = async(body: Dictionary, userId:ObjectId)=>{
 
 const getUsers = async(query:Dictionary, userId:ObjectId)=>{
  const {page, limit, search, latitude, longitude, instrument, commitmentLevel} = query
- let userQuery : Dictionary = {isDeleted:false, isVerified:true}
+ let userQuery : Dictionary = {isDeleted:false, isVerified:true, _id: { $ne: userId } }
   //  if(commitmentLevel){
   //      userQuery = {
   //     ...userQuery,
@@ -290,18 +290,39 @@ if (search) {
   User.countDocuments(userQuery),
   User.findById(userId).select("favMembers")
  ])
- if(!Users || countUser===0){
-  throw new OperationalError(
-    STATUS_CODES.ACTION_FAILED,
-    ERROR_MESSAGES.NOT_FOUND
-  )
- }
+//  if(!Users || countUser===0){
+//   throw new OperationalError(
+//     STATUS_CODES.ACTION_FAILED,
+//     ERROR_MESSAGES.USER_NOT_FOUND
+//   )
+//  }
  console.log(userData, "userData...........`")
-  const updatedUsers = Users.map((user: Dictionary) => {
-    const isFav = userData?.favMembers?.includes(user._id);
-    console.log(isFav, "isFav........");
-    return { ...user, isFav }; 
-  });
+   const updatedUsers = await Promise.all(
+    Users.map(async (user: Dictionary) => {
+      const isFav = userData?.favMembers?.includes(user._id);
+
+     const hostedJamsFilter = { user: user._id, isDeleted: false };
+     const [hostedJams, hostedJamsCount] = await Promise.all([
+        Jam.find(hostedJamsFilter),
+        Jam.countDocuments(hostedJamsFilter),
+      ]);
+
+      const attendedJamsFilter = { members: { $in: [user._id] }, isDeleted: false };
+      const [attendedJams, attendedJamsCount] = await Promise.all([
+        Jam.find(attendedJamsFilter),
+        Jam.countDocuments(attendedJamsFilter),
+      ]);
+
+      return {
+        ...user,
+        isFav,
+        hostedJams,
+        hostedJamsCount,
+        attendedJams,
+        attendedJamsCount,
+      };
+    })
+  );
 
   console.log(updatedUsers);
  return {Users:updatedUsers, countUser}
