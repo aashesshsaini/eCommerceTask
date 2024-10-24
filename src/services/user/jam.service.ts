@@ -1,205 +1,263 @@
-import { Jam, Token, User } from '../../models';
-import { STATUS_CODES, ERROR_MESSAGES } from '../../config/appConstant';
-import { OperationalError } from '../../utils/error';
-import config from "../../config/config"
-import { Dictionary } from '../../types';
-import { JamDocument, UserDocument } from '../../interfaces';
-import { ObjectId } from 'mongoose';
-import { objectId } from '../../validations/custom.validation';
-import { paginationOptions } from '../../utils/universalFunctions';
+import { Jam, Token, User } from "../../models";
+import { STATUS_CODES, ERROR_MESSAGES } from "../../config/appConstant";
+import { OperationalError } from "../../utils/error";
+import config from "../../config/config";
+import { Dictionary } from "../../types";
+import { JamDocument, UserDocument } from "../../interfaces";
+import { ObjectId } from "mongoose";
+import { objectId } from "../../validations/custom.validation";
+import { paginationOptions } from "../../utils/universalFunctions";
 import moment from "moment-timezone";
 import QRCode from "qrcode";
 // import sendPushNotification from '../../utils/notification';
 
-const getDateInTimeZone = (date:Date, timeZone:string) => {
+const getDateInTimeZone = (date: Date, timeZone: string) => {
   return moment.tz(date, timeZone);
 };
 
-const jamCreate = async(body:Dictionary, user:ObjectId)=>{
-  const {jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, city, region, landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians} = body
+const jamCreate = async (body: Dictionary, user: ObjectId) => {
+  const {
+    jamName,
+    availableDates,
+    genre,
+    repertoire,
+    commitmentLevel,
+    image,
+    bandFormation,
+    // city,
+    // region,
+    landmark,
+    longitude,
+    latitude,
+    description,
+    allowMusicians,
+    notifyFavMusicians,
+  } = body;
 
-const address = `${city}, ${region}, ${landmark}`;
-const qrCode = await QRCode.toDataURL(address);
+  const address = `${landmark}`;
+  const qrCode = await QRCode.toDataURL(address);
 
-  const jamData = Jam.create({user, jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, city, region, landmark,  loc: { type: "Point", coordinates: [longitude, latitude] }, description, qrCode, allowMusicians, notifyFavMusicians})
-  if(!jamData){
+  const jamData = Jam.create({
+    user,
+    jamName,
+    availableDates,
+    genre,
+    repertoire,
+    commitmentLevel,
+    image,
+    bandFormation,
+    // city,
+    // region,
+    landmark,
+    loc: { type: "Point", coordinates: [longitude, latitude] },
+    description,
+    qrCode,
+    allowMusicians,
+    notifyFavMusicians,
+  });
+  if (!jamData) {
     throw new OperationalError(
-        STATUS_CODES.ACTION_FAILED,
-        ERROR_MESSAGES.JAM_NOT_FOUND
-    )
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.JAM_NOT_FOUND
+    );
   }
 
-  return jamData
-}
+  return jamData;
+};
 
-  const jamGet = async(query:Dictionary, user:ObjectId, timeZone ? :string)=>{
-  const {page, limit, genre, date, startDate, endDate, search, latitude, longitude, commitmentLevel, instrument} = query
- 
-const currentUser = await User.findById(user);
+const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
+  const {
+    page,
+    limit,
+    genre,
+    date,
+    startDate,
+    endDate,
+    search,
+    latitude,
+    longitude,
+    commitmentLevel,
+    instrument,
+  } = query;
+
+  const currentUser = await User.findById(user);
   const favMembers = currentUser?.favMembers || [];
 
- var filter: Dictionary = {
-  isDeleted: false,
-  isCancelled:false,
-  $or: [
-    { user: user },                 
-    { members: { $in: [user] } } 
-  ]
-};
+  var filter: Dictionary = {
+    isDeleted: false,
+    isCancelled: false,
+    $or: [{ user: user }, { members: { $in: [user] } }],
+  };
 
-var nearByJamsFilter: Dictionary = {
-  isDeleted:false,
-  isCancelled:false,
-  allowMusicians:true
-}
+  var nearByJamsFilter: Dictionary = {
+    isDeleted: false,
+    isCancelled: false,
+    allowMusicians: true,
+    user: { $ne: user },
+  };
 
-var hostedJamsFilter: Dictionary = {
-  user,
-  isDeleted:false,
-}
+  var hostedJamsFilter: Dictionary = {
+    user,
+    isDeleted: false,
+  };
 
-var attendedJamsFilter = {
-  members: { $in: [user] },  
-  isDeleted: false           
-};
+  var attendedJamsFilter = {
+    members: { $in: [user] },
+    isDeleted: false,
+  };
 
-  if(genre){
-    filter = {
+  if (genre) {
+    (filter = {
       ...filter,
-      genre
-    },
-    nearByJamsFilter = {
-      ...nearByJamsFilter,
-      genre
-    }
+      genre,
+    }),
+      (nearByJamsFilter = {
+        ...nearByJamsFilter,
+        genre,
+      });
   }
 
-if (date) {
-  const dateInTimeZone = timeZone ? getDateInTimeZone(date, timeZone) : moment(date);
-  const startOfDay = dateInTimeZone.startOf('day').toDate();
-  const endOfDay = dateInTimeZone.endOf('day').toDate();
+  if (date) {
+    const dateInTimeZone = timeZone
+      ? getDateInTimeZone(date, timeZone)
+      : moment(date);
+    const startOfDay = dateInTimeZone.startOf("day").toDate();
+    const endOfDay = dateInTimeZone.endOf("day").toDate();
 
-  filter = {
-    ...filter,
-      'availableDates.date': { $gte: startOfDay, $lte: endOfDay } 
-  };
-  nearByJamsFilter = {
-    ...nearByJamsFilter,
-    'availableDates.date': { $gte: startOfDay, $lte: endOfDay }  
-  };
-
-} else {
-  const today = timeZone ? getDateInTimeZone(new Date(), timeZone) : moment().startOf('day');
-  const startOfToday = today.startOf('day').toDate();
-
-  filter = {
-    ...filter,
-    'availableDates.date': { $gte: startOfToday }  
-  };
-nearByJamsFilter = {
-    ...nearByJamsFilter,
-    'availableDates.date': { $gte: startOfToday }  
-  };
-}
-
-if (startDate && endDate) {
-  const start = timeZone ? getDateInTimeZone(startDate, timeZone) : moment(startDate).startOf('day');
-  const end = timeZone ? getDateInTimeZone(endDate, timeZone) : moment(endDate).endOf('day');
-
-  console.log(start, end);  // Check the start and end dates after processing
-
-  filter = {
-    ...filter,
-    'availableDates.date': {
-      ...(start ? { $gte: start.startOf('day').toDate() } : {}),
-      ...(end ? { $lte: end.endOf('day').toDate() } : {})
-    }
-  };
-
-  nearByJamsFilter = {
-    ...nearByJamsFilter,
-    'availableDates.date': {
-      ...(start ? { $gte: start.startOf('day').toDate() } : {}),
-      ...(end ? { $lte: end.endOf('day').toDate() } : {})
-    }
-  };
-}
-
-
-console.log(filter, "filter.............")
-
-    if (latitude && longitude) {
-      nearByJamsFilter = {
-        ...nearByJamsFilter,
-        loc:{
-        $near: {
-          $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: 10000, 
-          $minDistance: 0  
-        },
-      }
-      };
-    }
-
-    if(commitmentLevel){
-       filter = {
+    filter = {
       ...filter,
-      commitmentLevel
-    },
+      "availableDates.date": { $gte: startOfDay, $lte: endOfDay },
+    };
     nearByJamsFilter = {
       ...nearByJamsFilter,
-      commitmentLevel
-    }
-    }
+      "availableDates.date": { $gte: startOfDay, $lte: endOfDay },
+    };
+  } else {
+    const today = timeZone
+      ? getDateInTimeZone(new Date(), timeZone)
+      : moment().startOf("day");
+    const startOfToday = today.startOf("day").toDate();
 
-    if (instrument) {
-  filter = {
-    ...filter,
-    bandFormation: { 
-      $elemMatch: { instrument: instrument }
-    }
-  };
+    filter = {
+      ...filter,
+      "availableDates.date": { $gte: startOfToday },
+    };
+    nearByJamsFilter = {
+      ...nearByJamsFilter,
+      "availableDates.date": { $gte: startOfToday },
+    };
+  }
 
-  nearByJamsFilter = {
-    ...nearByJamsFilter,
-    bandFormation: { 
-      $elemMatch: { instrument: instrument } 
-    }
-  };
-}
+  if (startDate && endDate) {
+    const start = timeZone
+      ? getDateInTimeZone(startDate, timeZone)
+      : moment(startDate).startOf("day");
+    const end = timeZone
+      ? getDateInTimeZone(endDate, timeZone)
+      : moment(endDate).endOf("day");
 
-    if (search) {
-  filter = {
-    ...filter,
-    $or: [
-      { jamName: { $regex: RegExp(search, "i") } },
-      { genre: { $regex: RegExp(search, "i") } },
-      { commitmentLevel: { $regex: RegExp(search, "i") } },
-      { "bandFormation.instrument": { $regex: RegExp(search, "i") } }, // Added specific path
-    ],
-  };
-}
+    console.log(start, end); // Check the start and end dates after processing
 
-  console.log(filter, "filter,,,,,,,,,,,,,")
-  const [jams, jamsCount, nearByJams, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = await Promise.all([
-    Jam.find(filter,{}, paginationOptions(page, limit)).populate("user"),
+    filter = {
+      ...filter,
+      "availableDates.date": {
+        ...(start ? { $gte: start.startOf("day").toDate() } : {}),
+        ...(end ? { $lte: end.endOf("day").toDate() } : {}),
+      },
+    };
+
+    nearByJamsFilter = {
+      ...nearByJamsFilter,
+      "availableDates.date": {
+        ...(start ? { $gte: start.startOf("day").toDate() } : {}),
+        ...(end ? { $lte: end.endOf("day").toDate() } : {}),
+      },
+    };
+  }
+
+  console.log(filter, "filter.............");
+
+  if (latitude && longitude) {
+    nearByJamsFilter = {
+      ...nearByJamsFilter,
+      loc: {
+        $near: {
+          $geometry: { type: "Point", coordinates: [longitude, latitude] },
+          $maxDistance: 10000,
+          $minDistance: 0,
+        },
+      },
+    };
+  }
+
+  if (commitmentLevel) {
+    (filter = {
+      ...filter,
+      commitmentLevel,
+    }),
+      (nearByJamsFilter = {
+        ...nearByJamsFilter,
+        commitmentLevel,
+      });
+  }
+
+  if (instrument) {
+    filter = {
+      ...filter,
+      bandFormation: {
+        $elemMatch: { instrument: instrument },
+      },
+    };
+
+    nearByJamsFilter = {
+      ...nearByJamsFilter,
+      bandFormation: {
+        $elemMatch: { instrument: instrument },
+      },
+    };
+  }
+
+  if (search) {
+    filter = {
+      ...filter,
+      $or: [
+        { jamName: { $regex: RegExp(search, "i") } },
+        { genre: { $regex: RegExp(search, "i") } },
+        { commitmentLevel: { $regex: RegExp(search, "i") } },
+        { "bandFormation.instrument": { $regex: RegExp(search, "i") } }, // Added specific path
+      ],
+    };
+  }
+
+  console.log(filter, "filter,,,,,,,,,,,,,");
+  const [
+    jams,
+    jamsCount,
+    nearByJams,
+    hostedJams,
+    hostedJamsCount,
+    attendedJams,
+    attendedJamsCount,
+  ] = await Promise.all([
+    Jam.find(filter, {}, paginationOptions(page, limit)).populate("user"),
     Jam.countDocuments(filter),
-    Jam.find(nearByJamsFilter, {},paginationOptions(page, limit)).populate("user"),
+    Jam.find(nearByJamsFilter, {}, paginationOptions(page, limit)).populate(
+      "user"
+    ),
     Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)),
     Jam.countDocuments(hostedJamsFilter),
-    Jam.find(attendedJamsFilter, {},paginationOptions(page, limit)),
-    Jam.countDocuments(attendedJamsFilter),  
+    Jam.find(attendedJamsFilter, {}, paginationOptions(page, limit)),
+    Jam.countDocuments(attendedJamsFilter),
     // Jam.countDocuments(nearByJamsFilter),
-  ])
-   
+  ]);
 
   const addIsFav = (jamList: any[]) => {
-    return jamList.map(jam => ({
+    return jamList.map((jam) => ({
       ...jam,
       user: {
         ...jam.user,
-        isFav: favMembers.includes(jam.user._id) ? true : false
-      }
+        isFav: favMembers.includes(jam.user._id) ? true : false,
+      },
     }));
   };
 
@@ -208,71 +266,135 @@ console.log(filter, "filter.............")
 
   const nearByJamsCount = nearByJams.length;
 
-  return {jams:jamsWithFav, jamsCount, nearByJams:nearByJamsWithFav, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount}
-  }
-
-const jamUpdate = async(body:Dictionary, user:ObjectId)=>{
- const { jamId, jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians} = body
- const jamUpdatedData = await Jam.findOneAndUpdate({_id:jamId, user, isDeleted:false}, {jamName, availableDates, genre, repertoire, bandFormation, city, region, landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians},{lean:true, new:true})
- if(!jamUpdatedData){
-   throw new OperationalError(
-        STATUS_CODES.ACTION_FAILED,
-        ERROR_MESSAGES.JAM_NOT_FOUND
-    )
- }
- return jamUpdatedData
-}
-
-const jamDelete = async(query:Dictionary, user:ObjectId)=>{
-  const {jamId} = query
-  const deletedJam = await Jam.findOneAndUpdate({_id:jamId, user, isDeleted:false},{$set:{isDeleted:true}},{lean:true,new:true})
-  if(!deletedJam){
-     throw new OperationalError(
-        STATUS_CODES.ACTION_FAILED,
-        ERROR_MESSAGES.JAM_NOT_FOUND
-    )
-  }
-}
-
-const jamInfo = async(query:Dictionary, userId:ObjectId)=>{
-  const {jamId} = query
-  const [jamData, userData] = await Promise.all([
-      Jam.findOne({_id:jamId,isDeleted:false}).populate("user") as Dictionary,
-      User.findById(userId)
-  ]) 
-  if(!jamData){
-     throw new OperationalError(
-        STATUS_CODES.ACTION_FAILED,
-        ERROR_MESSAGES.JAM_NOT_FOUND
-    )
-  }
-  const isFav = userData?.favMembers?.includes(jamData.user?._id);
-  console.log(isFav, "isFav..............")
-
-   return {
-    ...jamData._doc, // Spread the jamData's document fields
-    user: {
-      ...jamData?.user?._doc, // Spread the jamData's user document fields
-      isFav: isFav // Add the isFav field
-    }
+  return {
+    jams: jamsWithFav,
+    jamsCount,
+    nearByJams: nearByJamsWithFav,
+    nearByJamsCount,
+    hostedJams,
+    hostedJamsCount,
+    attendedJams,
+    attendedJamsCount,
   };
-}
+};
 
-const cancelJam = async(body: Dictionary, userId:ObjectId)=>{
-  const {jamId} = body
-  const cancelledJamData = await Jam.findOneAndUpdate({_id:jamId, user:userId, isDeleted:false, isCancelled:false},{isCancelled:true},{lean:true, new:true})
-  if(!cancelledJamData){
+const jamUpdate = async (body: Dictionary, user: ObjectId) => {
+  const {
+    jamId,
+    jamName,
+    availableDates,
+    genre,
+    repertoire,
+    bandFormation,
+    // city,
+    // region,
+    landmark,
+    commitmentLevel,
+    image,
+    description,
+    allowMusicians,
+    notifyFavMusicians,
+  } = body;
+  const jamUpdatedData = await Jam.findOneAndUpdate(
+    { _id: jamId, user, isDeleted: false },
+    {
+      jamName,
+      availableDates,
+      genre,
+      repertoire,
+      bandFormation,
+      // city,
+      // region,
+      landmark,
+      commitmentLevel,
+      image,
+      description,
+      allowMusicians,
+      notifyFavMusicians,
+    },
+    { lean: true, new: true }
+  );
+  if (!jamUpdatedData) {
     throw new OperationalError(
       STATUS_CODES.ACTION_FAILED,
       ERROR_MESSAGES.JAM_NOT_FOUND
-    )
+    );
   }
-  return cancelledJamData
-}
+  return jamUpdatedData;
+};
 
-const getUsers = async(query:Dictionary, userId:ObjectId)=>{
- const {page, limit, search, latitude, longitude, instrument, commitmentLevel} = query
- let userQuery : Dictionary = {isDeleted:false, isVerified:true, _id: { $ne: userId } }
+const jamDelete = async (query: Dictionary, user: ObjectId) => {
+  const { jamId } = query;
+  const deletedJam = await Jam.findOneAndUpdate(
+    { _id: jamId, user, isDeleted: false },
+    { $set: { isDeleted: true } },
+    { lean: true, new: true }
+  );
+  if (!deletedJam) {
+    throw new OperationalError(
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.JAM_NOT_FOUND
+    );
+  }
+};
+
+const jamInfo = async (query: Dictionary, userId: ObjectId) => {
+  const { jamId } = query;
+  const [jamData, userData] = await Promise.all([
+    Jam.findOne({ _id: jamId, isDeleted: false }).populate(
+      "user"
+    ) as Dictionary,
+    User.findById(userId),
+  ]);
+  if (!jamData) {
+    throw new OperationalError(
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.JAM_NOT_FOUND
+    );
+  }
+  const isFav = userData?.favMembers?.includes(jamData.user?._id);
+  console.log(isFav, "isFav..............");
+
+  return {
+    ...jamData._doc, // Spread the jamData's document fields
+    user: {
+      ...jamData?.user?._doc, // Spread the jamData's user document fields
+      isFav: isFav, // Add the isFav field
+    },
+  };
+};
+
+const cancelJam = async (body: Dictionary, userId: ObjectId) => {
+  const { jamId } = body;
+  const cancelledJamData = await Jam.findOneAndUpdate(
+    { _id: jamId, user: userId, isDeleted: false, isCancelled: false },
+    { isCancelled: true },
+    { lean: true, new: true }
+  );
+  if (!cancelledJamData) {
+    throw new OperationalError(
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.JAM_NOT_FOUND
+    );
+  }
+  return cancelledJamData;
+};
+
+const getUsers = async (query: Dictionary, userId: ObjectId) => {
+  const {
+    page,
+    limit,
+    search,
+    latitude,
+    longitude,
+    instrument,
+    commitmentLevel,
+  } = query;
+  let userQuery: Dictionary = {
+    isDeleted: false,
+    isVerified: true,
+    _id: { $ne: userId },
+  };
   //  if(commitmentLevel){
   //      userQuery = {
   //     ...userQuery,
@@ -280,46 +402,49 @@ const getUsers = async(query:Dictionary, userId:ObjectId)=>{
   //   }
   //  }
 
-    if (instrument) {
-  userQuery = {
-    ...userQuery,
-      instrument
-  };
-}
+  if (instrument) {
+    userQuery = {
+      ...userQuery,
+      instrument,
+    };
+  }
 
-if (search) {
-      userQuery = {
-        ...userQuery,
-        $or: [
-          { fullName: { $regex: RegExp(search, "i") } },
-          { email: { $regex: RegExp(search, "i") } },
-        ],
-      };
-    }
-    console.log(userQuery, "suerQuery...........")
- const [Users, countUser, userData] = await Promise.all([
-  User.find(userQuery, {password:0},paginationOptions(page, limit)),
-  User.countDocuments(userQuery),
-  User.findById(userId).select("favMembers")
- ])
-//  if(!Users || countUser===0){
-//   throw new OperationalError(
-//     STATUS_CODES.ACTION_FAILED,
-//     ERROR_MESSAGES.USER_NOT_FOUND
-//   )
-//  }
- console.log(userData, "userData...........`")
-   const updatedUsers = await Promise.all(
+  if (search) {
+    userQuery = {
+      ...userQuery,
+      $or: [
+        { fullName: { $regex: RegExp(search, "i") } },
+        { email: { $regex: RegExp(search, "i") } },
+      ],
+    };
+  }
+  console.log(userQuery, "suerQuery...........");
+  const [Users, countUser, userData] = await Promise.all([
+    User.find(userQuery, { password: 0 }, paginationOptions(page, limit)),
+    User.countDocuments(userQuery),
+    User.findById(userId).select("favMembers"),
+  ]);
+  //  if(!Users || countUser===0){
+  //   throw new OperationalError(
+  //     STATUS_CODES.ACTION_FAILED,
+  //     ERROR_MESSAGES.USER_NOT_FOUND
+  //   )
+  //  }
+  console.log(userData, "userData...........`");
+  const updatedUsers = await Promise.all(
     Users.map(async (user: Dictionary) => {
       const isFav = userData?.favMembers?.includes(user._id);
 
-     const hostedJamsFilter = { user: user._id, isDeleted: false };
-     const [hostedJams, hostedJamsCount] = await Promise.all([
+      const hostedJamsFilter = { user: user._id, isDeleted: false };
+      const [hostedJams, hostedJamsCount] = await Promise.all([
         Jam.find(hostedJamsFilter),
         Jam.countDocuments(hostedJamsFilter),
       ]);
 
-      const attendedJamsFilter = { members: { $in: [user._id] }, isDeleted: false };
+      const attendedJamsFilter = {
+        members: { $in: [user._id] },
+        isDeleted: false,
+      };
       const [attendedJams, attendedJamsCount] = await Promise.all([
         Jam.find(attendedJamsFilter),
         Jam.countDocuments(attendedJamsFilter),
@@ -337,12 +462,12 @@ if (search) {
   );
 
   console.log(updatedUsers);
- return {Users:updatedUsers, countUser}
-}
+  return { Users: updatedUsers, countUser };
+};
 
-const favMember = async(body:Dictionary, userId:ObjectId)=>{
-   const { favMemId } = body;
-   const user = await User.findOne({
+const favMember = async (body: Dictionary, userId: ObjectId) => {
+  const { favMemId } = body;
+  const user = await User.findOne({
     _id: userId,
     isDeleted: false,
   });
@@ -353,14 +478,14 @@ const favMember = async(body:Dictionary, userId:ObjectId)=>{
     if (isFavMember) {
       updateUser = await User.findByIdAndUpdate(
         { _id: userId, isBlocked: false },
-        { $pull: { favMembers: favMemId } }, 
+        { $pull: { favMembers: favMemId } },
         { lean: true, new: true }
       );
       return { message: "Removed from favorites" };
     } else {
       updateUser = await User.findByIdAndUpdate(
         { _id: userId, isBlocked: false },
-        { $addToSet: { favMembers: favMemId } }, 
+        { $addToSet: { favMembers: favMemId } },
         { lean: true, new: true }
       );
       return { message: "Added to favorites" };
@@ -368,48 +493,64 @@ const favMember = async(body:Dictionary, userId:ObjectId)=>{
   } else {
     return { message: "User not found or already deleted" };
   }
+};
 
-}
-
-const favMemberGet = async(query:Dictionary, userId:ObjectId)=>{
-  const {page, limit} = query
-  const favMemList = await User.findById(userId, {favMembers:1, _id:0}).populate({
-      path: 'favMembers',
+const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
+  const { page, limit } = query;
+  const favMemList = await User.findById(userId, { favMembers: 1, _id: 0 })
+    .populate({
+      path: "favMembers",
       options: {
-        limit: limit, 
-        skip: page*limit,   
-      }
+        limit: limit,
+        skip: page * limit,
+      },
     })
     .lean();
 
   // const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
-  const favMemCount = favMemList?.favMembers?.length
-  return {favMemList, favMemCount}
-}
+  const favMemCount = favMemList?.favMembers?.length;
+  return { favMemList, favMemCount };
+};
 
-const inviteMembers = async(body: Dictionary, userId:ObjectId)=>{
-   const {members, jamId} = body
-   const [deviceTokens, jamData] = await Promise.all([
-     Token.find({
-       user: { $in: members },
+const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
+  const { members, jamId } = body;
+  const [deviceTokens, jamData] = await Promise.all([
+    Token.find({
+      user: { $in: members },
       isDeleted: false,
     }).distinct("device.token"),
-    Jam.findOne({_id:jamId, isDeleted:false})
-   ]) 
+    Jam.findOne({ _id: jamId, isDeleted: false }),
+  ]);
   //  sendPushNotification("invitation from the jam", "message", deviceTokens)
-}
+};
 
-const acceptJam = async(body: Dictionary, userId:ObjectId)=>{
-  const {jamId, case:action} = body
-  switch (action){
-    case "accept" :
-      await Jam.findOneAndUpdate({_id:jamId, isDeleted:false},{$addToSet:{members:userId}},{lean:true, new:true})
-  return { message: "User added to the jam successfully."};
-  case "reject" : 
-     return { message: "User added to the jam successfully."}
-   default:
+const acceptJam = async (body: Dictionary, userId: ObjectId) => {
+  const { jamId, case: action } = body;
+  switch (action) {
+    case "accept":
+      await Jam.findOneAndUpdate(
+        { _id: jamId, isDeleted: false },
+        { $addToSet: { members: userId } },
+        { lean: true, new: true }
+      );
+      return { message: "User added to the jam successfully." };
+    case "reject":
+      return { message: "User added to the jam successfully." };
+    default:
       return { message: "Invalid case action." };
   }
-}
+};
 
-export {jamCreate, jamGet, jamUpdate, jamDelete, jamInfo, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam}
+export {
+  jamCreate,
+  jamGet,
+  jamUpdate,
+  jamDelete,
+  jamInfo,
+  cancelJam,
+  getUsers,
+  favMember,
+  favMemberGet,
+  inviteMembers,
+  acceptJam,
+};

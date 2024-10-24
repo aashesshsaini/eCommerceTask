@@ -20,8 +20,17 @@ const jamCreate = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
 const jamGet = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const timeZone = (_a = req.headers.timezone) !== null && _a !== void 0 ? _a : "Asia/Kolkata";
-    const { jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount } = yield services_1.userJamService.jamGet(req.query, req.token.user._id, timeZone);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, { jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount });
+    const { jams, jamsCount, nearByJams, nearByJamsCount, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount, } = yield services_1.userJamService.jamGet(req.query, req.token.user._id, timeZone);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, {
+        jams,
+        jamsCount,
+        nearByJams,
+        nearByJamsCount,
+        hostedJams,
+        hostedJamsCount,
+        attendedJams,
+        attendedJamsCount,
+    });
 }));
 const jamUpdate = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const jamUpdatedData = yield services_1.userJamService.jamUpdate(req.body, req.token.user._id);
@@ -59,4 +68,16 @@ const acceptJam = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
     const members = yield services_1.userJamService.acceptJam(req.body, req.token.user._id);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, members);
 }));
-exports.default = { jamCreate, jamGet, jamUpdate, jamDelete, jamInfo, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam };
+exports.default = {
+    jamCreate,
+    jamGet,
+    jamUpdate,
+    jamDelete,
+    jamInfo,
+    cancelJam,
+    getUsers,
+    favMember,
+    favMemberGet,
+    inviteMembers,
+    acceptJam,
+};

@@ -27,15 +27,15 @@ import { JOI, GENRE, COMMITMENT_LEVEL} from '../../config/appConstant';
        genre:Joi.string().valid(...Object.values(GENRE)).required(),
        repertoire:Joi.array().items(Joi.string().required()),
        commitmentLevel:Joi.string().valid(...Object.values(COMMITMENT_LEVEL)).required(),
-       image: Joi.string(),
+       image: Joi.string().allow("", null),
        bandFormation:Joi.array().items(
          Joi.object().keys({
             instrument: Joi.string().required(),
             type: Joi.string().valid("mandatory", "optional")
          })
       ),
-       city:Joi.string().required(),
-       region:Joi.string().required(),
+      //  city:Joi.string().required(),
+      //  region:Joi.string().required(),
        landmark:Joi.string().required(),
        latitude: Joi.number().default(0).min(-90).max(90),
        longitude: Joi.number().default(0).min(-180).max(180),
@@ -86,13 +86,13 @@ const jamUpdate = {
             type: Joi.string().valid("mandatory", "optional")
          })
       ),
-       city:Joi.string(),
-       region:Joi.string(),
+      //  city:Joi.string(),
+      //  region:Joi.string(),
        landmark:Joi.string(),
        commitmentLevel:Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
        latitude: Joi.number().default(0).min(-90).max(90),
        longitude: Joi.number().default(0).min(-180).max(180),
-       image: Joi.string(),
+       image: Joi.string().allow("", null),
        description:Joi.string(),
        allowMusicians:Joi.boolean(),
        notifyFavMusicians:Joi.boolean()

@@ -27,13 +27,13 @@ const jamCreate = {
         genre: joi_1.default.string().valid(...Object.values(appConstant_1.GENRE)).required(),
         repertoire: joi_1.default.array().items(joi_1.default.string().required()),
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)).required(),
-        image: joi_1.default.string(),
+        image: joi_1.default.string().allow("", null),
         bandFormation: joi_1.default.array().items(joi_1.default.object().keys({
             instrument: joi_1.default.string().required(),
             type: joi_1.default.string().valid("mandatory", "optional")
         })),
-        city: joi_1.default.string().required(),
-        region: joi_1.default.string().required(),
+        //  city:Joi.string().required(),
+        //  region:Joi.string().required(),
         landmark: joi_1.default.string().required(),
         latitude: joi_1.default.number().default(0).min(-90).max(90),
         longitude: joi_1.default.number().default(0).min(-180).max(180),
@@ -76,13 +76,13 @@ const jamUpdate = {
             instrument: joi_1.default.string().required(),
             type: joi_1.default.string().valid("mandatory", "optional")
         })),
-        city: joi_1.default.string(),
-        region: joi_1.default.string(),
+        //  city:Joi.string(),
+        //  region:Joi.string(),
         landmark: joi_1.default.string(),
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
         latitude: joi_1.default.number().default(0).min(-90).max(90),
         longitude: joi_1.default.number().default(0).min(-180).max(180),
-        image: joi_1.default.string(),
+        image: joi_1.default.string().allow("", null),
         description: joi_1.default.string(),
         allowMusicians: joi_1.default.boolean(),
         notifyFavMusicians: joi_1.default.boolean()

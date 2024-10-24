@@ -64,12 +64,12 @@ const jamSchema = new mongoose_1.Schema({
                 type: String
             }
         }],
-    city: {
-        type: String
-    },
-    region: {
-        type: String
-    },
+    //  city:{
+    //   type:String
+    //  },
+    //  region:{
+    //   type:String
+    //  },
     landmark: {
         type: String
     },

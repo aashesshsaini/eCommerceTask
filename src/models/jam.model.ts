@@ -44,12 +44,12 @@ const jamSchema = new Schema<JamDocument>(
           type:String
         }
        }],
-       city:{
-        type:String
-       },
-       region:{
-        type:String
-       },
+      //  city:{
+      //   type:String
+      //  },
+      //  region:{
+      //   type:String
+      //  },
        landmark:{
         type:String
        },

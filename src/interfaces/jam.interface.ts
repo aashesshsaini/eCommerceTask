@@ -23,8 +23,8 @@ export interface JamDocument extends Document {
     instrument: string,
     type:string
   }];
-  city: string;
-  region: string;
+  // city: string;
+  // region: string;
   landmark: string;
    loc?: {
     type: "Point"; // Should always be "Point" for geospatial data
