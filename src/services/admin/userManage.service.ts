@@ -72,6 +72,7 @@ const userBlock = async (body:{userId:ObjectId}) => {
   
   const userInfo = async (query:Dictionary) => {
     const {userId} = query
+    console.log(userId, "userId..............");
     const user = await User.findOne({
       _id: userId,
       isDeleted: false,

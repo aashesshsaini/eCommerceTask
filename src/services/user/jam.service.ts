@@ -218,13 +218,14 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
   }
 
   if (search) {
+    const trimmedSearch = search.trim();
     filter = {
       ...filter,
       $or: [
-        { jamName: { $regex: RegExp(search, "i") } },
-        { genre: { $regex: RegExp(search, "i") } },
-        { commitmentLevel: { $regex: RegExp(search, "i") } },
-        { "bandFormation.instrument": { $regex: RegExp(search, "i") } }, // Added specific path
+        { jamName: { $regex: RegExp(trimmedSearch, "i") } },
+        { genre: { $regex: RegExp(trimmedSearch, "i") } },
+        { commitmentLevel: { $regex: RegExp(trimmedSearch, "i") } },
+        { "bandFormation.instrument": { $regex: RegExp(trimmedSearch, "i") } }, // Added specific path
       ],
     };
   }
@@ -496,10 +497,19 @@ const favMember = async (body: Dictionary, userId: ObjectId) => {
 };
 
 const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
-  const { page, limit } = query;
+  const { page, limit, search } = query;
+  const matchCondition: Dictionary = {};
+  if (search) {
+    const trimmedSearch = search.trim();
+    matchCondition.$or = [
+      { firstName: { $regex: trimmedSearch, $options: "i" } },
+      { lastName: { $regex: trimmedSearch, $options: "i" } },
+    ];
+  }
   const favMemList = await User.findById(userId, { favMembers: 1, _id: 0 })
     .populate({
       path: "favMembers",
+      match: matchCondition,
       options: {
         limit: limit,
         skip: page * limit,

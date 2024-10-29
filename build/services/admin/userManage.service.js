@@ -66,6 +66,7 @@ const userBlock = (body) => __awaiter(void 0, void 0, void 0, function* () {
 exports.userBlock = userBlock;
 const userInfo = (query) => __awaiter(void 0, void 0, void 0, function* () {
     const { userId } = query;
+    console.log(userId, "userId..............");
     const user = yield models_1.User.findOne({
         _id: userId,
         isDeleted: false,

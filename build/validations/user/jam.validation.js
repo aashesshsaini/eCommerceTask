@@ -24,13 +24,17 @@ const jamCreate = {
         //   startTime: Joi.string().required(),
         //   endTime: Joi.string().required()
         //  }),
-        genre: joi_1.default.string().valid(...Object.values(appConstant_1.GENRE)).required(),
+        genre: joi_1.default.string()
+            .valid(...Object.values(appConstant_1.GENRE))
+            .required(),
         repertoire: joi_1.default.array().items(joi_1.default.string().required()),
-        commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)).required(),
+        commitmentLevel: joi_1.default.string()
+            .valid(...Object.values(appConstant_1.COMMITMENT_LEVEL))
+            .required(),
         image: joi_1.default.string().allow("", null),
         bandFormation: joi_1.default.array().items(joi_1.default.object().keys({
             instrument: joi_1.default.string().required(),
-            type: joi_1.default.string().valid("mandatory", "optional")
+            type: joi_1.default.string().valid("mandatory", "optional"),
         })),
         //  city:Joi.string().required(),
         //  region:Joi.string().required(),
@@ -39,8 +43,8 @@ const jamCreate = {
         longitude: joi_1.default.number().default(0).min(-180).max(180),
         description: joi_1.default.string().required(),
         allowMusicians: joi_1.default.boolean().required(),
-        notifyFavMusicians: joi_1.default.boolean().required()
-    })
+        notifyFavMusicians: joi_1.default.boolean().required(),
+    }),
 };
 const jamGet = {
     query: joi_1.default.object().keys({
@@ -54,27 +58,25 @@ const jamGet = {
         page: appConstant_1.JOI.PAGE,
         limit: appConstant_1.JOI.LIMIT,
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
-        instrument: joi_1.default.string()
-    })
+        instrument: joi_1.default.string(),
+    }),
 };
 const jamUpdate = {
     body: joi_1.default.object().keys({
         jamId: appConstant_1.JOI.OBJECTID,
         jamName: joi_1.default.string(),
-        availableDates: joi_1.default.array()
-            .items(joi_1.default.object({
+        availableDates: joi_1.default.array().items(joi_1.default.object({
             date: joi_1.default.date(),
-            slots: joi_1.default.array()
-                .items(joi_1.default.object({
+            slots: joi_1.default.array().items(joi_1.default.object({
                 startTime: joi_1.default.string(),
                 endTime: joi_1.default.string(),
-            }))
+            })),
         })),
         genre: joi_1.default.string(),
         repertoire: joi_1.default.array().items(joi_1.default.string()),
         bandFormation: joi_1.default.array().items(joi_1.default.object().keys({
             instrument: joi_1.default.string().required(),
-            type: joi_1.default.string().valid("mandatory", "optional")
+            type: joi_1.default.string().valid("mandatory", "optional"),
         })),
         //  city:Joi.string(),
         //  region:Joi.string(),
@@ -85,23 +87,23 @@ const jamUpdate = {
         image: joi_1.default.string().allow("", null),
         description: joi_1.default.string(),
         allowMusicians: joi_1.default.boolean(),
-        notifyFavMusicians: joi_1.default.boolean()
-    })
+        notifyFavMusicians: joi_1.default.boolean(),
+    }),
 };
 const jamDelete = {
     query: joi_1.default.object().keys({
-        jamId: appConstant_1.JOI.OBJECTID
-    })
+        jamId: appConstant_1.JOI.OBJECTID,
+    }),
 };
 const jamInfo = {
     query: joi_1.default.object().keys({
-        jamId: appConstant_1.JOI.OBJECTID
-    })
+        jamId: appConstant_1.JOI.OBJECTID,
+    }),
 };
 const cancelJam = {
     body: joi_1.default.object().keys({
-        jamId: appConstant_1.JOI.OBJECTID
-    })
+        jamId: appConstant_1.JOI.OBJECTID,
+    }),
 };
 const getUsers = {
     query: joi_1.default.object().keys({
@@ -111,30 +113,43 @@ const getUsers = {
         latitude: joi_1.default.number().default(0).min(-90).max(90),
         longitude: joi_1.default.number().default(0).min(-180).max(180),
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
-        instrument: joi_1.default.string()
-    })
+        instrument: joi_1.default.string(),
+    }),
 };
 const favMember = {
     body: joi_1.default.object().keys({
         favMemId: appConstant_1.JOI.OBJECTID,
-    })
+    }),
 };
 const favMemberGet = {
     query: joi_1.default.object().keys({
         page: appConstant_1.JOI.PAGE,
-        limit: appConstant_1.JOI.LIMIT
-    })
+        limit: appConstant_1.JOI.LIMIT,
+        search: joi_1.default.string().allow("", null),
+    }),
 };
 const inviteMembers = {
     body: joi_1.default.object().keys({
         memberId: joi_1.default.array().items(appConstant_1.JOI.OBJECTID),
-        jamId: appConstant_1.JOI.OBJECTID
-    })
+        jamId: appConstant_1.JOI.OBJECTID,
+    }),
 };
 const acceptJam = {
     body: joi_1.default.object().keys({
         jamId: appConstant_1.JOI.OBJECTID,
-        case: joi_1.default.string().valid('accept', 'reject')
-    })
+        case: joi_1.default.string().valid("accept", "reject"),
+    }),
 };
-exports.default = { jamCreate, jamGet, jamUpdate, jamDelete, jamInfo, cancelJam, getUsers, favMember, favMemberGet, inviteMembers, acceptJam };
+exports.default = {
+    jamCreate,
+    jamGet,
+    jamUpdate,
+    jamDelete,
+    jamInfo,
+    cancelJam,
+    getUsers,
+    favMember,
+    favMemberGet,
+    inviteMembers,
+    acceptJam,
+};

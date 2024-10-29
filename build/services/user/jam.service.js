@@ -132,11 +132,12 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
             } });
     }
     if (search) {
+        const trimmedSearch = search.trim();
         filter = Object.assign(Object.assign({}, filter), { $or: [
-                { jamName: { $regex: RegExp(search, "i") } },
-                { genre: { $regex: RegExp(search, "i") } },
-                { commitmentLevel: { $regex: RegExp(search, "i") } },
-                { "bandFormation.instrument": { $regex: RegExp(search, "i") } }, // Added specific path
+                { jamName: { $regex: RegExp(trimmedSearch, "i") } },
+                { genre: { $regex: RegExp(trimmedSearch, "i") } },
+                { commitmentLevel: { $regex: RegExp(trimmedSearch, "i") } },
+                { "bandFormation.instrument": { $regex: RegExp(trimmedSearch, "i") } }, // Added specific path
             ] });
     }
     console.log(filter, "filter,,,,,,,,,,,,,");
@@ -312,10 +313,19 @@ const favMember = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
 exports.favMember = favMember;
 const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const { page, limit } = query;
+    const { page, limit, search } = query;
+    const matchCondition = {};
+    if (search) {
+        const trimmedSearch = search.trim();
+        matchCondition.$or = [
+            { firstName: { $regex: trimmedSearch, $options: "i" } },
+            { lastName: { $regex: trimmedSearch, $options: "i" } },
+        ];
+    }
     const favMemList = yield models_1.User.findById(userId, { favMembers: 1, _id: 0 })
         .populate({
         path: "favMembers",
+        match: matchCondition,
         options: {
             limit: limit,
             skip: page * limit,

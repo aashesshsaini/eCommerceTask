@@ -141,6 +141,7 @@ const favMemberGet = {
   query: Joi.object().keys({
     page: JOI.PAGE,
     limit: JOI.LIMIT,
+    search: Joi.string().allow("", null),
   }),
 };
 
