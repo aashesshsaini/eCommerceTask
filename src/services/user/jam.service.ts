@@ -231,7 +231,7 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
         { genre: { $regex: RegExp(trimmedSearch, "i") } },
         { commitmentLevel: { $regex: RegExp(trimmedSearch, "i") } },
         { "bandFormation.instrument": { $regex: RegExp(trimmedSearch, "i") } },
-        { members: { $in: matchingUserIds } }, 
+        { members: { $in: matchingUserIds } },
       ],
     };
   }
@@ -246,14 +246,20 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
     attendedJams,
     attendedJamsCount,
   ] = await Promise.all([
-    Jam.find(filter, {}, paginationOptions(page, limit)).populate("user"),
+    Jam.find(filter, {}, paginationOptions(page, limit))
+      .populate("user")
+      .populate("members"),
     Jam.countDocuments(filter),
     Jam.find(nearByJamsFilter, {}, paginationOptions(page, limit)).populate(
       "user"
     ),
-    Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)),
+    Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)).populate(
+      "user"
+    ),
     Jam.countDocuments(hostedJamsFilter),
-    Jam.find(attendedJamsFilter, {}, paginationOptions(page, limit)),
+    Jam.find(attendedJamsFilter, {}, paginationOptions(page, limit)).populate(
+      "user"
+    ),
     Jam.countDocuments(attendedJamsFilter),
     // Jam.countDocuments(nearByJamsFilter),
   ]);

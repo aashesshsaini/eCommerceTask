@@ -148,12 +148,14 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
     }
     console.log(filter, "filter,,,,,,,,,,,,,");
     const [jams, jamsCount, nearByJams, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount,] = yield Promise.all([
-        models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
+        models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit))
+            .populate("user")
+            .populate("members"),
         models_1.Jam.countDocuments(filter),
         models_1.Jam.find(nearByJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
-        models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
         models_1.Jam.countDocuments(hostedJamsFilter),
-        models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
         models_1.Jam.countDocuments(attendedJamsFilter),
         // Jam.countDocuments(nearByJamsFilter),
     ]);
