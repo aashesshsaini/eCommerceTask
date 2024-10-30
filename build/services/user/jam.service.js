@@ -133,11 +133,17 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
     }
     if (search) {
         const trimmedSearch = search.trim();
+        const matchingUsers = yield models_1.User.find({
+            firstName: { $regex: RegExp(trimmedSearch, "i") },
+            lastName: { $regex: RegExp(trimmedSearch, "i") },
+        });
+        const matchingUserIds = matchingUsers.map((user) => user._id);
         filter = Object.assign(Object.assign({}, filter), { $or: [
                 { jamName: { $regex: RegExp(trimmedSearch, "i") } },
                 { genre: { $regex: RegExp(trimmedSearch, "i") } },
                 { commitmentLevel: { $regex: RegExp(trimmedSearch, "i") } },
-                { "bandFormation.instrument": { $regex: RegExp(trimmedSearch, "i") } }, // Added specific path
+                { "bandFormation.instrument": { $regex: RegExp(trimmedSearch, "i") } },
+                { members: { $in: matchingUserIds } },
             ] });
     }
     console.log(filter, "filter,,,,,,,,,,,,,");

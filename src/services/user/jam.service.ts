@@ -219,13 +219,19 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
 
   if (search) {
     const trimmedSearch = search.trim();
+    const matchingUsers = await User.find({
+      firstName: { $regex: RegExp(trimmedSearch, "i") },
+      lastName: { $regex: RegExp(trimmedSearch, "i") },
+    });
+    const matchingUserIds = matchingUsers.map((user) => user._id);
     filter = {
       ...filter,
       $or: [
         { jamName: { $regex: RegExp(trimmedSearch, "i") } },
         { genre: { $regex: RegExp(trimmedSearch, "i") } },
         { commitmentLevel: { $regex: RegExp(trimmedSearch, "i") } },
-        { "bandFormation.instrument": { $regex: RegExp(trimmedSearch, "i") } }, // Added specific path
+        { "bandFormation.instrument": { $regex: RegExp(trimmedSearch, "i") } },
+        { members: { $in: matchingUserIds } }, 
       ],
     };
   }
