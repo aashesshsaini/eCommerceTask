@@ -1,16 +1,16 @@
-import Joi from 'joi';
-import { JOI, COMMITMENT_LEVEL} from '../../config/appConstant';
+import Joi from "joi";
+import { JOI, COMMITMENT_LEVEL } from "../../config/appConstant";
 
- const signup = {
-    body: Joi.object().keys({
-        firstName: Joi.string().required(),
-        lastName: Joi.string().required(),
-        mobileNumber: JOI.PHONENUMBER,
-        countryCode: Joi.string().required(),
-        email: JOI.EMAIL,
-        password: JOI.PASSWORD,
-    })
-}
+const signup = {
+  body: Joi.object().keys({
+    firstName: Joi.string().required(),
+    lastName: Joi.string().required(),
+    mobileNumber: JOI.PHONENUMBER,
+    countryCode: Joi.string().required(),
+    email: JOI.EMAIL,
+    password: JOI.PASSWORD,
+  }),
+};
 
 const verifyOtp = {
   body: Joi.object().keys({
@@ -19,8 +19,8 @@ const verifyOtp = {
 };
 
 const resendOtp = {
-  body: Joi.object().keys({})
-}
+  body: Joi.object().keys({}),
+};
 
 const createProfile = {
   body: Joi.object().keys({
@@ -36,49 +36,49 @@ const createProfile = {
     improvisationalSkill: Joi.string(),
     motivation: Joi.string(),
     aboutRepertoire: Joi.string(),
-    publicExpirence: Joi.string()
-  })
-}
+    publicExpirence: Joi.string(),
+    caption: Joi.string(),
+  }),
+};
 
- const login = {
-    body: Joi.object().keys({
-        mobileNumber: Joi.string()
-        .min(5)
-        .max(15)
-        .pattern(/^[0-9]+$/),
-        email: Joi.string().email().lowercase().trim(),
-        password: JOI.PASSWORD,
-        page:JOI.PAGE,
-        limit:JOI.LIMIT
-    })
-}
+const login = {
+  body: Joi.object().keys({
+    mobileNumber: Joi.string()
+      .min(5)
+      .max(15)
+      .pattern(/^[0-9]+$/),
+    email: Joi.string().email().lowercase().trim(),
+    password: JOI.PASSWORD,
+    page: JOI.PAGE,
+    limit: JOI.LIMIT,
+  }),
+};
 
-
- const changePassword = {
-    body: Joi.object().keys({
-        newPassword: JOI.PASSWORD,
-        oldPassword: JOI.PASSWORD
-    })
-}
+const changePassword = {
+  body: Joi.object().keys({
+    newPassword: JOI.PASSWORD,
+    oldPassword: JOI.PASSWORD,
+  }),
+};
 
 const deleteAccount = {
   query: Joi.object().keys({
-    password: JOI.PASSWORD
-  })
-}
+    password: JOI.PASSWORD,
+  }),
+};
 
- const logout = {
-  body: Joi.object().keys({})
-}
+const logout = {
+  body: Joi.object().keys({}),
+};
 
 const editProfile = {
   body: Joi.object().keys({
     firstName: Joi.string(),
     lastName: Joi.string(),
     mobileNumber: Joi.string()
-    .min(5)
-    .max(15)
-    .pattern(/^[0-9]+$/),
+      .min(5)
+      .max(15)
+      .pattern(/^[0-9]+$/),
     countryCode: Joi.string(),
     email: Joi.string().email().lowercase().trim(),
     zipCode: Joi.string(),
@@ -89,8 +89,9 @@ const editProfile = {
     commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
     bio: Joi.string(),
     document: Joi.string(),
-  })
-}
+    caption: Joi.string(),
+  }),
+};
 
 const editQuestionnaire = {
   body: Joi.object().keys({
@@ -98,21 +99,21 @@ const editQuestionnaire = {
     improvisationalSkill: Joi.string(),
     motivation: Joi.string(),
     aboutRepertoire: Joi.string(),
-    publicExpirence: Joi.string()
-  })
-}
+    publicExpirence: Joi.string(),
+  }),
+};
 
 const forgotPassword = {
   body: Joi.object().keys({
-    email: JOI.EMAIL
-  })
-}
+    email: JOI.EMAIL,
+  }),
+};
 
 const forgotPage = {
   query: Joi.object().keys({
-    token: Joi.string().required()
-  })
-}
+    token: Joi.string().required(),
+  }),
+};
 
 const resetForgotPassword = {
   body: Joi.object().keys({
@@ -125,13 +126,28 @@ const resetForgotPassword = {
   query: Joi.object().keys({
     token: Joi.string().required(),
   }),
-}
+};
 
 const userInfo = {
   query: Joi.object().keys({
     page: JOI.PAGE,
-    limit: JOI.LIMIT
-  })
-}
+    limit: JOI.LIMIT,
+  }),
+};
 
-export default {signup, verifyOtp, resendOtp, createProfile, login , changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo}
+export default {
+  signup,
+  verifyOtp,
+  resendOtp,
+  createProfile,
+  login,
+  changePassword,
+  deleteAccount,
+  logout,
+  editProfile,
+  editQuestionnaire,
+  forgotPassword,
+  forgotPage,
+  resetForgotPassword,
+  userInfo,
+};

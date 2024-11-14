@@ -13,7 +13,7 @@ const signup = {
         countryCode: joi_1.default.string().required(),
         email: appConstant_1.JOI.EMAIL,
         password: appConstant_1.JOI.PASSWORD,
-    })
+    }),
 };
 const verifyOtp = {
     body: joi_1.default.object().keys({
@@ -21,7 +21,7 @@ const verifyOtp = {
     }),
 };
 const resendOtp = {
-    body: joi_1.default.object().keys({})
+    body: joi_1.default.object().keys({}),
 };
 const createProfile = {
     body: joi_1.default.object().keys({
@@ -37,8 +37,9 @@ const createProfile = {
         improvisationalSkill: joi_1.default.string(),
         motivation: joi_1.default.string(),
         aboutRepertoire: joi_1.default.string(),
-        publicExpirence: joi_1.default.string()
-    })
+        publicExpirence: joi_1.default.string(),
+        caption: joi_1.default.string(),
+    }),
 };
 const login = {
     body: joi_1.default.object().keys({
@@ -49,22 +50,22 @@ const login = {
         email: joi_1.default.string().email().lowercase().trim(),
         password: appConstant_1.JOI.PASSWORD,
         page: appConstant_1.JOI.PAGE,
-        limit: appConstant_1.JOI.LIMIT
-    })
+        limit: appConstant_1.JOI.LIMIT,
+    }),
 };
 const changePassword = {
     body: joi_1.default.object().keys({
         newPassword: appConstant_1.JOI.PASSWORD,
-        oldPassword: appConstant_1.JOI.PASSWORD
-    })
+        oldPassword: appConstant_1.JOI.PASSWORD,
+    }),
 };
 const deleteAccount = {
     query: joi_1.default.object().keys({
-        password: appConstant_1.JOI.PASSWORD
-    })
+        password: appConstant_1.JOI.PASSWORD,
+    }),
 };
 const logout = {
-    body: joi_1.default.object().keys({})
+    body: joi_1.default.object().keys({}),
 };
 const editProfile = {
     body: joi_1.default.object().keys({
@@ -84,7 +85,8 @@ const editProfile = {
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
         bio: joi_1.default.string(),
         document: joi_1.default.string(),
-    })
+        caption: joi_1.default.string(),
+    }),
 };
 const editQuestionnaire = {
     body: joi_1.default.object().keys({
@@ -92,18 +94,18 @@ const editQuestionnaire = {
         improvisationalSkill: joi_1.default.string(),
         motivation: joi_1.default.string(),
         aboutRepertoire: joi_1.default.string(),
-        publicExpirence: joi_1.default.string()
-    })
+        publicExpirence: joi_1.default.string(),
+    }),
 };
 const forgotPassword = {
     body: joi_1.default.object().keys({
-        email: appConstant_1.JOI.EMAIL
-    })
+        email: appConstant_1.JOI.EMAIL,
+    }),
 };
 const forgotPage = {
     query: joi_1.default.object().keys({
-        token: joi_1.default.string().required()
-    })
+        token: joi_1.default.string().required(),
+    }),
 };
 const resetForgotPassword = {
     body: joi_1.default.object().keys({
@@ -120,7 +122,22 @@ const resetForgotPassword = {
 const userInfo = {
     query: joi_1.default.object().keys({
         page: appConstant_1.JOI.PAGE,
-        limit: appConstant_1.JOI.LIMIT
-    })
+        limit: appConstant_1.JOI.LIMIT,
+    }),
 };
-exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo };
+exports.default = {
+    signup,
+    verifyOtp,
+    resendOtp,
+    createProfile,
+    login,
+    changePassword,
+    deleteAccount,
+    logout,
+    editProfile,
+    editQuestionnaire,
+    forgotPassword,
+    forgotPage,
+    resetForgotPassword,
+    userInfo,
+};

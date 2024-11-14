@@ -20,6 +20,7 @@ export interface UserDocument extends Document {
     motivation:string,
     aboutRepertoire:string,
     publicExpirence:string,
+    caption:string;
     favMembers:ObjectId[],
     isBlocked:boolean,
     isDeleted:boolean,

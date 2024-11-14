@@ -26,7 +26,7 @@ const signup = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void
         tokenData: accessToken,
         formatUserData,
         hostedJams: [],
-        attendedJams: []
+        attendedJams: [],
     });
 }));
 const verifyOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -55,7 +55,7 @@ const login = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 
         hostedJams: userData.hostedJams,
         hostedJamsCount: userData.hostedJamsCount,
         attendedJams: userData.attendedJams,
-        attendedJamsCount: userData.attendedJamsCount
+        attendedJamsCount: userData.attendedJamsCount,
     });
 }));
 const changePassword = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -93,7 +93,7 @@ const forgotPage = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(
     try {
         console.log((_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.token, "req.query.token");
         const token = req.query.token;
-        if (typeof token !== 'string') {
+        if (typeof token !== "string") {
             return res.render("commonMessage", {
                 title: "Forgot Password",
                 errorMessage: "Invalid token",
@@ -126,7 +126,7 @@ const resetForgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => _
     var _a, _b;
     try {
         const token = (_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.token;
-        if (typeof token !== 'string') {
+        if (typeof token !== "string") {
             return res.render("commonMessage", {
                 title: "Forgot Password",
                 errorMessage: "Invalid token",
@@ -164,4 +164,19 @@ const userInfo = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(vo
     // const formatedUserInfo = formatUser(userInfo.userInfo)
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userInfo);
 }));
-exports.default = { signup, verifyOtp, resendOtp, createProfile, login, changePassword, deleteAccount, logout, editProfile, editQuestionnaire, forgotPassword, forgotPage, resetForgotPassword, userInfo };
+exports.default = {
+    signup,
+    verifyOtp,
+    resendOtp,
+    createProfile,
+    login,
+    changePassword,
+    deleteAccount,
+    logout,
+    editProfile,
+    editQuestionnaire,
+    forgotPassword,
+    forgotPage,
+    resetForgotPassword,
+    userInfo,
+};

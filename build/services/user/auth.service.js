@@ -23,7 +23,11 @@ const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, firstName, lastName, mobileNumber, countryCode } = body;
     const [existinguserByEmail, existinguserByMobileNumber] = yield Promise.all([
         models_1.User.findOne({ email: email, isDeleted: false, isVerified: true }),
-        models_1.User.findOne({ mobileNumber: mobileNumber, isDeleted: false, isVerified: true }),
+        models_1.User.findOne({
+            mobileNumber: mobileNumber,
+            isDeleted: false,
+            isVerified: true,
+        }),
     ]);
     if (existinguserByEmail) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.EMAIL_ALREADY_EXIST);
@@ -32,14 +36,24 @@ const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.MOBILE_ALREADY_EXIST);
     }
     const hashedPassword = yield bcryptjs_1.default.hash(password, 10);
-    const user = yield models_1.User.create({ email, password: hashedPassword, firstName, lastName, mobileNumber, countryCode });
+    const user = yield models_1.User.create({
+        email,
+        password: hashedPassword,
+        firstName,
+        lastName,
+        mobileNumber,
+        countryCode,
+    });
     yield user.save();
     return user;
 });
 exports.signup = signup;
 const verifyOtp = (code, tokenId) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const tokenData = yield models_1.Token.findOne({ _id: tokenId, isDeleted: false });
+    const tokenData = (yield models_1.Token.findOne({
+        _id: tokenId,
+        isDeleted: false,
+    }));
     console.log(code);
     if (((_a = tokenData === null || tokenData === void 0 ? void 0 : tokenData.otp) === null || _a === void 0 ? void 0 : _a.code) !== code) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, "OTP is Incorrect");
@@ -55,9 +69,24 @@ const resendOtp = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.resendOtp = resendOtp;
 const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const { zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence } = body;
+    const { zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, caption, } = body;
     console.log(body, "body..........");
-    const updatedUser = yield models_1.User.findByIdAndUpdate(userId, { zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, isRegistered: true }, { lean: true, new: true });
+    const updatedUser = yield models_1.User.findByIdAndUpdate(userId, {
+        zipCode,
+        profileImage,
+        genre,
+        instrument,
+        repertoire,
+        document,
+        bio,
+        proficient,
+        improvisationalSkill,
+        motivation,
+        aboutRepertoire,
+        publicExpirence,
+        caption,
+        isRegistered: true,
+    }, { lean: true, new: true });
     if (!updatedUser) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
@@ -94,7 +123,7 @@ const login = (body) => __awaiter(void 0, void 0, void 0, function* () {
     };
     var attendedJamsFilter = {
         members: { $in: [user._id] },
-        isDeleted: false
+        isDeleted: false,
     };
     const [hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = yield Promise.all([
         models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
@@ -125,7 +154,7 @@ const changePassword = (body, token) => __awaiter(void 0, void 0, void 0, functi
 exports.changePassword = changePassword;
 const deleteAccount = (userId, query) => __awaiter(void 0, void 0, void 0, function* () {
     const { password } = query;
-    const user = yield models_1.User.findById(userId);
+    const user = (yield models_1.User.findById(userId));
     const passwordMatch = yield bcryptjs_1.default.compare(password, user.password);
     console.log(passwordMatch);
     if (!passwordMatch) {
@@ -133,7 +162,7 @@ const deleteAccount = (userId, query) => __awaiter(void 0, void 0, void 0, funct
     }
     const [deletedUser, deletedToken] = yield Promise.all([
         models_1.User.findByIdAndUpdate(userId, { isDeleted: true, isVerified: false }, { lean: true, new: true }),
-        models_1.Token.updateMany({ user: userId }, { isDeleted: false }, { lean: true, new: true })
+        models_1.Token.updateMany({ user: userId }, { isDeleted: false }, { lean: true, new: true }),
     ]);
     if (!deletedUser) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
@@ -145,8 +174,22 @@ const logout = (userId) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.logout = logout;
 const editProfile = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { email, firstName, lastName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio } = body;
-    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, { email, firstName, lastName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio }, { lean: true, new: true });
+    const { email, firstName, lastName, mobileNumber, countryCode, zipCode, profileImage, genre, instrument, repertoire, document, bio, caption, } = body;
+    const updatedProfileData = yield models_1.User.findByIdAndUpdate(user, {
+        email,
+        firstName,
+        lastName,
+        mobileNumber,
+        countryCode,
+        zipCode,
+        profileImage,
+        genre,
+        instrument,
+        repertoire,
+        document,
+        bio,
+        caption,
+    }, { lean: true, new: true });
     if (!updatedProfileData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
@@ -154,8 +197,14 @@ const editProfile = (user, body) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.editProfile = editProfile;
 const editQuestionnaire = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
-    const { proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence } = body;
-    const updateQuestionnairedData = yield models_1.User.findByIdAndUpdate(user, { proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence }, { lean: true, new: true });
+    const { proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, } = body;
+    const updateQuestionnairedData = yield models_1.User.findByIdAndUpdate(user, {
+        proficient,
+        improvisationalSkill,
+        motivation,
+        aboutRepertoire,
+        publicExpirence,
+    }, { lean: true, new: true });
     if (!updateQuestionnairedData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
@@ -189,18 +238,24 @@ const userInfo = (userId, query) => __awaiter(void 0, void 0, void 0, function* 
     };
     var attendedJamsFilter = {
         members: { $in: [userId] },
-        isDeleted: false
+        isDeleted: false,
     };
-    const [userInfo, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount] = yield Promise.all([
+    const [userInfo, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount,] = yield Promise.all([
         models_1.User.findById(userId).lean(),
-        models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.find(hostedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
         models_1.Jam.countDocuments(hostedJamsFilter),
-        models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
+        models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
         models_1.Jam.countDocuments(attendedJamsFilter),
     ]);
     if (!userInfo) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
-    return { userInfo, hostedJams, hostedJamsCount, attendedJams, attendedJamsCount };
+    return {
+        userInfo,
+        hostedJams,
+        hostedJamsCount,
+        attendedJams,
+        attendedJamsCount,
+    };
 });
 exports.userInfo = userInfo;
