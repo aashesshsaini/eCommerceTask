@@ -416,11 +416,24 @@ const userInfo = async (userId: ObjectId, query: Dictionary) => {
       ERROR_MESSAGES.USER_NOT_FOUND
     );
   }
+  const favMembers = userInfo?.favMembers || [];
+  const addIsFav = (jamList: any[]) => {
+    return jamList.map((jam) => ({
+      ...jam,
+      user: {
+        ...jam.user,
+        isFav: favMembers.includes(jam.user._id) ? true : false,
+      },
+    }));
+  };
+
+  const jamsWithFav = addIsFav(hostedJams);
+  const nearByJamsWithFav = addIsFav(attendedJams);
   return {
     userInfo,
-    hostedJams,
+    hostedJams: jamsWithFav,
     hostedJamsCount,
-    attendedJams,
+    attendedJams: nearByJamsWithFav,
     attendedJamsCount,
   };
 };

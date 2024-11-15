@@ -250,11 +250,17 @@ const userInfo = (userId, query) => __awaiter(void 0, void 0, void 0, function* 
     if (!userInfo) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
+    const favMembers = (userInfo === null || userInfo === void 0 ? void 0 : userInfo.favMembers) || [];
+    const addIsFav = (jamList) => {
+        return jamList.map((jam) => (Object.assign(Object.assign({}, jam), { user: Object.assign(Object.assign({}, jam.user), { isFav: favMembers.includes(jam.user._id) ? true : false }) })));
+    };
+    const jamsWithFav = addIsFav(hostedJams);
+    const nearByJamsWithFav = addIsFav(attendedJams);
     return {
         userInfo,
-        hostedJams,
+        hostedJams: jamsWithFav,
         hostedJamsCount,
-        attendedJams,
+        attendedJams: nearByJamsWithFav,
         attendedJamsCount,
     };
 });
