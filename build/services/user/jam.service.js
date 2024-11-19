@@ -261,12 +261,12 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
             ] });
     }
     // console.log(userQuery, "suerQuery...........");
-    let jamMembers = [];
+    let jamInvitedMembers = [];
     if (jamId) {
         const jam = yield models_1.Jam.findById(jamId).select("members").lean();
         if (jam) {
             console.log(jam, "jam.............");
-            jamMembers = jam.members.map((member) => member.toString());
+            jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
         }
     }
     const [Users, countUser, userData] = yield Promise.all([
@@ -299,7 +299,7 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
         ]);
         console.log(user._id, "user._id", "/n", typeof user._id);
         const isInvited = jamId
-            ? jamMembers.includes(user._id.toString())
+            ? jamInvitedMembers.includes(user._id.toString())
             : undefined;
         console.log(isInvited, "isInvited.........");
         return Object.assign(Object.assign(Object.assign({}, user), { isFav,
@@ -368,7 +368,7 @@ const inviteMembers = (body, userId) => __awaiter(void 0, void 0, void 0, functi
             user: { $in: members },
             isDeleted: false,
         }).distinct("device.token"),
-        models_1.Jam.findOne({ _id: jamId, isDeleted: false }),
+        models_1.Jam.findOneAndUpdate({ _id: jamId, isDeleted: false }, { $addToSet: { invitedMembers: members } }, { new: true }),
     ]);
     //  sendPushNotification("invitation from the jam", "message", deviceTokens)
 });

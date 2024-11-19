@@ -442,15 +442,14 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     };
   }
   // console.log(userQuery, "suerQuery...........");
-  let jamMembers: string[] = [];
+  let jamInvitedMembers: string[] = [];
   if (jamId) {
     const jam = await Jam.findById(jamId).select("members").lean();
     if (jam) {
-      console.log(jam, "jam.............")
-      jamMembers = jam.members.map((member) => member.toString());
+      console.log(jam, "jam.............");
+      jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
     }
   }
-
 
   const [Users, countUser, userData] = await Promise.all([
     User.find(userQuery, { password: 0 }, paginationOptions(page, limit)),
@@ -486,7 +485,7 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
       console.log(user._id, "user._id", "/n", typeof user._id);
 
       const isInvited = jamId
-        ? jamMembers.includes(user._id.toString())
+        ? jamInvitedMembers.includes(user._id.toString())
         : undefined;
 
       console.log(isInvited, "isInvited.........");
@@ -570,7 +569,11 @@ const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
       user: { $in: members },
       isDeleted: false,
     }).distinct("device.token"),
-    Jam.findOne({ _id: jamId, isDeleted: false }),
+    Jam.findOneAndUpdate(
+      { _id: jamId, isDeleted: false },
+      { $addToSet: { invitedMembers: members } },
+      { new: true }
+    ),
   ]);
   //  sendPushNotification("invitation from the jam", "message", deviceTokens)
 };

@@ -26,10 +26,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = __importStar(require("mongoose"));
 const jamSchema = new mongoose_1.Schema({
     user: {
-        type: mongoose_1.Schema.Types.ObjectId, ref: 'users'
+        type: mongoose_1.Schema.Types.ObjectId,
+        ref: "users",
     },
     jamName: {
-        type: String
+        type: String,
     },
     availableDates: [
         {
@@ -45,25 +46,29 @@ const jamSchema = new mongoose_1.Schema({
         },
     ],
     genre: {
-        type: String
+        type: String,
     },
-    repertoire: [{
-            type: String
-        }],
+    repertoire: [
+        {
+            type: String,
+        },
+    ],
     commitmentLevel: {
-        type: String
+        type: String,
     },
     image: {
-        type: String
+        type: String,
     },
-    bandFormation: [{
+    bandFormation: [
+        {
             instrument: {
-                type: String
+                type: String,
             },
             type: {
-                type: String
-            }
-        }],
+                type: String,
+            },
+        },
+    ],
     //  city:{
     //   type:String
     //  },
@@ -71,7 +76,7 @@ const jamSchema = new mongoose_1.Schema({
     //   type:String
     //  },
     landmark: {
-        type: String
+        type: String,
     },
     loc: {
         type: { type: String, default: "Point" },
@@ -81,28 +86,37 @@ const jamSchema = new mongoose_1.Schema({
         },
     },
     description: {
-        type: String
+        type: String,
     },
     qrCode: {
-        type: String
+        type: String,
     },
-    members: [{
-            type: mongoose_1.Schema.Types.ObjectId, ref: 'users'
-        }],
+    members: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "users",
+        },
+    ],
+    invitedMembers: [
+        {
+            type: mongoose_1.Schema.Types.ObjectId,
+            ref: "users",
+        },
+    ],
     allowMusicians: {
-        type: Boolean
+        type: Boolean,
     },
     notifyFavMusicians: {
-        type: Boolean
+        type: Boolean,
     },
     isCancelled: {
         type: Boolean,
-        default: false
+        default: false,
     },
     isDeleted: {
         type: Boolean,
-        default: false
-    }
+        default: false,
+    },
 }, { timestamps: true });
 const Jam = mongoose_1.default.model("jams", jamSchema);
 jamSchema.index({ loc: "2dsphere" });

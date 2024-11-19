@@ -12,30 +12,32 @@ export interface JamAvailableDate {
 }
 
 export interface JamDocument extends Document {
-  user: ObjectId; 
+  user: ObjectId;
   jamName: string;
-  availableDates: JamAvailableDate[]; 
+  availableDates: JamAvailableDate[];
   genre: string;
   repertoire: string[];
-  commitmentLevel:string,
-  image:string,
-  bandFormation: [{
-    instrument: string,
-    type:string
-  }];
+  commitmentLevel: string;
+  image: string;
+  bandFormation: [
+    {
+      instrument: string;
+      type: string;
+    }
+  ];
   // city: string;
   // region: string;
   landmark: string;
-   loc?: {
+  loc?: {
     type: "Point"; // Should always be "Point" for geospatial data
     coordinates: [number, number]; // [longitude, latitude]
   };
   description: string;
   qrCode: string;
-  members: ObjectId[]; // Array of User IDs (ObjectId)
+  members: ObjectId[];
+  invitedMembers: ObjectId[]; // Array of User IDs (ObjectId)
   allowMusicians: boolean;
   notifyFavMusicians: boolean;
   isCancelled: boolean;
   isDeleted: boolean;
 }
-
