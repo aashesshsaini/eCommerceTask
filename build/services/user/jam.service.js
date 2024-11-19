@@ -265,10 +265,10 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
     if (jamId) {
         const jam = yield models_1.Jam.findById(jamId).select("members").lean();
         if (jam) {
+            console.log(jam, "jam.............");
             jamMembers = jam.members.map((member) => member.toString());
         }
     }
-    console.log(jamMembers, "jamMembers.............");
     const [Users, countUser, userData] = yield Promise.all([
         models_1.User.find(userQuery, { password: 0 }, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.User.countDocuments(userQuery),

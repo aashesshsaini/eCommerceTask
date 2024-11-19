@@ -446,11 +446,11 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
   if (jamId) {
     const jam = await Jam.findById(jamId).select("members").lean();
     if (jam) {
+      console.log(jam, "jam.............")
       jamMembers = jam.members.map((member) => member.toString());
     }
   }
 
-  console.log(jamMembers, "jamMembers.............");
 
   const [Users, countUser, userData] = await Promise.all([
     User.find(userQuery, { password: 0 }, paginationOptions(page, limit)),
