@@ -641,6 +641,7 @@ const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
 
 const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
   const { members, jamId } = body;
+  console.log(members, "....................")
   const [deviceTokens, jamData] = await Promise.all([
     Token.find({
       user: { $in: members },
@@ -652,6 +653,7 @@ const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
       { new: true }
     ),
   ]);
+  console.log(jamData, "jamData............")
   //  sendPushNotification("invitation from the jam", "message", deviceTokens)
 };
 
