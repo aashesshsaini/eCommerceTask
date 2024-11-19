@@ -335,9 +335,48 @@ const favMember = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.favMember = favMember;
+// const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
+//   const { page, limit, search, jamId } = query;
+//   const matchCondition: Dictionary = {};
+//   if (search) {
+//     const trimmedSearch = search.trim();
+//     matchCondition.$or = [
+//       { firstName: { $regex: trimmedSearch, $options: "i" } },
+//       { lastName: { $regex: trimmedSearch, $options: "i" } },
+//     ];
+//   }
+//   let jamInvitedMembers: string[] = [];
+//   if (jamId) {
+//     const jam = await Jam.findById(jamId).select("invitedMembers").lean();
+//     if (jam) {
+//       console.log(jam, "jam.............");
+//       jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
+//     }
+//   }
+//   const favMemList = await User.findById(userId, { favMembers: 1, _id: 0 })
+//     .populate({
+//       path: "favMembers",
+//       match: matchCondition,
+//       options: {
+//         limit: limit,
+//         skip: page * limit,
+//       },
+//     })
+//     .lean();
+//   // const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
+//   const favMemCount = favMemList?.favMembers?.length;
+//   const favMembers = favMemList?.favMembers || [];
+//  const favMemListWithIsInvited = favMembers.map((favMember) => ({
+//    ...favMember,
+//    isInvited: jamId
+//      ? jamInvitedMembers.includes(favMember._id.toString())
+//      : undefined,
+//  }));
+//   return { favMemList: favMemListWithIsInvited, favMemCount };
+// };
 const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const { page, limit, search } = query;
+    const { page, limit, search, jamId } = query;
+    // Build search condition
     const matchCondition = {};
     if (search) {
         const trimmedSearch = search.trim();
@@ -346,7 +385,19 @@ const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, functi
             { lastName: { $regex: trimmedSearch, $options: "i" } },
         ];
     }
-    const favMemList = yield models_1.User.findById(userId, { favMembers: 1, _id: 0 })
+    // Get invited members of the Jam
+    let jamInvitedMembers = [];
+    if (jamId) {
+        const jam = yield models_1.Jam.findById(jamId).select("invitedMembers").lean();
+        if (jam) {
+            jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
+        }
+    }
+    // Fetch favorite members
+    const userWithFavMembers = yield models_1.User.findById(userId, {
+        favMembers: 1,
+        _id: 0,
+    })
         .populate({
         path: "favMembers",
         match: matchCondition,
@@ -356,9 +407,12 @@ const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, functi
         },
     })
         .lean();
-    // const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
-    const favMemCount = (_a = favMemList === null || favMemList === void 0 ? void 0 : favMemList.favMembers) === null || _a === void 0 ? void 0 : _a.length;
-    return { favMemList, favMemCount };
+    const favMembers = (userWithFavMembers === null || userWithFavMembers === void 0 ? void 0 : userWithFavMembers.favMembers) || [];
+    const favMemCount = favMembers.length;
+    const favMemListWithIsInvited = favMembers.map((favMember) => (Object.assign(Object.assign({}, favMember), { isInvited: jamId
+            ? jamInvitedMembers.includes(favMember._id.toString())
+            : undefined })));
+    return { favMemList: favMemListWithIsInvited, favMemCount };
 });
 exports.favMemberGet = favMemberGet;
 const inviteMembers = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
@@ -368,7 +422,7 @@ const inviteMembers = (body, userId) => __awaiter(void 0, void 0, void 0, functi
             user: { $in: members },
             isDeleted: false,
         }).distinct("device.token"),
-        models_1.Jam.findOneAndUpdate({ _id: jamId, isDeleted: false }, { $addToSet: { invitedMembers: members } }, { new: true }),
+        models_1.Jam.findOneAndUpdate({ _id: jamId, isDeleted: false }, { $addToSet: { invitedMembers: { $each: members } } }, { new: true }),
     ]);
     //  sendPushNotification("invitation from the jam", "message", deviceTokens)
 });

@@ -536,8 +536,55 @@ const favMember = async (body: Dictionary, userId: ObjectId) => {
   }
 };
 
+// const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
+//   const { page, limit, search, jamId } = query;
+//   const matchCondition: Dictionary = {};
+//   if (search) {
+//     const trimmedSearch = search.trim();
+//     matchCondition.$or = [
+//       { firstName: { $regex: trimmedSearch, $options: "i" } },
+//       { lastName: { $regex: trimmedSearch, $options: "i" } },
+//     ];
+//   }
+//   let jamInvitedMembers: string[] = [];
+//   if (jamId) {
+//     const jam = await Jam.findById(jamId).select("invitedMembers").lean();
+//     if (jam) {
+//       console.log(jam, "jam.............");
+//       jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
+//     }
+//   }
+//   const favMemList = await User.findById(userId, { favMembers: 1, _id: 0 })
+//     .populate({
+//       path: "favMembers",
+//       match: matchCondition,
+//       options: {
+//         limit: limit,
+//         skip: page * limit,
+//       },
+//     })
+//     .lean();
+
+//   // const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
+//   const favMemCount = favMemList?.favMembers?.length;
+//   const favMembers = favMemList?.favMembers || [];
+
+//  const favMemListWithIsInvited = favMembers.map((favMember) => ({
+//    ...favMember,
+//    isInvited: jamId
+//      ? jamInvitedMembers.includes(favMember._id.toString())
+//      : undefined,
+//  }));
+
+
+//   return { favMemList: favMemListWithIsInvited, favMemCount };
+// };
+
+
 const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
-  const { page, limit, search } = query;
+  const { page, limit, search, jamId } = query;
+
+  // Build search condition
   const matchCondition: Dictionary = {};
   if (search) {
     const trimmedSearch = search.trim();
@@ -546,7 +593,29 @@ const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
       { lastName: { $regex: trimmedSearch, $options: "i" } },
     ];
   }
-  const favMemList = await User.findById(userId, { favMembers: 1, _id: 0 })
+
+  // Get invited members of the Jam
+  let jamInvitedMembers: string[] = [];
+  if (jamId) {
+    const jam = await Jam.findById(jamId).select("invitedMembers").lean();
+    if (jam) {
+      jamInvitedMembers = jam.invitedMembers.map((member: ObjectId) =>
+        member.toString()
+      );
+    }
+  }
+  interface FavMember {
+    _id: ObjectId;
+    firstName: string;
+    lastName: string;
+    [key: string]: any; // For additional properties
+  }
+
+  // Fetch favorite members
+  const userWithFavMembers = await User.findById(userId, {
+    favMembers: 1,
+    _id: 0,
+  })
     .populate({
       path: "favMembers",
       match: matchCondition,
@@ -555,11 +624,19 @@ const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
         skip: page * limit,
       },
     })
-    .lean();
+    .lean<{ favMembers: FavMember[] }>();
 
-  // const favMemCount = await User.findById(userId).countDocuments({ favMembers: { $exists: true, $not: { $size: 0 } } });
-  const favMemCount = favMemList?.favMembers?.length;
-  return { favMemList, favMemCount };
+  const favMembers = userWithFavMembers?.favMembers || [];
+  const favMemCount = favMembers.length;
+
+  const favMemListWithIsInvited = favMembers.map((favMember) => ({
+    ...favMember,
+    isInvited: jamId
+      ? jamInvitedMembers.includes(favMember._id.toString())
+      : undefined,
+  }));
+
+  return { favMemList: favMemListWithIsInvited, favMemCount };
 };
 
 const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
@@ -571,7 +648,7 @@ const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
     }).distinct("device.token"),
     Jam.findOneAndUpdate(
       { _id: jamId, isDeleted: false },
-      { $addToSet: { invitedMembers: members } },
+      { $addToSet: { invitedMembers: { $each: members } } },
       { new: true }
     ),
   ]);
