@@ -130,7 +130,7 @@ const favMemberGet = {
         page: appConstant_1.JOI.PAGE,
         limit: appConstant_1.JOI.LIMIT,
         search: joi_1.default.string().allow("", null),
-        jamId: appConstant_1.JOI.OBJECTID,
+        jamId: joi_1.default.string().custom(custom_validation_1.objectId),
     }),
 };
 const inviteMembers = {

@@ -146,7 +146,7 @@ const favMemberGet = {
     page: JOI.PAGE,
     limit: JOI.LIMIT,
     search: Joi.string().allow("", null),
-    jamId: JOI.OBJECTID,
+    jamId: Joi.string().custom(objectId),
   }),
 };
 
