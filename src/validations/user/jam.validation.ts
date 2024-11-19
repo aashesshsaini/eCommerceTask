@@ -138,6 +138,7 @@ const getUsers = {
 const favMember = {
   body: Joi.object().keys({
     favMemId: JOI.OBJECTID,
+    jamId: JOI.OBJECTID,
   }),
 };
 
