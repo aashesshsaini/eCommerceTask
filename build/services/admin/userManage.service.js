@@ -31,7 +31,7 @@ const addUser = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const newHashedPassword = yield bcryptjs_1.default.hash(password, 8);
     const user = yield models_1.User.create({
         email,
-        password: newHashedPassword
+        password: newHashedPassword,
     });
     return user;
 });
@@ -104,7 +104,12 @@ const dashboard = () => __awaiter(void 0, void 0, void 0, function* () {
         isDeleted: false,
         isVerified: true,
     };
-    const [countUser] = yield Promise.all([models_1.User.countDocuments(userQuery)]);
-    return { countUser };
+    var filter = { isDeleted: false };
+    const [countUser, countCreatedJams, countPerformedJams] = yield Promise.all([
+        models_1.User.countDocuments(userQuery),
+        models_1.Jam.countDocuments(filter),
+        models_1.Jam.countDocuments(),
+    ]);
+    return { countUser, countCreatedJams, countPerformedJams };
 });
 exports.dashboard = dashboard;

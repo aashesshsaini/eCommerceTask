@@ -1,4 +1,5 @@
 import Joi from "joi";
+import { objectId } from "../custom.validation";
 import { JOI, GENRE, COMMITMENT_LEVEL } from "../../config/appConstant";
 
 const jamCreate = {
@@ -62,6 +63,7 @@ const jamGet = {
     limit: JOI.LIMIT,
     commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
     instrument: Joi.string(),
+    distance: Joi.number()
   }),
 };
 
@@ -127,7 +129,9 @@ const getUsers = {
     latitude: Joi.number().default(0).min(-90).max(90),
     longitude: Joi.number().default(0).min(-180).max(180),
     commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
+    genre: Joi.string().valid(...Object.values(GENRE)),
     instrument: Joi.string(),
+    jamId: Joi.string().custom(objectId),
   }),
 };
 

@@ -55,7 +55,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.jamCreate = jamCreate;
 const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, limit, genre, date, startDate, endDate, search, latitude, longitude, commitmentLevel, instrument, } = query;
+    const { page, limit, genre, date, startDate, endDate, search, latitude, longitude, commitmentLevel, instrument, distance, } = query;
     const currentUser = yield models_1.User.findById(user);
     const favMembers = (currentUser === null || currentUser === void 0 ? void 0 : currentUser.favMembers) || [];
     var filter = {
@@ -114,7 +114,7 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { loc: {
                 $near: {
                     $geometry: { type: "Point", coordinates: [longitude, latitude] },
-                    $maxDistance: 10000,
+                    $maxDistance: distance ? distance : 100000,
                     $minDistance: 0,
                 },
             } });
@@ -236,7 +236,7 @@ const cancelJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.cancelJam = cancelJam;
 const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, limit, search, latitude, longitude, instrument, commitmentLevel, } = query;
+    const { page, limit, search, latitude, longitude, instrument, commitmentLevel, genre, jamId, } = query;
     let userQuery = {
         isDeleted: false,
         isVerified: true,
@@ -251,6 +251,9 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
     if (instrument) {
         userQuery = Object.assign(Object.assign({}, userQuery), { instrument });
     }
+    if (genre) {
+        userQuery = Object.assign(Object.assign({}, userQuery), { genre });
+    }
     if (search) {
         userQuery = Object.assign(Object.assign({}, userQuery), { $or: [
                 { fullName: { $regex: RegExp(search, "i") } },
@@ -258,6 +261,13 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
             ] });
     }
     console.log(userQuery, "suerQuery...........");
+    let jamMembers = [];
+    if (jamId) {
+        const jam = yield models_1.Jam.findById(jamId).select("members").lean();
+        if (jam) {
+            jamMembers = jam.members.map((member) => member.toString());
+        }
+    }
     const [Users, countUser, userData] = yield Promise.all([
         models_1.User.find(userQuery, { password: 0 }, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.User.countDocuments(userQuery),
@@ -286,11 +296,14 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
             models_1.Jam.find(attendedJamsFilter),
             models_1.Jam.countDocuments(attendedJamsFilter),
         ]);
-        return Object.assign(Object.assign({}, user), { isFav,
+        const isInvited = jamId
+            ? jamMembers.includes(user._id.toString())
+            : undefined;
+        return Object.assign(Object.assign(Object.assign({}, user), { isFav,
             hostedJams,
             hostedJamsCount,
             attendedJams,
-            attendedJamsCount });
+            attendedJamsCount }), (jamId && { isInvited }));
     })));
     console.log(updatedUsers);
     return { Users: updatedUsers, countUser };

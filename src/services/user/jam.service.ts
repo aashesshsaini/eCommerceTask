@@ -78,6 +78,7 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
     longitude,
     commitmentLevel,
     instrument,
+    distance,
   } = query;
 
   const currentUser = await User.findById(user);
@@ -183,7 +184,7 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
       loc: {
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: 10000,
+          $maxDistance: distance ? distance : 100000,
           $minDistance: 0,
         },
       },
@@ -402,6 +403,8 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     longitude,
     instrument,
     commitmentLevel,
+    genre,
+    jamId,
   } = query;
   let userQuery: Dictionary = {
     isDeleted: false,
@@ -422,6 +425,13 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     };
   }
 
+  if (genre) {
+    userQuery = {
+      ...userQuery,
+      genre,
+    };
+  }
+
   if (search) {
     userQuery = {
       ...userQuery,
@@ -432,6 +442,14 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     };
   }
   console.log(userQuery, "suerQuery...........");
+  let jamMembers: string[] = [];
+  if (jamId) {
+    const jam = await Jam.findById(jamId).select("members").lean();
+    if (jam) {
+      jamMembers = jam.members.map((member) => member.toString());
+    }
+  }
+
   const [Users, countUser, userData] = await Promise.all([
     User.find(userQuery, { password: 0 }, paginationOptions(page, limit)),
     User.countDocuments(userQuery),
@@ -463,6 +481,10 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
         Jam.countDocuments(attendedJamsFilter),
       ]);
 
+      const isInvited = jamId
+        ? jamMembers.includes(user._id.toString())
+        : undefined;
+
       return {
         ...user,
         isFav,
@@ -470,6 +492,7 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
         hostedJamsCount,
         attendedJams,
         attendedJamsCount,
+        ...(jamId && { isInvited }),
       };
     })
   );

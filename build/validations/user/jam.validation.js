@@ -4,6 +4,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const joi_1 = __importDefault(require("joi"));
+const custom_validation_1 = require("../custom.validation");
 const appConstant_1 = require("../../config/appConstant");
 const jamCreate = {
     body: joi_1.default.object().keys({
@@ -59,6 +60,7 @@ const jamGet = {
         limit: appConstant_1.JOI.LIMIT,
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
         instrument: joi_1.default.string(),
+        distance: joi_1.default.number()
     }),
 };
 const jamUpdate = {
@@ -113,7 +115,9 @@ const getUsers = {
         latitude: joi_1.default.number().default(0).min(-90).max(90),
         longitude: joi_1.default.number().default(0).min(-180).max(180),
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
+        genre: joi_1.default.string().valid(...Object.values(appConstant_1.GENRE)),
         instrument: joi_1.default.string(),
+        jamId: joi_1.default.string().custom(custom_validation_1.objectId),
     }),
 };
 const favMember = {
