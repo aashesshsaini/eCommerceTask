@@ -444,7 +444,7 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
   // console.log(userQuery, "suerQuery...........");
   let jamInvitedMembers: string[] = [];
   if (jamId) {
-    const jam = await Jam.findById(jamId).select("members").lean();
+    const jam = await Jam.findById(jamId).select("invitedMembers").lean();
     if (jam) {
       console.log(jam, "jam.............");
       jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());

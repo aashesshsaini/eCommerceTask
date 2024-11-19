@@ -263,7 +263,7 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
     // console.log(userQuery, "suerQuery...........");
     let jamInvitedMembers = [];
     if (jamId) {
-        const jam = yield models_1.Jam.findById(jamId).select("members").lean();
+        const jam = yield models_1.Jam.findById(jamId).select("invitedMembers").lean();
         if (jam) {
             console.log(jam, "jam.............");
             jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
