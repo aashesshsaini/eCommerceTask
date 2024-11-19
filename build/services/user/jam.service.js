@@ -417,13 +417,14 @@ const favMemberGet = (query, userId) => __awaiter(void 0, void 0, void 0, functi
 exports.favMemberGet = favMemberGet;
 const inviteMembers = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const { members, jamId } = body;
+    const validMembers = Array.isArray(members) ? members : [];
     console.log(members, "....................");
     const [deviceTokens, jamData] = yield Promise.all([
         models_1.Token.find({
             user: { $in: members },
             isDeleted: false,
         }).distinct("device.token"),
-        models_1.Jam.findOneAndUpdate({ _id: jamId, isDeleted: false }, { $addToSet: { invitedMembers: { $each: members } } }, { new: true }),
+        models_1.Jam.findOneAndUpdate({ _id: jamId, isDeleted: false }, { $addToSet: { invitedMembers: { $each: validMembers } } }, { new: true }),
     ]);
     console.log(jamData, "jamData............");
     //  sendPushNotification("invitation from the jam", "message", deviceTokens)

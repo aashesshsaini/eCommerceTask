@@ -641,6 +641,7 @@ const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
 
 const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
   const { members, jamId } = body;
+   const validMembers = Array.isArray(members) ? members : [];
   console.log(members, "....................")
   const [deviceTokens, jamData] = await Promise.all([
     Token.find({
@@ -649,7 +650,7 @@ const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
     }).distinct("device.token"),
     Jam.findOneAndUpdate(
       { _id: jamId, isDeleted: false },
-      { $addToSet: { invitedMembers: { $each: members } } },
+      { $addToSet: { invitedMembers: { $each: validMembers } } },
       { new: true }
     ),
   ]);
