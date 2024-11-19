@@ -138,7 +138,6 @@ const getUsers = {
 const favMember = {
   body: Joi.object().keys({
     favMemId: JOI.OBJECTID,
-    jamId: JOI.OBJECTID,
   }),
 };
 
@@ -147,6 +146,7 @@ const favMemberGet = {
     page: JOI.PAGE,
     limit: JOI.LIMIT,
     search: Joi.string().allow("", null),
+    jamId: JOI.OBJECTID,
   }),
 };
 
