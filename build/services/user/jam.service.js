@@ -260,7 +260,7 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
                 { email: { $regex: RegExp(search, "i") } },
             ] });
     }
-    console.log(userQuery, "suerQuery...........");
+    // console.log(userQuery, "suerQuery...........");
     let jamMembers = [];
     if (jamId) {
         const jam = yield models_1.Jam.findById(jamId).select("members").lean();
@@ -268,6 +268,7 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
             jamMembers = jam.members.map((member) => member.toString());
         }
     }
+    console.log(jamMembers, "jamMembers.............");
     const [Users, countUser, userData] = yield Promise.all([
         models_1.User.find(userQuery, { password: 0 }, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.User.countDocuments(userQuery),
@@ -296,16 +297,18 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
             models_1.Jam.find(attendedJamsFilter),
             models_1.Jam.countDocuments(attendedJamsFilter),
         ]);
+        console.log(user._id, "user._id", "/n", typeof user._id);
         const isInvited = jamId
             ? jamMembers.includes(user._id.toString())
             : undefined;
+        console.log(isInvited, "isInvited.........");
         return Object.assign(Object.assign(Object.assign({}, user), { isFav,
             hostedJams,
             hostedJamsCount,
             attendedJams,
             attendedJamsCount }), (jamId && { isInvited }));
     })));
-    console.log(updatedUsers);
+    // console.log(updatedUsers);
     return { Users: updatedUsers, countUser };
 });
 exports.getUsers = getUsers;

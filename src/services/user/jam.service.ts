@@ -441,7 +441,7 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
       ],
     };
   }
-  console.log(userQuery, "suerQuery...........");
+  // console.log(userQuery, "suerQuery...........");
   let jamMembers: string[] = [];
   if (jamId) {
     const jam = await Jam.findById(jamId).select("members").lean();
@@ -449,6 +449,8 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
       jamMembers = jam.members.map((member) => member.toString());
     }
   }
+
+  console.log(jamMembers, "jamMembers.............");
 
   const [Users, countUser, userData] = await Promise.all([
     User.find(userQuery, { password: 0 }, paginationOptions(page, limit)),
@@ -481,9 +483,13 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
         Jam.countDocuments(attendedJamsFilter),
       ]);
 
+      console.log(user._id, "user._id", "/n", typeof user._id);
+
       const isInvited = jamId
         ? jamMembers.includes(user._id.toString())
         : undefined;
+
+      console.log(isInvited, "isInvited.........");
 
       return {
         ...user,
@@ -497,7 +503,7 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     })
   );
 
-  console.log(updatedUsers);
+  // console.log(updatedUsers);
   return { Users: updatedUsers, countUser };
 };
 
