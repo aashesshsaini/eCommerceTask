@@ -17,6 +17,8 @@ const getJams = async(query: Dictionary,  timeZone ? :string)=>{
         Jam.countDocuments(filter)
     ])
 
+    console.log(jams, jamsCount, "jams, jamsCount...........");
+
     return {jams, jamsCount}
 }
 

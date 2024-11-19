@@ -19,6 +19,7 @@ const getJams = (query, timeZone) => __awaiter(void 0, void 0, void 0, function*
         models_1.Jam.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.Jam.countDocuments(filter)
     ]);
+    console.log(jams, jamsCount, "jams, jamsCount...........");
     return { jams, jamsCount };
 });
 exports.getJams = getJams;
