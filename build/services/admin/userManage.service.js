@@ -110,6 +110,6 @@ const dashboard = () => __awaiter(void 0, void 0, void 0, function* () {
         models_1.Jam.countDocuments(filter),
         models_1.Jam.countDocuments(),
     ]);
-    return { countUser, countCreatedJams, countPerformedJams };
+    return { countUser, countCreatedJams, countPerformedJams: 10 };
 });
 exports.dashboard = dashboard;

@@ -139,7 +139,7 @@ const dashboard = async () => {
     Jam.countDocuments(filter),
     Jam.countDocuments(),
   ]);
-  return { countUser, countCreatedJams, countPerformedJams };
+  return { countUser, countCreatedJams, countPerformedJams:10};
 };
 
 export { addUser, deleteUser, userBlock, userInfo, getUsers, dashboard };
