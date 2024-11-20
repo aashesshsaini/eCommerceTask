@@ -34,7 +34,14 @@ const userBlock = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userBlockedData);
 }));
 const dashboard = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { countUser } = yield services_1.userManageService.dashboard();
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, { countUser });
+    const { countUser, countCreatedJams, countPerformedJams } = yield services_1.userManageService.dashboard();
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, { countUser, countCreatedJams, countPerformedJams });
 }));
-exports.default = { addUser, deleteUser, userInfo, getUsers, userBlock, dashboard };
+exports.default = {
+    addUser,
+    deleteUser,
+    userInfo,
+    getUsers,
+    userBlock,
+    dashboard,
+};
