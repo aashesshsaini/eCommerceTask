@@ -183,7 +183,7 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
       loc: {
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: distance ? distance : 10000,
+          $maxDistance: distance ? distance*1000 : 10000,
           // $minDistance: 0,
         },
       },

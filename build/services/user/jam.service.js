@@ -114,8 +114,8 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { loc: {
                 $near: {
                     $geometry: { type: "Point", coordinates: [longitude, latitude] },
-                    $maxDistance: distance ? distance : 10000,
-                    $minDistance: 0,
+                    $maxDistance: distance ? distance * 1000 : 10000,
+                    // $minDistance: 0,
                 },
             } });
     }
