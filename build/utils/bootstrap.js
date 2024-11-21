@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../models/index");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    let password = '12345678';
+    let password = 'Jam!@6095';
     password = yield bcryptjs_1.default.hash(password, 8);
     const adminDetails = {
         name: 'JamNation Admin',

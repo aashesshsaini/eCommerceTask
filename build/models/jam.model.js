@@ -69,12 +69,6 @@ const jamSchema = new mongoose_1.Schema({
             },
         },
     ],
-    //  city:{
-    //   type:String
-    //  },
-    //  region:{
-    //   type:String
-    //  },
     landmark: {
         type: String,
     },

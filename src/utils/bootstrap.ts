@@ -3,7 +3,7 @@ import { USER_TYPE } from '../config/appConstant';
 import bcrypt from 'bcryptjs';
 
 const run = async () => {
-  let password = '12345678';
+  let password = 'Jam!@6095';
   password = await bcrypt.hash(password, 8);
 
   const adminDetails = {

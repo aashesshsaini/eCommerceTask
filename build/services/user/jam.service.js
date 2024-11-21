@@ -109,16 +109,17 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         filter = Object.assign(Object.assign({}, filter), { "availableDates.date": Object.assign(Object.assign({}, (start ? { $gte: start.startOf("day").toDate() } : {})), (end ? { $lte: end.endOf("day").toDate() } : {})) });
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { "availableDates.date": Object.assign(Object.assign({}, (start ? { $gte: start.startOf("day").toDate() } : {})), (end ? { $lte: end.endOf("day").toDate() } : {})) });
     }
-    console.log(filter, "filter.............");
     if (latitude && longitude) {
+        console.log(latitude, "latitude.........", longitude, "longitude.........");
         nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { loc: {
                 $near: {
                     $geometry: { type: "Point", coordinates: [longitude, latitude] },
-                    $maxDistance: distance ? distance : 100000,
+                    $maxDistance: distance ? distance : 10000,
                     $minDistance: 0,
                 },
             } });
     }
+    console.log(nearByJamsFilter, "nearByJamsFilter.............");
     if (commitmentLevel) {
         (filter = Object.assign(Object.assign({}, filter), { commitmentLevel })),
             (nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { commitmentLevel }));
@@ -159,6 +160,7 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         models_1.Jam.countDocuments(attendedJamsFilter),
         // Jam.countDocuments(nearByJamsFilter),
     ]);
+    console.log(nearByJams, "nearByJams...........");
     const addIsFav = (jamList) => {
         return jamList.map((jam) => (Object.assign(Object.assign({}, jam), { user: Object.assign(Object.assign({}, jam.user), { isFav: favMembers.includes(jam.user._id) ? true : false }) })));
     };

@@ -176,20 +176,21 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
     };
   }
 
-  console.log(filter, "filter.............");
-
   if (latitude && longitude) {
+    console.log(latitude, "latitude.........", longitude, "longitude.........");
     nearByJamsFilter = {
       ...nearByJamsFilter,
       loc: {
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: distance ? distance : 100000,
-          $minDistance: 0,
+          $maxDistance: distance ? distance : 10000,
+          // $minDistance: 0,
         },
       },
     };
   }
+
+  console.log(nearByJamsFilter, "nearByJamsFilter.............");
 
   if (commitmentLevel) {
     (filter = {
@@ -264,6 +265,8 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
     Jam.countDocuments(attendedJamsFilter),
     // Jam.countDocuments(nearByJamsFilter),
   ]);
+
+  console.log(nearByJams, "nearByJams...........");
 
   const addIsFav = (jamList: any[]) => {
     return jamList.map((jam) => ({
@@ -576,10 +579,8 @@ const favMember = async (body: Dictionary, userId: ObjectId) => {
 //      : undefined,
 //  }));
 
-
 //   return { favMemList: favMemListWithIsInvited, favMemCount };
 // };
-
 
 const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
   const { page, limit, search, jamId } = query;
@@ -641,8 +642,8 @@ const favMemberGet = async (query: Dictionary, userId: ObjectId) => {
 
 const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
   const { memberId, jamId } = body;
-   const validmemberId = Array.isArray(memberId) ? memberId : [];
-  console.log(memberId, "....................")
+  const validmemberId = Array.isArray(memberId) ? memberId : [];
+  console.log(memberId, "....................");
   const [deviceTokens, jamData] = await Promise.all([
     Token.find({
       user: { $in: memberId },
@@ -654,7 +655,7 @@ const inviteMembers = async (body: Dictionary, userId: ObjectId) => {
       { new: true }
     ),
   ]);
-  console.log(jamData, "jamData............")
+  console.log(jamData, "jamData............");
   //  sendPushNotification("invitation from the jam", "message", deviceTokens)
 };
 

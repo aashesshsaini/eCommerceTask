@@ -49,12 +49,6 @@ const jamSchema = new Schema<JamDocument>(
         },
       },
     ],
-    //  city:{
-    //   type:String
-    //  },
-    //  region:{
-    //   type:String
-    //  },
     landmark: {
       type: String,
     },
