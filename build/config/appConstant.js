@@ -114,10 +114,10 @@ const GENRE = {
 };
 exports.GENRE = GENRE;
 const LEVEL = {
-    NOVOICE: "Novoice",
+    NOVOICE: "Novice",
     BEGINNER: "Beginner",
     INTERMEDIATE: "Intermediate",
-    ADVANCE: "Advance",
-    PRO: "Pro"
+    ADVANCE: "Advanced",
+    PRO: "Pro",
 };
 exports.LEVEL = LEVEL;

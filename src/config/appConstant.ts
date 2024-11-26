@@ -111,12 +111,12 @@ const GENRE = {
 }
 
 const LEVEL = {
-NOVOICE: "Novoice",
-BEGINNER: "Beginner",
-INTERMEDIATE:"Intermediate",
-ADVANCE: "Advance",
-PRO: "Pro"
-}
+  NOVOICE: "Novice",
+  BEGINNER: "Beginner",
+  INTERMEDIATE: "Intermediate",
+  ADVANCE: "Advanced",
+  PRO: "Pro",
+};
 
 
 
