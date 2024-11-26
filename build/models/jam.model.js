@@ -103,6 +103,9 @@ const jamSchema = new mongoose_1.Schema({
     notifyFavMusicians: {
         type: Boolean,
     },
+    level: {
+        type: String
+    },
     isCancelled: {
         type: Boolean,
         default: false,

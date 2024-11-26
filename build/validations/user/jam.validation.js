@@ -45,6 +45,7 @@ const jamCreate = {
         description: joi_1.default.string().required(),
         allowMusicians: joi_1.default.boolean().required(),
         notifyFavMusicians: joi_1.default.boolean().required(),
+        level: joi_1.default.string().valid(...Object.values(appConstant_1.LEVEL)),
     }),
 };
 const jamGet = {
@@ -60,7 +61,7 @@ const jamGet = {
         limit: appConstant_1.JOI.LIMIT,
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
         instrument: joi_1.default.string(),
-        distance: joi_1.default.number()
+        distance: joi_1.default.number(),
     }),
 };
 const jamUpdate = {
@@ -90,6 +91,7 @@ const jamUpdate = {
         description: joi_1.default.string(),
         allowMusicians: joi_1.default.boolean(),
         notifyFavMusicians: joi_1.default.boolean(),
+        level: joi_1.default.string().valid(...Object.values(appConstant_1.LEVEL)),
     }),
 };
 const jamDelete = {

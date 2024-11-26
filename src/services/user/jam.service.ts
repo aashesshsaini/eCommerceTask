@@ -32,6 +32,7 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     description,
     allowMusicians,
     notifyFavMusicians,
+    level,
   } = body;
 
   const address = `${landmark}`;
@@ -54,6 +55,7 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     qrCode,
     allowMusicians,
     notifyFavMusicians,
+    level,
   });
   if (!jamData) {
     throw new OperationalError(
@@ -183,7 +185,7 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
       loc: {
         $near: {
           $geometry: { type: "Point", coordinates: [longitude, latitude] },
-          $maxDistance: distance ? distance*1000 : 10000,
+          $maxDistance: distance ? distance * 1000 : 10000,
           // $minDistance: 0,
         },
       },
@@ -311,6 +313,7 @@ const jamUpdate = async (body: Dictionary, user: ObjectId) => {
     description,
     allowMusicians,
     notifyFavMusicians,
+    level,
   } = body;
   const jamUpdatedData = await Jam.findOneAndUpdate(
     { _id: jamId, user, isDeleted: false },
@@ -328,6 +331,7 @@ const jamUpdate = async (body: Dictionary, user: ObjectId) => {
       description,
       allowMusicians,
       notifyFavMusicians,
+      level,
     },
     { lean: true, new: true }
   );

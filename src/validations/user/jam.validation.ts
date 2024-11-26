@@ -1,6 +1,6 @@
 import Joi from "joi";
 import { objectId } from "../custom.validation";
-import { JOI, GENRE, COMMITMENT_LEVEL } from "../../config/appConstant";
+import { JOI, GENRE, COMMITMENT_LEVEL, LEVEL } from "../../config/appConstant";
 
 const jamCreate = {
   body: Joi.object().keys({
@@ -47,6 +47,7 @@ const jamCreate = {
     description: Joi.string().required(),
     allowMusicians: Joi.boolean().required(),
     notifyFavMusicians: Joi.boolean().required(),
+    level: Joi.string().valid(...Object.values(LEVEL)),
   }),
 };
 
@@ -63,7 +64,7 @@ const jamGet = {
     limit: JOI.LIMIT,
     commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
     instrument: Joi.string(),
-    distance: Joi.number()
+    distance: Joi.number(),
   }),
 };
 
@@ -100,6 +101,7 @@ const jamUpdate = {
     description: Joi.string(),
     allowMusicians: Joi.boolean(),
     notifyFavMusicians: Joi.boolean(),
+    level: Joi.string().valid(...Object.values(LEVEL)),
   }),
 };
 

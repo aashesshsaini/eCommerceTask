@@ -38,6 +38,7 @@ export interface JamDocument extends Document {
   invitedMembers: ObjectId[]; // Array of User IDs (ObjectId)
   allowMusicians: boolean;
   notifyFavMusicians: boolean;
+  level:string;
   isCancelled: boolean;
   isDeleted: boolean;
 }

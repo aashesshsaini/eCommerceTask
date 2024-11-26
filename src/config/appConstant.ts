@@ -110,17 +110,26 @@ const GENRE = {
     BLUES:"Blues",
 }
 
+const LEVEL = {
+NOVOICE: "Novoice",
+BEGINNER: "Beginner",
+INTERMEDIATE:"Intermediate",
+ADVANCE: "Advance",
+PRO: "Pro"
+}
+
 
 
 export {
-    TOKEN_TYPE,
-    USER_TYPE,
-    DEVICE_TYPE,
-    JOI,
-    STATUS,
-    SUCCESS_MESSAGES,
-    ERROR_MESSAGES,
-    STATUS_CODES,
-    COMMITMENT_LEVEL,
-    GENRE
- };
+  TOKEN_TYPE,
+  USER_TYPE,
+  DEVICE_TYPE,
+  JOI,
+  STATUS,
+  SUCCESS_MESSAGES,
+  ERROR_MESSAGES,
+  STATUS_CODES,
+  COMMITMENT_LEVEL,
+  GENRE,
+  LEVEL,
+};

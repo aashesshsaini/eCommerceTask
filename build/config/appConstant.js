@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.GENRE = exports.COMMITMENT_LEVEL = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
+exports.LEVEL = exports.GENRE = exports.COMMITMENT_LEVEL = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
 const joi_1 = __importDefault(require("joi"));
 const custom_validation_1 = require("../validations/custom.validation");
 const TOKEN_TYPE = {
@@ -113,3 +113,11 @@ const GENRE = {
     BLUES: "Blues",
 };
 exports.GENRE = GENRE;
+const LEVEL = {
+    NOVOICE: "Novoice",
+    BEGINNER: "Beginner",
+    INTERMEDIATE: "Intermediate",
+    ADVANCE: "Advance",
+    PRO: "Pro"
+};
+exports.LEVEL = LEVEL;

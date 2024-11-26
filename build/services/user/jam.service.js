@@ -27,7 +27,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
     const { jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, 
     // city,
     // region,
-    landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians, } = body;
+    landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians, level, } = body;
     const address = `${landmark}`;
     const qrCode = yield qrcode_1.default.toDataURL(address);
     const jamData = models_1.Jam.create({
@@ -47,6 +47,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
         qrCode,
         allowMusicians,
         notifyFavMusicians,
+        level,
     });
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
@@ -183,7 +184,7 @@ const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
     const { jamId, jamName, availableDates, genre, repertoire, bandFormation, 
     // city,
     // region,
-    landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians, } = body;
+    landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians, level, } = body;
     const jamUpdatedData = yield models_1.Jam.findOneAndUpdate({ _id: jamId, user, isDeleted: false }, {
         jamName,
         availableDates,
@@ -198,6 +199,7 @@ const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
         description,
         allowMusicians,
         notifyFavMusicians,
+        level,
     }, { lean: true, new: true });
     if (!jamUpdatedData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
