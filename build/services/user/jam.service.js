@@ -27,7 +27,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
     const { jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, 
     // city,
     // region,
-    landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians, level, } = body;
+    landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians, level, tryMyLuck } = body;
     const address = `${landmark}`;
     const qrCode = yield qrcode_1.default.toDataURL(address);
     const jamData = models_1.Jam.create({
@@ -48,6 +48,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
         allowMusicians,
         notifyFavMusicians,
         level,
+        tryMyLuck
     });
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);

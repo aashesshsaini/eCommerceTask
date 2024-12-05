@@ -2,54 +2,146 @@ import Joi from "joi";
 import { objectId } from "../custom.validation";
 import { JOI, GENRE, COMMITMENT_LEVEL, LEVEL } from "../../config/appConstant";
 
+// const jamCreate = {
+//   body: Joi.object().keys({
+//     jamName: Joi.string().required(),
+//     availableDates: Joi.array()
+//       .items(
+//         Joi.object({
+//           date: Joi.date().required(),
+//           slots: Joi.array()
+//             .items(
+//               Joi.object({
+//                 startTime: Joi.string().required(),
+//                 endTime: Joi.string().required(),
+//               })
+//             )
+//             .required(),
+//         })
+//       )
+//       .required(),
+//     //  date: Joi.date().required(),
+//     //  time: Joi.array().items({
+//     //   startTime: Joi.string().required(),
+//     //   endTime: Joi.string().required()
+//     //  }),
+//     genre: Joi.string()
+//       .valid(...Object.values(GENRE))
+//       .required(),
+//     repertoire: Joi.array().items(Joi.string().required()),
+//     commitmentLevel: Joi.string()
+//       .valid(...Object.values(COMMITMENT_LEVEL))
+//       .required(),
+//     image: Joi.string().allow("", null),
+//     bandFormation: Joi.array().items(
+//       Joi.object().keys({
+//         instrument: Joi.string().required(),
+//         type: Joi.string().valid("mandatory", "optional"),
+//       })
+//     ),
+//     //  city:Joi.string().required(),
+//     //  region:Joi.string().required(),
+//     landmark: Joi.string().required(),
+//     latitude: Joi.number().default(0).min(-90).max(90),
+//     longitude: Joi.number().default(0).min(-180).max(180),
+//     description: Joi.string().required(),
+//     allowMusicians: Joi.boolean().required(),
+//     notifyFavMusicians: Joi.boolean().required(),
+//     level: Joi.string().valid(...Object.values(LEVEL)),
+//   }),
+// };
+
 const jamCreate = {
   body: Joi.object().keys({
-    jamName: Joi.string().required(),
+    tryMyLuck: Joi.boolean().required(), // The controlling field
+    jamName: Joi.string().when("tryMyLuck", {
+      is: true,
+      then: Joi.string(), // No "required" validation when tryMyLuck is true
+      otherwise: Joi.string().required(), // "required" validation when tryMyLuck is false
+    }),
     availableDates: Joi.array()
       .items(
         Joi.object({
-          date: Joi.date().required(),
+          date: Joi.date().when("tryMyLuck", {
+            is: true,
+            then: Joi.date(),
+            otherwise: Joi.date().required(),
+          }),
           slots: Joi.array()
             .items(
               Joi.object({
-                startTime: Joi.string().required(),
-                endTime: Joi.string().required(),
+                startTime: Joi.string().when("tryMyLuck", {
+                  is: true,
+                  then: Joi.string(),
+                  otherwise: Joi.string().required(),
+                }),
+                endTime: Joi.string().when("tryMyLuck", {
+                  is: true,
+                  then: Joi.string(),
+                  otherwise: Joi.string().required(),
+                }),
               })
             )
-            .required(),
+            .when("tryMyLuck", {
+              is: true,
+              then: Joi.array(),
+              otherwise: Joi.array().required(),
+            }),
         })
       )
-      .required(),
-    //  date: Joi.date().required(),
-    //  time: Joi.array().items({
-    //   startTime: Joi.string().required(),
-    //   endTime: Joi.string().required()
-    //  }),
+      .when("tryMyLuck", {
+        is: true,
+        then: Joi.array(),
+        otherwise: Joi.array().required(),
+      }),
     genre: Joi.string()
       .valid(...Object.values(GENRE))
-      .required(),
-    repertoire: Joi.array().items(Joi.string().required()),
+      .when("tryMyLuck", {
+        is: true,
+        then: Joi.string(),
+        otherwise: Joi.string().required(),
+      }),
+    repertoire: Joi.array().items(Joi.string().required()).when("tryMyLuck", {
+      is: true,
+      then: Joi.array(),
+      otherwise: Joi.array().required(),
+    }),
     commitmentLevel: Joi.string()
       .valid(...Object.values(COMMITMENT_LEVEL))
-      .required(),
+      .when("tryMyLuck", {
+        is: true,
+        then: Joi.string(),
+        otherwise: Joi.string().required(),
+      }),
     image: Joi.string().allow("", null),
     bandFormation: Joi.array().items(
       Joi.object().keys({
-        instrument: Joi.string().required(),
+        instrument: Joi.string().when("tryMyLuck", {
+          is: true,
+          then: Joi.string(),
+          otherwise: Joi.string().required(),
+        }),
         type: Joi.string().valid("mandatory", "optional"),
       })
     ),
-    //  city:Joi.string().required(),
-    //  region:Joi.string().required(),
-    landmark: Joi.string().required(),
+    landmark: Joi.string().when("tryMyLuck", {
+      is: true,
+      then: Joi.string(),
+      otherwise: Joi.string().required(),
+    }),
     latitude: Joi.number().default(0).min(-90).max(90),
     longitude: Joi.number().default(0).min(-180).max(180),
-    description: Joi.string().required(),
+    description: Joi.string().when("tryMyLuck", {
+      is: true,
+      then: Joi.string(),
+      otherwise: Joi.string().required(),
+    }),
     allowMusicians: Joi.boolean().required(),
     notifyFavMusicians: Joi.boolean().required(),
     level: Joi.string().valid(...Object.values(LEVEL)),
   }),
 };
+
 
 const jamGet = {
   query: Joi.object().keys({

@@ -33,6 +33,7 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     allowMusicians,
     notifyFavMusicians,
     level,
+    tryMyLuck
   } = body;
 
   const address = `${landmark}`;
@@ -56,6 +57,7 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     allowMusicians,
     notifyFavMusicians,
     level,
+    tryMyLuck
   });
   if (!jamData) {
     throw new OperationalError(

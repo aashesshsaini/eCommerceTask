@@ -6,43 +6,133 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const joi_1 = __importDefault(require("joi"));
 const custom_validation_1 = require("../custom.validation");
 const appConstant_1 = require("../../config/appConstant");
+// const jamCreate = {
+//   body: Joi.object().keys({
+//     jamName: Joi.string().required(),
+//     availableDates: Joi.array()
+//       .items(
+//         Joi.object({
+//           date: Joi.date().required(),
+//           slots: Joi.array()
+//             .items(
+//               Joi.object({
+//                 startTime: Joi.string().required(),
+//                 endTime: Joi.string().required(),
+//               })
+//             )
+//             .required(),
+//         })
+//       )
+//       .required(),
+//     //  date: Joi.date().required(),
+//     //  time: Joi.array().items({
+//     //   startTime: Joi.string().required(),
+//     //   endTime: Joi.string().required()
+//     //  }),
+//     genre: Joi.string()
+//       .valid(...Object.values(GENRE))
+//       .required(),
+//     repertoire: Joi.array().items(Joi.string().required()),
+//     commitmentLevel: Joi.string()
+//       .valid(...Object.values(COMMITMENT_LEVEL))
+//       .required(),
+//     image: Joi.string().allow("", null),
+//     bandFormation: Joi.array().items(
+//       Joi.object().keys({
+//         instrument: Joi.string().required(),
+//         type: Joi.string().valid("mandatory", "optional"),
+//       })
+//     ),
+//     //  city:Joi.string().required(),
+//     //  region:Joi.string().required(),
+//     landmark: Joi.string().required(),
+//     latitude: Joi.number().default(0).min(-90).max(90),
+//     longitude: Joi.number().default(0).min(-180).max(180),
+//     description: Joi.string().required(),
+//     allowMusicians: Joi.boolean().required(),
+//     notifyFavMusicians: Joi.boolean().required(),
+//     level: Joi.string().valid(...Object.values(LEVEL)),
+//   }),
+// };
 const jamCreate = {
     body: joi_1.default.object().keys({
-        jamName: joi_1.default.string().required(),
+        tryMyLuck: joi_1.default.boolean().required(), // The controlling field
+        jamName: joi_1.default.string().when("tryMyLuck", {
+            is: true,
+            then: joi_1.default.string(), // No "required" validation when tryMyLuck is true
+            otherwise: joi_1.default.string().required(), // "required" validation when tryMyLuck is false
+        }),
         availableDates: joi_1.default.array()
             .items(joi_1.default.object({
-            date: joi_1.default.date().required(),
+            date: joi_1.default.date().when("tryMyLuck", {
+                is: true,
+                then: joi_1.default.date(),
+                otherwise: joi_1.default.date().required(),
+            }),
             slots: joi_1.default.array()
                 .items(joi_1.default.object({
-                startTime: joi_1.default.string().required(),
-                endTime: joi_1.default.string().required(),
+                startTime: joi_1.default.string().when("tryMyLuck", {
+                    is: true,
+                    then: joi_1.default.string(),
+                    otherwise: joi_1.default.string().required(),
+                }),
+                endTime: joi_1.default.string().when("tryMyLuck", {
+                    is: true,
+                    then: joi_1.default.string(),
+                    otherwise: joi_1.default.string().required(),
+                }),
             }))
-                .required(),
+                .when("tryMyLuck", {
+                is: true,
+                then: joi_1.default.array(),
+                otherwise: joi_1.default.array().required(),
+            }),
         }))
-            .required(),
-        //  date: Joi.date().required(),
-        //  time: Joi.array().items({
-        //   startTime: Joi.string().required(),
-        //   endTime: Joi.string().required()
-        //  }),
+            .when("tryMyLuck", {
+            is: true,
+            then: joi_1.default.array(),
+            otherwise: joi_1.default.array().required(),
+        }),
         genre: joi_1.default.string()
             .valid(...Object.values(appConstant_1.GENRE))
-            .required(),
-        repertoire: joi_1.default.array().items(joi_1.default.string().required()),
+            .when("tryMyLuck", {
+            is: true,
+            then: joi_1.default.string(),
+            otherwise: joi_1.default.string().required(),
+        }),
+        repertoire: joi_1.default.array().items(joi_1.default.string().required()).when("tryMyLuck", {
+            is: true,
+            then: joi_1.default.array(),
+            otherwise: joi_1.default.array().required(),
+        }),
         commitmentLevel: joi_1.default.string()
             .valid(...Object.values(appConstant_1.COMMITMENT_LEVEL))
-            .required(),
+            .when("tryMyLuck", {
+            is: true,
+            then: joi_1.default.string(),
+            otherwise: joi_1.default.string().required(),
+        }),
         image: joi_1.default.string().allow("", null),
         bandFormation: joi_1.default.array().items(joi_1.default.object().keys({
-            instrument: joi_1.default.string().required(),
+            instrument: joi_1.default.string().when("tryMyLuck", {
+                is: true,
+                then: joi_1.default.string(),
+                otherwise: joi_1.default.string().required(),
+            }),
             type: joi_1.default.string().valid("mandatory", "optional"),
         })),
-        //  city:Joi.string().required(),
-        //  region:Joi.string().required(),
-        landmark: joi_1.default.string().required(),
+        landmark: joi_1.default.string().when("tryMyLuck", {
+            is: true,
+            then: joi_1.default.string(),
+            otherwise: joi_1.default.string().required(),
+        }),
         latitude: joi_1.default.number().default(0).min(-90).max(90),
         longitude: joi_1.default.number().default(0).min(-180).max(180),
-        description: joi_1.default.string().required(),
+        description: joi_1.default.string().when("tryMyLuck", {
+            is: true,
+            then: joi_1.default.string(),
+            otherwise: joi_1.default.string().required(),
+        }),
         allowMusicians: joi_1.default.boolean().required(),
         notifyFavMusicians: joi_1.default.boolean().required(),
         level: joi_1.default.string().valid(...Object.values(appConstant_1.LEVEL)),

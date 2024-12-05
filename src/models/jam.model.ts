@@ -83,8 +83,12 @@ const jamSchema = new Schema<JamDocument>(
     notifyFavMusicians: {
       type: Boolean,
     },
-    level:{
-      type:String
+    level: {
+      type: String,
+    },
+    tryMyLuck: {
+      type: Boolean,
+      default: false,
     },
     isCancelled: {
       type: Boolean,

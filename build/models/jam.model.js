@@ -104,7 +104,11 @@ const jamSchema = new mongoose_1.Schema({
         type: Boolean,
     },
     level: {
-        type: String
+        type: String,
+    },
+    tryMyLuck: {
+        type: Boolean,
+        default: false,
     },
     isCancelled: {
         type: Boolean,
