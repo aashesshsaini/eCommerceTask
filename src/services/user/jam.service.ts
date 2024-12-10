@@ -148,14 +148,34 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
 
     filter = {
       ...filter,
-      availableDates: { $ne: [] },
-      "availableDates.date": { $gte: startOfToday },
+      $expr: {
+        $and: [
+          { $ne: ["$availableDates", []] }, 
+          { $gte: [{ $min: "$availableDates.date" }, startOfToday] },
+        ],
+      },
     };
+
     nearByJamsFilter = {
       ...nearByJamsFilter,
-      availableDates: { $ne: [] },
-      "availableDates.date": { $gte: startOfToday },
+      $expr: {
+        $and: [
+          { $ne: ["$availableDates", []] }, 
+          { $gte: [{ $min: "$availableDates.date" }, startOfToday] }, 
+        ],
+      },
     };
+
+    // filter = {
+    //   ...filter,
+    //   availableDates: { $ne: [] },
+    //   "availableDates.date": { $gte: startOfToday },
+    // };
+    // nearByJamsFilter = {
+    //   ...nearByJamsFilter,
+    //   availableDates: { $ne: [] },
+    //   "availableDates.date": { $gte: startOfToday },
+    // };
   }
 
   if (startDate && endDate) {
@@ -272,7 +292,6 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
       "user"
     ),
     Jam.countDocuments(attendedJamsFilter),
-    // Jam.countDocuments(nearByJamsFilter),
   ]);
 
   console.log(nearByJams, "nearByJams...........");

@@ -98,8 +98,28 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
             ? getDateInTimeZone(new Date(), timeZone)
             : (0, moment_timezone_1.default)().startOf("day");
         const startOfToday = today.startOf("day").toDate();
-        filter = Object.assign(Object.assign({}, filter), { availableDates: { $ne: [] }, "availableDates.date": { $gte: startOfToday } });
-        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { availableDates: { $ne: [] }, "availableDates.date": { $gte: startOfToday } });
+        filter = Object.assign(Object.assign({}, filter), { $expr: {
+                $and: [
+                    { $ne: ["$availableDates", []] },
+                    { $gte: [{ $min: "$availableDates.date" }, startOfToday] },
+                ],
+            } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { $expr: {
+                $and: [
+                    { $ne: ["$availableDates", []] },
+                    { $gte: [{ $min: "$availableDates.date" }, startOfToday] },
+                ],
+            } });
+        // filter = {
+        //   ...filter,
+        //   availableDates: { $ne: [] },
+        //   "availableDates.date": { $gte: startOfToday },
+        // };
+        // nearByJamsFilter = {
+        //   ...nearByJamsFilter,
+        //   availableDates: { $ne: [] },
+        //   "availableDates.date": { $gte: startOfToday },
+        // };
     }
     if (startDate && endDate) {
         const start = timeZone
@@ -161,7 +181,6 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         models_1.Jam.countDocuments(hostedJamsFilter),
         models_1.Jam.find(attendedJamsFilter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate("user"),
         models_1.Jam.countDocuments(attendedJamsFilter),
-        // Jam.countDocuments(nearByJamsFilter),
     ]);
     console.log(nearByJams, "nearByJams...........");
     const addIsFav = (jamList) => {
