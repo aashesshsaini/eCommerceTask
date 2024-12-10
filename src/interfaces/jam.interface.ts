@@ -40,6 +40,7 @@ export interface JamDocument extends Document {
   notifyFavMusicians: boolean;
   level: string;
   tryMyLuck: Boolean;
+  document: string[];
   isCancelled: boolean;
   isDeleted: boolean;
 }

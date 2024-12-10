@@ -27,7 +27,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
     const { jamName, availableDates, genre, repertoire, commitmentLevel, image, bandFormation, 
     // city,
     // region,
-    landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians, level, tryMyLuck } = body;
+    landmark, longitude, latitude, description, allowMusicians, notifyFavMusicians, level, tryMyLuck, document, } = body;
     const address = `${landmark}`;
     const qrCode = yield qrcode_1.default.toDataURL(address);
     const jamData = models_1.Jam.create({
@@ -48,7 +48,8 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
         allowMusicians,
         notifyFavMusicians,
         level,
-        tryMyLuck
+        tryMyLuck,
+        document,
     });
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
@@ -97,8 +98,8 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
             ? getDateInTimeZone(new Date(), timeZone)
             : (0, moment_timezone_1.default)().startOf("day");
         const startOfToday = today.startOf("day").toDate();
-        filter = Object.assign(Object.assign({}, filter), { "availableDates.date": { $gte: startOfToday } });
-        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { "availableDates.date": { $gte: startOfToday } });
+        filter = Object.assign(Object.assign({}, filter), { "availableDates.date": { exist: true, $gte: startOfToday } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { "availableDates.date": { exist: true, $gte: startOfToday } });
     }
     if (startDate && endDate) {
         const start = timeZone
@@ -185,7 +186,7 @@ const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
     const { jamId, jamName, availableDates, genre, repertoire, bandFormation, 
     // city,
     // region,
-    landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians, level, } = body;
+    landmark, commitmentLevel, image, description, allowMusicians, notifyFavMusicians, level, document, } = body;
     const jamUpdatedData = yield models_1.Jam.findOneAndUpdate({ _id: jamId, user, isDeleted: false }, {
         jamName,
         availableDates,
@@ -201,6 +202,7 @@ const jamUpdate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
         allowMusicians,
         notifyFavMusicians,
         level,
+        document,
     }, { lean: true, new: true });
     if (!jamUpdatedData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
@@ -241,7 +243,7 @@ const cancelJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.cancelJam = cancelJam;
 const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* () {
-    const { page, limit, search, latitude, longitude, instrument, commitmentLevel, genre, jamId, } = query;
+    const { page, limit, search, latitude, longitude, instrument, commitmentLevel, genre, jamId, isFavMemberOnly, } = query;
     let userQuery = {
         isDeleted: false,
         isVerified: true,
@@ -273,6 +275,9 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
             console.log(jam, "jam.............");
             jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
         }
+    }
+    if (isFavMemberOnly) {
+        userQuery = Object.assign({}, userQuery);
     }
     const [Users, countUser, userData] = yield Promise.all([
         models_1.User.find(userQuery, { password: 0 }, (0, universalFunctions_1.paginationOptions)(page, limit)),

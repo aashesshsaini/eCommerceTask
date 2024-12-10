@@ -1,6 +1,7 @@
 import Joi from "joi";
 import { objectId } from "../custom.validation";
 import { JOI, GENRE, COMMITMENT_LEVEL, LEVEL } from "../../config/appConstant";
+import { join } from "path";
 
 // const jamCreate = {
 //   body: Joi.object().keys({
@@ -53,12 +54,13 @@ import { JOI, GENRE, COMMITMENT_LEVEL, LEVEL } from "../../config/appConstant";
 
 const jamCreate = {
   body: Joi.object().keys({
-    tryMyLuck: Joi.boolean().required(), // The controlling field
-    jamName: Joi.string().when("tryMyLuck", {
-      is: true,
-      then: Joi.string(), // No "required" validation when tryMyLuck is true
-      otherwise: Joi.string().required(), // "required" validation when tryMyLuck is false
-    }),
+    tryMyLuck: Joi.boolean().required(),
+    jamName: Joi.string().required(),
+    // jamName: Joi.string().when("tryMyLuck", {
+    //   is: true,
+    //   then: Joi.string(), // No "required" validation when tryMyLuck is true
+    //   otherwise: Joi.string().required(), // "required" validation when tryMyLuck is false
+    // }),
     availableDates: Joi.array()
       .items(
         Joi.object({
@@ -129,8 +131,8 @@ const jamCreate = {
       then: Joi.string(),
       otherwise: Joi.string().required(),
     }),
-    latitude: Joi.number().default(0).min(-90).max(90),
-    longitude: Joi.number().default(0).min(-180).max(180),
+    latitude: Joi.number().default(0.0).min(-90).max(90),
+    longitude: Joi.number().default(0.0).min(-180).max(180),
     description: Joi.string().when("tryMyLuck", {
       is: true,
       then: Joi.string(),
@@ -139,9 +141,9 @@ const jamCreate = {
     allowMusicians: Joi.boolean().required(),
     notifyFavMusicians: Joi.boolean().required(),
     level: Joi.string().valid(...Object.values(LEVEL)),
+    document: Joi.array().items(Joi.string()),
   }),
 };
-
 
 const jamGet = {
   query: Joi.object().keys({
@@ -194,6 +196,7 @@ const jamUpdate = {
     allowMusicians: Joi.boolean(),
     notifyFavMusicians: Joi.boolean(),
     level: Joi.string().valid(...Object.values(LEVEL)),
+    document: Joi.array().items(Joi.string())
   }),
 };
 
@@ -226,6 +229,7 @@ const getUsers = {
     genre: Joi.string().valid(...Object.values(GENRE)),
     instrument: Joi.string(),
     jamId: Joi.string().custom(objectId),
+    isFavMemberOnly: Joi.boolean().default(false)
   }),
 };
 

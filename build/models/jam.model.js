@@ -110,6 +110,11 @@ const jamSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    document: [
+        {
+            type: String,
+        },
+    ],
     isCancelled: {
         type: Boolean,
         default: false,

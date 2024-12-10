@@ -56,12 +56,13 @@ const appConstant_1 = require("../../config/appConstant");
 // };
 const jamCreate = {
     body: joi_1.default.object().keys({
-        tryMyLuck: joi_1.default.boolean().required(), // The controlling field
-        jamName: joi_1.default.string().when("tryMyLuck", {
-            is: true,
-            then: joi_1.default.string(), // No "required" validation when tryMyLuck is true
-            otherwise: joi_1.default.string().required(), // "required" validation when tryMyLuck is false
-        }),
+        tryMyLuck: joi_1.default.boolean().required(),
+        jamName: joi_1.default.string().required(),
+        // jamName: Joi.string().when("tryMyLuck", {
+        //   is: true,
+        //   then: Joi.string(), // No "required" validation when tryMyLuck is true
+        //   otherwise: Joi.string().required(), // "required" validation when tryMyLuck is false
+        // }),
         availableDates: joi_1.default.array()
             .items(joi_1.default.object({
             date: joi_1.default.date().when("tryMyLuck", {
@@ -126,8 +127,8 @@ const jamCreate = {
             then: joi_1.default.string(),
             otherwise: joi_1.default.string().required(),
         }),
-        latitude: joi_1.default.number().default(0).min(-90).max(90),
-        longitude: joi_1.default.number().default(0).min(-180).max(180),
+        latitude: joi_1.default.number().default(0.0).min(-90).max(90),
+        longitude: joi_1.default.number().default(0.0).min(-180).max(180),
         description: joi_1.default.string().when("tryMyLuck", {
             is: true,
             then: joi_1.default.string(),
@@ -136,6 +137,7 @@ const jamCreate = {
         allowMusicians: joi_1.default.boolean().required(),
         notifyFavMusicians: joi_1.default.boolean().required(),
         level: joi_1.default.string().valid(...Object.values(appConstant_1.LEVEL)),
+        document: joi_1.default.array().items(joi_1.default.string()),
     }),
 };
 const jamGet = {
@@ -182,6 +184,7 @@ const jamUpdate = {
         allowMusicians: joi_1.default.boolean(),
         notifyFavMusicians: joi_1.default.boolean(),
         level: joi_1.default.string().valid(...Object.values(appConstant_1.LEVEL)),
+        document: joi_1.default.array().items(joi_1.default.string())
     }),
 };
 const jamDelete = {
@@ -210,6 +213,7 @@ const getUsers = {
         genre: joi_1.default.string().valid(...Object.values(appConstant_1.GENRE)),
         instrument: joi_1.default.string(),
         jamId: joi_1.default.string().custom(custom_validation_1.objectId),
+        isFavMemberOnly: joi_1.default.boolean().default(false)
     }),
 };
 const favMember = {

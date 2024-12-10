@@ -71,6 +71,65 @@ exports.resendOtp = resendOtp;
 const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, function* () {
     const { zipCode, profileImage, genre, instrument, repertoire, document, bio, proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, caption, } = body;
     console.log(body, "body..........");
+    const findIndexFromLevelData = (key, value) => {
+        const userValue = value.toLowerCase().trim();
+        const array = appConstant_1.LEVEL_DATA[key] || [];
+        const index = array.findIndex((item) => item.toLowerCase().trim() === userValue);
+        return index === -1 ? -1 : index + 1;
+    };
+    const proficientIndex = findIndexFromLevelData("proficient", proficient);
+    const improvisationalSkillIndex = findIndexFromLevelData("improvisationalSkill", improvisationalSkill);
+    const aboutRepertoireIndex = findIndexFromLevelData("aboutRepertoire", aboutRepertoire);
+    // const publicExpirenceIndex = findIndexFromLevelData(
+    //   "publicExpirence",
+    //   publicExpirence
+    // );
+    // const motivationIndex = findIndexFromLevelData("motivation", motivation);
+    let level;
+    console.log({
+        proficientIndex,
+        improvisationalSkillIndex,
+        aboutRepertoireIndex,
+    });
+    if (proficientIndex === 1 ||
+        (proficientIndex === 2 && improvisationalSkillIndex === 1)) {
+        level = "Novice";
+    }
+    else if ((proficientIndex === 2 && improvisationalSkillIndex >= 2) ||
+        (proficientIndex === 3 && improvisationalSkillIndex <= 2) ||
+        (proficientIndex === 3 &&
+            improvisationalSkillIndex >= 3 &&
+            aboutRepertoireIndex === 1) ||
+        (proficientIndex === 4 &&
+            improvisationalSkillIndex <= 3 &&
+            aboutRepertoireIndex === 1)) {
+        level = "Beginner";
+    }
+    else if ((proficientIndex === 3 &&
+        improvisationalSkillIndex >= 3 &&
+        aboutRepertoireIndex >= 2) ||
+        (proficientIndex === 4 &&
+            improvisationalSkillIndex <= 3 &&
+            aboutRepertoireIndex >= 2) ||
+        (proficientIndex === 4 &&
+            improvisationalSkillIndex >= 4 &&
+            aboutRepertoireIndex === 1)) {
+        level = "Intermediate";
+    }
+    else if ((proficientIndex === 4 &&
+        improvisationalSkillIndex >= 4 &&
+        aboutRepertoireIndex >= 2) ||
+        (proficientIndex === 5 && improvisationalSkillIndex <= 4) ||
+        (proficientIndex === 5 &&
+            improvisationalSkillIndex === 5 &&
+            aboutRepertoireIndex <= 2)) {
+        level = "Advance";
+    }
+    else if (proficientIndex === 5 &&
+        improvisationalSkillIndex === 5 &&
+        aboutRepertoireIndex >= 3) {
+        level = "Pro";
+    }
     const updatedUser = yield models_1.User.findByIdAndUpdate(userId, {
         zipCode,
         profileImage,
@@ -85,6 +144,7 @@ const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, functi
         aboutRepertoire,
         publicExpirence,
         caption,
+        level,
         isRegistered: true,
     }, { lean: true, new: true });
     if (!updatedUser) {

@@ -1,4 +1,4 @@
-import mongoose, {Types, Document, Schema} from "mongoose";
+import mongoose, { Types, Document, Schema } from "mongoose";
 import { USER_TYPE } from "../config/appConstant";
 import { JamDocument } from "../interfaces/jam.interface";
 import { string } from "joi";
@@ -90,6 +90,11 @@ const jamSchema = new Schema<JamDocument>(
       type: Boolean,
       default: false,
     },
+    document: [
+      {
+        type: String,
+      },
+    ],
     isCancelled: {
       type: Boolean,
       default: false,
@@ -102,8 +107,8 @@ const jamSchema = new Schema<JamDocument>(
   { timestamps: true }
 );
 
-const Jam = mongoose.model<JamDocument>("jams", jamSchema)
+const Jam = mongoose.model<JamDocument>("jams", jamSchema);
 
 jamSchema.index({ loc: "2dsphere" });
 
-export default Jam
+export default Jam;

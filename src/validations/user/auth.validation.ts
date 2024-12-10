@@ -31,13 +31,13 @@ const createProfile = {
     commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
     repertoire: Joi.array().items(Joi.string()).max(3),
     bio: Joi.string(),
-    document: Joi.string(),
+    document: Joi.array().items(Joi.string()),
+    caption: Joi.string(),
     proficient: Joi.string(),
     improvisationalSkill: Joi.string(),
-    motivation: Joi.string(),
     aboutRepertoire: Joi.string(),
     publicExpirence: Joi.string(),
-    caption: Joi.string(),
+    motivation: Joi.string(),
   }),
 };
 
@@ -88,7 +88,7 @@ const editProfile = {
     repertoire: Joi.array().items(Joi.string()).max(3),
     commitmentLevel: Joi.string().valid(...Object.values(COMMITMENT_LEVEL)),
     bio: Joi.string(),
-    document: Joi.string(),
+    document: Joi.array().items(Joi.string()),
     caption: Joi.string(),
   }),
 };

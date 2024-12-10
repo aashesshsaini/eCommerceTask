@@ -39,13 +39,14 @@ const userSchema = new Schema<UserDocument>(
           type:String
          }],
          bio:{type: String},
-         document:{type: String},
+         document:[{type: String}],
          proficient:{type: String},
          improvisationalSkill:{type: String},
          motivation:{type: String},
          aboutRepertoire:{type: String},
          publicExpirence:{type: String},
          caption:{type:String},
+         level:{type:String},
          favMembers:[{type: Schema.Types.ObjectId, ref: 'users' }],
         isBlocked: {
           type: Boolean,

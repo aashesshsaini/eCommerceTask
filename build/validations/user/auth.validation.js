@@ -32,13 +32,13 @@ const createProfile = {
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
         repertoire: joi_1.default.array().items(joi_1.default.string()).max(3),
         bio: joi_1.default.string(),
-        document: joi_1.default.string(),
+        document: joi_1.default.array().items(joi_1.default.string()),
+        caption: joi_1.default.string(),
         proficient: joi_1.default.string(),
         improvisationalSkill: joi_1.default.string(),
-        motivation: joi_1.default.string(),
         aboutRepertoire: joi_1.default.string(),
         publicExpirence: joi_1.default.string(),
-        caption: joi_1.default.string(),
+        motivation: joi_1.default.string(),
     }),
 };
 const login = {
@@ -84,7 +84,7 @@ const editProfile = {
         repertoire: joi_1.default.array().items(joi_1.default.string()).max(3),
         commitmentLevel: joi_1.default.string().valid(...Object.values(appConstant_1.COMMITMENT_LEVEL)),
         bio: joi_1.default.string(),
-        document: joi_1.default.string(),
+        document: joi_1.default.array().items(joi_1.default.string()),
         caption: joi_1.default.string(),
     }),
 };

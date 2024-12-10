@@ -9,6 +9,7 @@ import { objectId } from "../../validations/custom.validation";
 import { paginationOptions } from "../../utils/universalFunctions";
 import moment from "moment-timezone";
 import QRCode from "qrcode";
+import { exist } from "joi";
 // import sendPushNotification from '../../utils/notification';
 
 const getDateInTimeZone = (date: Date, timeZone: string) => {
@@ -33,7 +34,8 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     allowMusicians,
     notifyFavMusicians,
     level,
-    tryMyLuck
+    tryMyLuck,
+    document,
   } = body;
 
   const address = `${landmark}`;
@@ -57,7 +59,8 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     allowMusicians,
     notifyFavMusicians,
     level,
-    tryMyLuck
+    tryMyLuck,
+    document,
   });
   if (!jamData) {
     throw new OperationalError(
@@ -145,11 +148,11 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
 
     filter = {
       ...filter,
-      "availableDates.date": { $gte: startOfToday },
+      "availableDates.date": { exist: true, $gte: startOfToday },
     };
     nearByJamsFilter = {
       ...nearByJamsFilter,
-      "availableDates.date": { $gte: startOfToday },
+      "availableDates.date": { exist: true, $gte: startOfToday },
     };
   }
 
@@ -316,6 +319,7 @@ const jamUpdate = async (body: Dictionary, user: ObjectId) => {
     allowMusicians,
     notifyFavMusicians,
     level,
+    document,
   } = body;
   const jamUpdatedData = await Jam.findOneAndUpdate(
     { _id: jamId, user, isDeleted: false },
@@ -334,6 +338,7 @@ const jamUpdate = async (body: Dictionary, user: ObjectId) => {
       allowMusicians,
       notifyFavMusicians,
       level,
+      document,
     },
     { lean: true, new: true }
   );
@@ -414,6 +419,7 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     commitmentLevel,
     genre,
     jamId,
+    isFavMemberOnly,
   } = query;
   let userQuery: Dictionary = {
     isDeleted: false,
@@ -460,6 +466,11 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     }
   }
 
+  if (isFavMemberOnly) {
+    userQuery = {
+      ...userQuery,
+    };
+  }
   const [Users, countUser, userData] = await Promise.all([
     User.find(userQuery, { password: 0 }, paginationOptions(page, limit)),
     User.countDocuments(userQuery),

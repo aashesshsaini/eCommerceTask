@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LEVEL = exports.GENRE = exports.COMMITMENT_LEVEL = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
+exports.LEVEL_DATA = exports.LEVEL = exports.GENRE = exports.COMMITMENT_LEVEL = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
 const joi_1 = __importDefault(require("joi"));
 const custom_validation_1 = require("../validations/custom.validation");
 const TOKEN_TYPE = {
@@ -58,7 +58,7 @@ const SUCCESS_MESSAGES = {
     SUCCESS: "Success",
     LOGOUT: "User successfully logged out",
     DELETE: "user Delete successfully",
-    VERIFIED: "user verified successfully"
+    VERIFIED: "user verified successfully",
 };
 exports.SUCCESS_MESSAGES = SUCCESS_MESSAGES;
 const ERROR_MESSAGES = {
@@ -80,7 +80,7 @@ const ERROR_MESSAGES = {
     USER_NOT_FOUND: "User not found",
     FIELD_REQUIRED: "All the fields are required",
     ALREADY_DONE: "you have already sent the data for approval",
-    JAM_NOT_FOUND: "Jam not found"
+    JAM_NOT_FOUND: "Jam not found",
 };
 exports.ERROR_MESSAGES = ERROR_MESSAGES;
 const STATUS_CODES = {
@@ -104,13 +104,14 @@ exports.STATUS_CODES = STATUS_CODES;
 const COMMITMENT_LEVEL = {
     FOCUSED: "Focused, serious practice",
     JOYFUL_GROUP: "Joyful group music session",
-    SOMETIMES: "Sometimes one, sometimes the other"
+    SOMETIMES: "Sometimes one, sometimes the other",
 };
 exports.COMMITMENT_LEVEL = COMMITMENT_LEVEL;
 const GENRE = {
     JAZZ: "Jazz",
     ROCK: "Rock",
     BLUES: "Blues",
+    CLASSIC: "Classic",
 };
 exports.GENRE = GENRE;
 const LEVEL = {
@@ -121,3 +122,39 @@ const LEVEL = {
     PRO: "Pro",
 };
 exports.LEVEL = LEVEL;
+const LEVEL_DATA = {
+    proficient: [
+        "I am just starting and struggle to produce consistent sound.",
+        "I can produce sound but often have issues with tone quality and control.",
+        "I can produce good sound most of the time but still have occasional difficulties.",
+        "I consistently produce high-quality sound and have good control over my instrument",
+        "I am a pro and can produce exceptional sound with precision and ease in any context.",
+    ],
+    improvisationalSkill: [
+        "I cannot improvise; I need to prepare the part in advance",
+        "I have basic improvisation skills, e.g., I can follow simple chord progressions but struggle with more complex changes",
+        "I can improvise moderately well, incorporating some stylistic elements, but I'm still refining my technique and creativity",
+        "I have fluent improvisation skills and am able to create meaningful phrases",
+        "I am highly skilled at improvisation and can create innovative and sophisticated solos effortlessly",
+    ],
+    aboutRepertoire: [
+        "I need to study a tune in advance of the session.",
+        "I know a few tunes (say, around 20) that I can play without prior preparation”",
+        "I know a good range of tunes (say, around 40) that I can play without prior preparation (cannot sight read)",
+        "I know many tunes (say, around 80) that I don’t need to study in advance and can sight read simple ones I never played before",
+        "I can confidently play most tunes that would be called in a public jam and can sight read fluently when necessary",
+    ],
+    publicExpirence: [
+        "I have no performance experience.",
+        "I have limited experience, having performed on stage in minor roles or as part of an ensemble.",
+        "I have occasionally performed on stage in a lead role.",
+        "I have regular experience performing on stage in local events and am comfortable in prominent roles.",
+        "I have extensive experience performing on stage in national events and frequently take on leading roles with confidence.",
+    ],
+    motivation: [
+        "I care about practicing and improving, but most of all I want to enjoy the experience of making music with other musicians",
+        "I am dedicated to improving my musicianship. Collaborating with other musicians is the best way to grow and develop my skills.",
+        "A little bit of both; Sometimes I seek the joy of making music, sometimes the challenge of a committed practice session.",
+    ],
+};
+exports.LEVEL_DATA = LEVEL_DATA;

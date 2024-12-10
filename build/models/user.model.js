@@ -58,13 +58,14 @@ const userSchema = new mongoose_1.Schema({
             type: String
         }],
     bio: { type: String },
-    document: { type: String },
+    document: [{ type: String }],
     proficient: { type: String },
     improvisationalSkill: { type: String },
     motivation: { type: String },
     aboutRepertoire: { type: String },
     publicExpirence: { type: String },
     caption: { type: String },
+    level: { type: String },
     favMembers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'users' }],
     isBlocked: {
         type: Boolean,
