@@ -98,8 +98,8 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
             ? getDateInTimeZone(new Date(), timeZone)
             : (0, moment_timezone_1.default)().startOf("day");
         const startOfToday = today.startOf("day").toDate();
-        filter = Object.assign(Object.assign({}, filter), { "availableDates.date": { exist: true, $gte: startOfToday } });
-        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { "availableDates.date": { exist: true, $gte: startOfToday } });
+        filter = Object.assign(Object.assign({}, filter), { availableDates: { $ne: [] }, "availableDates.date": { $gte: startOfToday } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { availableDates: { $ne: [] }, "availableDates.date": { $gte: startOfToday } });
     }
     if (startDate && endDate) {
         const start = timeZone

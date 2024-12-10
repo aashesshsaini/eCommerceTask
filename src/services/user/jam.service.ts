@@ -148,11 +148,13 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
 
     filter = {
       ...filter,
-      "availableDates.date": { exist: true, $gte: startOfToday },
+      availableDates: { $ne: [] },
+      "availableDates.date": { $gte: startOfToday },
     };
     nearByJamsFilter = {
       ...nearByJamsFilter,
-      "availableDates.date": { exist: true, $gte: startOfToday },
+      availableDates: { $ne: [] },
+      "availableDates.date": { $gte: startOfToday },
     };
   }
 
