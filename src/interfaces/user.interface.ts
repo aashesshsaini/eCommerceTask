@@ -32,4 +32,5 @@ export interface UserDocument extends Document {
   isVerified: boolean;
   isRegistered: boolean;
   isPayment: boolean;
+  tryMyLuck:boolean 
 }

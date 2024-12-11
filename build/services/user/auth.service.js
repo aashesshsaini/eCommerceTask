@@ -342,9 +342,16 @@ const resetPassword = (userId, newPassword) => __awaiter(void 0, void 0, void 0,
 exports.resetPassword = resetPassword;
 const userInfo = (userId, query) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit } = query;
+    const currentDate = new Date();
     var hostedJamsFilter = {
         user: userId,
         isDeleted: false,
+        isCancelled: false,
+        availableDates: {
+            $elemMatch: {
+                date: { $gte: currentDate },
+            },
+        },
     };
     var attendedJamsFilter = {
         members: { $in: [userId] },
@@ -360,6 +367,18 @@ const userInfo = (userId, query) => __awaiter(void 0, void 0, void 0, function* 
     if (!userInfo) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
     }
+    const currentMonth = new Date().getMonth();
+    const currentYear = new Date().getFullYear();
+    const hostedJamsThisMonth = hostedJams.filter((jam) => {
+        const jamDate = new Date(jam.createdAt);
+        return jamDate.getMonth() === currentMonth && jamDate.getFullYear() === currentYear && jam.tryMyLuck === true;
+    });
+    let newTryMyLuck = false;
+    if (hostedJamsThisMonth.length === 0) {
+        newTryMyLuck = true;
+    }
+    yield models_1.User.updateOne({ _id: userId }, { $set: { tryMyLuck: newTryMyLuck } });
+    userInfo.tryMyLuck = newTryMyLuck;
     const favMembers = (userInfo === null || userInfo === void 0 ? void 0 : userInfo.favMembers) || [];
     const addIsFav = (jamList) => {
         return jamList.map((jam) => (Object.assign(Object.assign({}, jam), { user: Object.assign(Object.assign({}, jam.user), { isFav: favMembers.includes(jam.user._id) ? true : false }) })));

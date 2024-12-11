@@ -96,6 +96,10 @@ const userSchema = new mongoose_1.Schema({
         type: Boolean,
         default: false,
     },
+    tryMyLuck: {
+        type: Boolean,
+        default: false,
+    },
 }, { timestamps: true });
 const User = mongoose_1.default.model("users", userSchema);
 userSchema.index({ loc: "2dsphere" });

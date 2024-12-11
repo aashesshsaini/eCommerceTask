@@ -60,6 +60,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
 exports.jamCreate = jamCreate;
 const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, function* () {
     const { page, limit, genre, date, startDate, endDate, search, latitude, longitude, commitmentLevel, instrument, distance, } = query;
+    const currentDate = new Date();
     const currentUser = yield models_1.User.findById(user);
     const favMembers = (currentUser === null || currentUser === void 0 ? void 0 : currentUser.favMembers) || [];
     var filter = {
@@ -74,8 +75,14 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
         user: { $ne: user },
     };
     var hostedJamsFilter = {
-        user,
+        user: user,
         isDeleted: false,
+        isCancelled: false,
+        availableDates: {
+            $elemMatch: {
+                date: { $gte: currentDate },
+            },
+        },
     };
     var attendedJamsFilter = {
         members: { $in: [user] },

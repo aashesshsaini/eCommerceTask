@@ -543,9 +543,16 @@ const resetPassword = async (userId: ObjectId, newPassword: string) => {
 
 const userInfo = async (userId: ObjectId, query: Dictionary) => {
   const { page, limit } = query;
+  const currentDate = new Date(); 
   var hostedJamsFilter: Dictionary = {
     user: userId,
     isDeleted: false,
+    isCancelled:false,
+    availableDates: { 
+      $elemMatch: {
+        date: { $gte: currentDate },
+      },
+    },
   };
 
   var attendedJamsFilter = {
@@ -559,10 +566,10 @@ const userInfo = async (userId: ObjectId, query: Dictionary) => {
     attendedJams,
     attendedJamsCount,
   ] = await Promise.all([
-    User.findById(userId).lean(),
+    User.findById(userId).lean() as Dictionary,
     Jam.find(hostedJamsFilter, {}, paginationOptions(page, limit)).populate(
       "user"
-    ),
+    ) as Dictionary,
     Jam.countDocuments(hostedJamsFilter),
     Jam.find(attendedJamsFilter, {}, paginationOptions(page, limit)).populate(
       "user"
@@ -575,9 +582,27 @@ const userInfo = async (userId: ObjectId, query: Dictionary) => {
       ERROR_MESSAGES.USER_NOT_FOUND
     );
   }
+
+  const currentMonth = new Date().getMonth(); 
+  const currentYear = new Date().getFullYear();
+
+  const hostedJamsThisMonth = hostedJams.filter((jam:Dictionary) => {
+    const jamDate = new Date(jam.createdAt);
+    return jamDate.getMonth() === currentMonth && jamDate.getFullYear() === currentYear && jam.tryMyLuck === true;
+  });
+
+  let newTryMyLuck = false; 
+  if (hostedJamsThisMonth.length === 0) {
+    newTryMyLuck = true; 
+  }
+
+  await User.updateOne({_id:userId}, { $set: { tryMyLuck: newTryMyLuck } });
+
+  userInfo.tryMyLuck = newTryMyLuck;
+
   const favMembers = userInfo?.favMembers || [];
-  const addIsFav = (jamList: any[]) => {
-    return jamList.map((jam) => ({
+  const addIsFav = (jamList: Dictionary) => {
+    return jamList.map((jam:Dictionary) => ({
       ...jam,
       user: {
         ...jam.user,

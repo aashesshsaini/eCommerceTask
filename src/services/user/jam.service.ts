@@ -90,6 +90,8 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
     distance,
   } = query;
 
+  const currentDate = new Date(); 
+
   const currentUser = await User.findById(user);
   const favMembers = currentUser?.favMembers || [];
 
@@ -107,8 +109,14 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
   };
 
   var hostedJamsFilter: Dictionary = {
-    user,
+    user: user,
     isDeleted: false,
+    isCancelled:false,
+    availableDates: { 
+      $elemMatch: {
+        date: { $gte: currentDate },
+      },
+    },
   };
 
   var attendedJamsFilter = {

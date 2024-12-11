@@ -76,6 +76,10 @@ const userSchema = new Schema<UserDocument>(
       type: Boolean,
       default: false,
     },
+    tryMyLuck: {
+      type: Boolean,
+      default: false,
+    },
   },
   { timestamps: true }
 );
