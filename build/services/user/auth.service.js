@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userInfo = exports.resetPassword = exports.forgotPassword = exports.editQuestionnaire = exports.editProfile = exports.logout = exports.deleteAccount = exports.changePassword = exports.login = exports.createProfile = exports.resendOtp = exports.verifyOtp = exports.signup = void 0;
+exports.location = exports.userInfo = exports.resetPassword = exports.forgotPassword = exports.editQuestionnaire = exports.editProfile = exports.logout = exports.deleteAccount = exports.changePassword = exports.login = exports.createProfile = exports.resendOtp = exports.verifyOtp = exports.signup = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const models_1 = require("../../models");
 const appConstant_1 = require("../../config/appConstant");
@@ -80,11 +80,6 @@ const createProfile = (body, userId) => __awaiter(void 0, void 0, void 0, functi
     const proficientIndex = findIndexFromLevelData("proficient", proficient);
     const improvisationalSkillIndex = findIndexFromLevelData("improvisationalSkill", improvisationalSkill);
     const aboutRepertoireIndex = findIndexFromLevelData("aboutRepertoire", aboutRepertoire);
-    // const publicExpirenceIndex = findIndexFromLevelData(
-    //   "publicExpirence",
-    //   publicExpirence
-    // );
-    // const motivationIndex = findIndexFromLevelData("motivation", motivation);
     let level;
     console.log({
         proficientIndex,
@@ -258,12 +253,67 @@ const editProfile = (user, body) => __awaiter(void 0, void 0, void 0, function* 
 exports.editProfile = editProfile;
 const editQuestionnaire = (user, body) => __awaiter(void 0, void 0, void 0, function* () {
     const { proficient, improvisationalSkill, motivation, aboutRepertoire, publicExpirence, } = body;
+    const findIndexFromLevelData = (key, value) => {
+        const userValue = value.toLowerCase().trim();
+        const array = appConstant_1.LEVEL_DATA[key] || [];
+        const index = array.findIndex((item) => item.toLowerCase().trim() === userValue);
+        return index === -1 ? -1 : index + 1;
+    };
+    const proficientIndex = findIndexFromLevelData("proficient", proficient);
+    const improvisationalSkillIndex = findIndexFromLevelData("improvisationalSkill", improvisationalSkill);
+    const aboutRepertoireIndex = findIndexFromLevelData("aboutRepertoire", aboutRepertoire);
+    let level;
+    console.log({
+        proficientIndex,
+        improvisationalSkillIndex,
+        aboutRepertoireIndex,
+    });
+    if (proficientIndex === 1 ||
+        (proficientIndex === 2 && improvisationalSkillIndex === 1)) {
+        level = "Novice";
+    }
+    else if ((proficientIndex === 2 && improvisationalSkillIndex >= 2) ||
+        (proficientIndex === 3 && improvisationalSkillIndex <= 2) ||
+        (proficientIndex === 3 &&
+            improvisationalSkillIndex >= 3 &&
+            aboutRepertoireIndex === 1) ||
+        (proficientIndex === 4 &&
+            improvisationalSkillIndex <= 3 &&
+            aboutRepertoireIndex === 1)) {
+        level = "Beginner";
+    }
+    else if ((proficientIndex === 3 &&
+        improvisationalSkillIndex >= 3 &&
+        aboutRepertoireIndex >= 2) ||
+        (proficientIndex === 4 &&
+            improvisationalSkillIndex <= 3 &&
+            aboutRepertoireIndex >= 2) ||
+        (proficientIndex === 4 &&
+            improvisationalSkillIndex >= 4 &&
+            aboutRepertoireIndex === 1)) {
+        level = "Intermediate";
+    }
+    else if ((proficientIndex === 4 &&
+        improvisationalSkillIndex >= 4 &&
+        aboutRepertoireIndex >= 2) ||
+        (proficientIndex === 5 && improvisationalSkillIndex <= 4) ||
+        (proficientIndex === 5 &&
+            improvisationalSkillIndex === 5 &&
+            aboutRepertoireIndex <= 2)) {
+        level = "Advance";
+    }
+    else if (proficientIndex === 5 &&
+        improvisationalSkillIndex === 5 &&
+        aboutRepertoireIndex >= 3) {
+        level = "Pro";
+    }
     const updateQuestionnairedData = yield models_1.User.findByIdAndUpdate(user, {
         proficient,
         improvisationalSkill,
         motivation,
         aboutRepertoire,
         publicExpirence,
+        level,
     }, { lean: true, new: true });
     if (!updateQuestionnairedData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
@@ -325,3 +375,14 @@ const userInfo = (userId, query) => __awaiter(void 0, void 0, void 0, function* 
     };
 });
 exports.userInfo = userInfo;
+const location = (userId, body) => __awaiter(void 0, void 0, void 0, function* () {
+    const { latitude, longitude } = body;
+    const userData = yield models_1.User.findByIdAndUpdate(userId, {
+        loc: { type: "Point", coordinates: [longitude, latitude] },
+    }, { new: true });
+    if (!userData) {
+        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
+    }
+    return userData;
+});
+exports.location = location;

@@ -56,11 +56,6 @@ const jamCreate = {
   body: Joi.object().keys({
     tryMyLuck: Joi.boolean().required(),
     jamName: Joi.string().required(),
-    // jamName: Joi.string().when("tryMyLuck", {
-    //   is: true,
-    //   then: Joi.string(), // No "required" validation when tryMyLuck is true
-    //   otherwise: Joi.string().required(), // "required" validation when tryMyLuck is false
-    // }),
     availableDates: Joi.array()
       .items(
         Joi.object({

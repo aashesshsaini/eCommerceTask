@@ -9,6 +9,10 @@ export interface UserDocument extends Document {
   mobileNumber: string;
   countryCode: string;
   zipCode: string;
+  loc?: {
+    type: "Point";
+    coordinates: [number, number];
+  };
   genre: string;
   instrument: string;
   commitmentLevel: string;

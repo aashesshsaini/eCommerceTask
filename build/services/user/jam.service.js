@@ -54,6 +54,7 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }
+    const userListing = yield models_1.User.find({ genre: genre, });
     return jamData;
 });
 exports.jamCreate = jamCreate;
@@ -98,28 +99,8 @@ const jamGet = (query, user, timeZone) => __awaiter(void 0, void 0, void 0, func
             ? getDateInTimeZone(new Date(), timeZone)
             : (0, moment_timezone_1.default)().startOf("day");
         const startOfToday = today.startOf("day").toDate();
-        filter = Object.assign(Object.assign({}, filter), { $expr: {
-                $and: [
-                    { $ne: ["$availableDates", []] },
-                    { $gte: [{ $min: "$availableDates.date" }, startOfToday] },
-                ],
-            } });
-        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { $expr: {
-                $and: [
-                    { $ne: ["$availableDates", []] },
-                    { $gte: [{ $min: "$availableDates.date" }, startOfToday] },
-                ],
-            } });
-        // filter = {
-        //   ...filter,
-        //   availableDates: { $ne: [] },
-        //   "availableDates.date": { $gte: startOfToday },
-        // };
-        // nearByJamsFilter = {
-        //   ...nearByJamsFilter,
-        //   availableDates: { $ne: [] },
-        //   "availableDates.date": { $gte: startOfToday },
-        // };
+        filter = Object.assign(Object.assign({}, filter), { availableDates: { $ne: [] }, "availableDates.date": { $gte: startOfToday } });
+        nearByJamsFilter = Object.assign(Object.assign({}, nearByJamsFilter), { availableDates: { $ne: [] }, "availableDates.date": { $gte: startOfToday } });
     }
     if (startDate && endDate) {
         const start = timeZone
@@ -466,7 +447,7 @@ const acceptJam = (body, userId) => __awaiter(void 0, void 0, void 0, function* 
             yield models_1.Jam.findOneAndUpdate({ _id: jamId, isDeleted: false }, { $addToSet: { members: userId } }, { lean: true, new: true });
             return { message: "User added to the jam successfully." };
         case "reject":
-            return { message: "User added to the jam successfully." };
+            return { message: "User reject the jam invitation." };
         default:
             return { message: "Invalid case action." };
     }

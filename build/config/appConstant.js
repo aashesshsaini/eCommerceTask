@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LEVEL_DATA = exports.LEVEL = exports.GENRE = exports.COMMITMENT_LEVEL = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
+exports.REPORT_TYPE = exports.LEVEL_DATA = exports.LEVEL = exports.GENRE = exports.COMMITMENT_LEVEL = exports.MESSAGE_TYPE = exports.STATUS_CODES = exports.ERROR_MESSAGES = exports.SUCCESS_MESSAGES = exports.STATUS = exports.JOI = exports.DEVICE_TYPE = exports.USER_TYPE = exports.TOKEN_TYPE = void 0;
 const joi_1 = __importDefault(require("joi"));
 const custom_validation_1 = require("../validations/custom.validation");
 const TOKEN_TYPE = {
@@ -101,6 +101,12 @@ const STATUS_CODES = {
     GATEWAY_TIMEOUT: 504,
 };
 exports.STATUS_CODES = STATUS_CODES;
+const MESSAGE_TYPE = {
+    TEXT: "text",
+    IMAGE: "image",
+    VIDEO: "video",
+};
+exports.MESSAGE_TYPE = MESSAGE_TYPE;
 const COMMITMENT_LEVEL = {
     FOCUSED: "Focused, serious practice",
     JOYFUL_GROUP: "Joyful group music session",
@@ -158,3 +164,8 @@ const LEVEL_DATA = {
     ],
 };
 exports.LEVEL_DATA = LEVEL_DATA;
+const REPORT_TYPE = {
+    USER: "user",
+    JAM: "jam",
+};
+exports.REPORT_TYPE = REPORT_TYPE;

@@ -34,11 +34,11 @@ const createProfile = {
         bio: joi_1.default.string(),
         document: joi_1.default.array().items(joi_1.default.string()),
         caption: joi_1.default.string(),
-        proficient: joi_1.default.string(),
-        improvisationalSkill: joi_1.default.string(),
-        aboutRepertoire: joi_1.default.string(),
-        publicExpirence: joi_1.default.string(),
-        motivation: joi_1.default.string(),
+        proficient: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.proficient),
+        improvisationalSkill: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.improvisationalSkill),
+        aboutRepertoire: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.aboutRepertoire),
+        publicExpirence: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.publicExpirence),
+        motivation: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.motivation),
     }),
 };
 const login = {
@@ -90,11 +90,11 @@ const editProfile = {
 };
 const editQuestionnaire = {
     body: joi_1.default.object().keys({
-        proficient: joi_1.default.string(),
-        improvisationalSkill: joi_1.default.string(),
-        motivation: joi_1.default.string(),
-        aboutRepertoire: joi_1.default.string(),
-        publicExpirence: joi_1.default.string(),
+        proficient: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.proficient),
+        improvisationalSkill: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.improvisationalSkill),
+        motivation: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.motivation),
+        aboutRepertoire: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.aboutRepertoire),
+        publicExpirence: joi_1.default.string().valid(...appConstant_1.LEVEL_DATA.publicExpirence),
     }),
 };
 const forgotPassword = {
@@ -125,6 +125,12 @@ const userInfo = {
         limit: appConstant_1.JOI.LIMIT,
     }),
 };
+const location = {
+    body: joi_1.default.object().keys({
+        latitude: joi_1.default.number().default(0.0).min(-90).max(90),
+        longitude: joi_1.default.number().default(0.0).min(-180).max(180),
+    }),
+};
 exports.default = {
     signup,
     verifyOtp,
@@ -140,4 +146,5 @@ exports.default = {
     forgotPage,
     resetForgotPassword,
     userInfo,
+    location,
 };

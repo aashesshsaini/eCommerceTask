@@ -23,12 +23,42 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.socketService = exports.adminJamService = exports.userJamService = exports.userCommonService = exports.userManageService = exports.adminAuthService = exports.userAuthService = exports.tokenService = void 0;
-exports.tokenService = __importStar(require("./token.service"));
-exports.userAuthService = __importStar(require("./user/auth.service"));
-exports.adminAuthService = __importStar(require("./admin/auth.service"));
-exports.userManageService = __importStar(require("./admin/userManage.service"));
-exports.userCommonService = __importStar(require("./user/common.service"));
-exports.userJamService = __importStar(require("./user/jam.service"));
-exports.adminJamService = __importStar(require("./admin/jamAdmin.service"));
-exports.socketService = __importStar(require("./user/socket.service"));
+const mongoose_1 = __importStar(require("mongoose"));
+const chatSchema = new mongoose_1.Schema({
+    sender: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        refPath: "users",
+        required: true,
+    },
+    receiver: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            refPath: "users",
+            required: true,
+        },
+    ],
+    jamId: {
+        type: mongoose_1.default.Schema.Types.ObjectId,
+        ref: "jams",
+        required: true,
+    },
+    message: {
+        type: String,
+    },
+    type: {
+        type: String,
+    },
+    deletedFor: [
+        {
+            type: mongoose_1.default.Schema.Types.ObjectId,
+            ref: "users",
+        },
+    ],
+    seenBy: [{ type: mongoose_1.default.Schema.Types.ObjectId, ref: "users" }],
+    isDeleted: {
+        type: Boolean,
+        default: false,
+    },
+}, { timestamps: true });
+const Chat = mongoose_1.default.model("chats", chatSchema);
+exports.default = Chat;

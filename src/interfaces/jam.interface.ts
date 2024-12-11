@@ -41,6 +41,7 @@ export interface JamDocument extends Document {
   level: string;
   tryMyLuck: Boolean;
   document: string[];
+  status: string;
   isCancelled: boolean;
   isDeleted: boolean;
 }

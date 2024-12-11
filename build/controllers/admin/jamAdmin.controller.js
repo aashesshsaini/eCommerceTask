@@ -19,4 +19,20 @@ const getJams = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(voi
     const { jams, jamsCount } = yield services_1.adminJamService.getJams(req.query, timeZone);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, { jams, jamsCount });
 }));
-exports.default = { getJams };
+const jamInfo = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const jamData = yield services_1.adminJamService.jamInfo(req.query);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, jamData);
+}));
+const getReports = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const reports = yield services_1.adminJamService.getReports(req.query);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, reports);
+}));
+const reportStatus = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const reportData = yield services_1.adminJamService.reportStatus(req.body);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, reportData);
+}));
+const reportPdf = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const reportData = yield services_1.adminJamService.reportPdf();
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, reportData);
+}));
+exports.default = { getJams, jamInfo, getReports, reportStatus, reportPdf };

@@ -1,22 +1,32 @@
-import { Admin, Token, User } from '../../models';
-import { STATUS_CODES, ERROR_MESSAGES } from '../../config/appConstant';
-import { OperationalError } from '../../utils/error';
-// import Stripe from "stripe"
-import config from "../../config/config"
-import { Dictionary } from '../../types';
-import { TokenDocument } from '../../interfaces/token.interface';
-import { UserDocument } from '../../interfaces/user.interface';
-import {forgotPasswordEmail} from "../../libs/sendMails"
-import { ObjectId } from 'mongoose';
+import { Report } from "../../models";
+import { STATUS_CODES, ERROR_MESSAGES } from "../../config/appConstant";
+import { OperationalError } from "../../utils/error";
+import { Dictionary } from "../../types";
+import { ObjectId } from "mongoose";
 
-interface conactUsBody{
-    email:string,
-    message:string
-}
+const contactUs = async (body: Dictionary) => {
+  const { email, message } = body;
+  //  contactUsEmail(email, message)
+};
 
-const contactUs = async(body:conactUsBody)=>{
- const {email, message} = body
-//  contactUsEmail(email, message)
-}
+const report = async (body: Dictionary, userId: ObjectId) => {
+  const { reportedTo, reportType } = body;
+  const existingReportData = await Report.findOne({
+    reportedBy: userId,
+    reportedTo,
+    reportType,
+  });
+  console.log(existingReportData, "existingReportData.........");
+  if (existingReportData) {
+    throw new OperationalError(STATUS_CODES.ACTION_FAILED, "Already reported");
+  }
+  const reportData = await Report.create({
+    reportedBy: userId,
+    reportedTo,
+    reportType,
+  });
+  console.log(reportData, "reportData...............");
+  return reportData;
+};
 
-export {contactUs}
+export { contactUs, report };

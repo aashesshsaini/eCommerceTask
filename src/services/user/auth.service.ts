@@ -156,12 +156,6 @@ const createProfile = async (body: createProfileBody, userId: ObjectId) => {
     aboutRepertoire
   );
 
-  // const publicExpirenceIndex = findIndexFromLevelData(
-  //   "publicExpirence",
-  //   publicExpirence
-  // );
-  // const motivationIndex = findIndexFromLevelData("motivation", motivation);
-
   let level;
 
   console.log({
@@ -424,6 +418,82 @@ const editQuestionnaire = async (user: ObjectId, body: UserDocument) => {
     aboutRepertoire,
     publicExpirence,
   } = body;
+  const findIndexFromLevelData = (
+    key: keyof typeof LEVEL_DATA,
+    value: string
+  ): number => {
+    const userValue = value.toLowerCase().trim();
+    const array = LEVEL_DATA[key] || [];
+    const index = array.findIndex(
+      (item) => item.toLowerCase().trim() === userValue
+    );
+    return index === -1 ? -1 : index + 1;
+  };
+
+  const proficientIndex = findIndexFromLevelData("proficient", proficient);
+  const improvisationalSkillIndex = findIndexFromLevelData(
+    "improvisationalSkill",
+    improvisationalSkill
+  );
+
+  const aboutRepertoireIndex = findIndexFromLevelData(
+    "aboutRepertoire",
+    aboutRepertoire
+  );
+
+  let level;
+
+  console.log({
+    proficientIndex,
+    improvisationalSkillIndex,
+    aboutRepertoireIndex,
+  });
+
+  if (
+    proficientIndex === 1 ||
+    (proficientIndex === 2 && improvisationalSkillIndex === 1)
+  ) {
+    level = "Novice";
+  } else if (
+    (proficientIndex === 2 && improvisationalSkillIndex >= 2) ||
+    (proficientIndex === 3 && improvisationalSkillIndex <= 2) ||
+    (proficientIndex === 3 &&
+      improvisationalSkillIndex >= 3 &&
+      aboutRepertoireIndex === 1) ||
+    (proficientIndex === 4 &&
+      improvisationalSkillIndex <= 3 &&
+      aboutRepertoireIndex === 1)
+  ) {
+    level = "Beginner";
+  } else if (
+    (proficientIndex === 3 &&
+      improvisationalSkillIndex >= 3 &&
+      aboutRepertoireIndex >= 2) ||
+    (proficientIndex === 4 &&
+      improvisationalSkillIndex <= 3 &&
+      aboutRepertoireIndex >= 2) ||
+    (proficientIndex === 4 &&
+      improvisationalSkillIndex >= 4 &&
+      aboutRepertoireIndex === 1)
+  ) {
+    level = "Intermediate";
+  } else if (
+    (proficientIndex === 4 &&
+      improvisationalSkillIndex >= 4 &&
+      aboutRepertoireIndex >= 2) ||
+    (proficientIndex === 5 && improvisationalSkillIndex <= 4) ||
+    (proficientIndex === 5 &&
+      improvisationalSkillIndex === 5 &&
+      aboutRepertoireIndex <= 2)
+  ) {
+    level = "Advance";
+  } else if (
+    proficientIndex === 5 &&
+    improvisationalSkillIndex === 5 &&
+    aboutRepertoireIndex >= 3
+  ) {
+    level = "Pro";
+  }
   const updateQuestionnairedData = await User.findByIdAndUpdate(
     user,
     {
@@ -432,6 +502,7 @@ const editQuestionnaire = async (user: ObjectId, body: UserDocument) => {
       motivation,
       aboutRepertoire,
       publicExpirence,
+      level,
     },
     { lean: true, new: true }
   );
@@ -526,6 +597,24 @@ const userInfo = async (userId: ObjectId, query: Dictionary) => {
   };
 };
 
+const location = async (userId: ObjectId, body: Dictionary) => {
+  const { latitude, longitude } = body;
+  const userData = await User.findByIdAndUpdate(
+    userId,
+    {
+      loc: { type: "Point", coordinates: [longitude, latitude] },
+    },
+    { new: true }
+  );
+  if (!userData) {
+    throw new OperationalError(
+      STATUS_CODES.ACTION_FAILED,
+      ERROR_MESSAGES.USER_NOT_FOUND
+    );
+  }
+  return userData;
+};
+
 export {
   signup,
   verifyOtp,
@@ -540,4 +629,5 @@ export {
   forgotPassword,
   resetPassword,
   userInfo,
+  location,
 };

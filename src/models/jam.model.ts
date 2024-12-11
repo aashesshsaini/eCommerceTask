@@ -95,6 +95,9 @@ const jamSchema = new Schema<JamDocument>(
         type: String,
       },
     ],
+    status: {
+    type: String
+    },
     isCancelled: {
       type: Boolean,
       default: false,

@@ -271,6 +271,18 @@ const userInfo = catchAsync(async (req: Request, res: Response) => {
   );
 });
 
+const location = catchAsync(async (req: Request, res: Response) => {
+  const userData = await userAuthService.location(req?.token?.user, req.body);
+
+  return successResponse(
+    req,
+    res,
+    STATUS_CODES.SUCCESS,
+    SUCCESS_MESSAGES.SUCCESS,
+    userData
+  );
+});
+
 export default {
   signup,
   verifyOtp,
@@ -286,4 +298,5 @@ export default {
   forgotPage,
   resetForgotPassword,
   userInfo,
+  location,
 };

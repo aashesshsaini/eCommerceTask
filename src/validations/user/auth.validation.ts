@@ -1,5 +1,5 @@
 import Joi from "joi";
-import { JOI, COMMITMENT_LEVEL } from "../../config/appConstant";
+import { JOI, COMMITMENT_LEVEL, LEVEL_DATA } from "../../config/appConstant";
 
 const signup = {
   body: Joi.object().keys({
@@ -33,11 +33,13 @@ const createProfile = {
     bio: Joi.string(),
     document: Joi.array().items(Joi.string()),
     caption: Joi.string(),
-    proficient: Joi.string(),
-    improvisationalSkill: Joi.string(),
-    aboutRepertoire: Joi.string(),
-    publicExpirence: Joi.string(),
-    motivation: Joi.string(),
+    proficient: Joi.string().valid(...LEVEL_DATA.proficient),
+    improvisationalSkill: Joi.string().valid(
+      ...LEVEL_DATA.improvisationalSkill
+    ),
+    aboutRepertoire: Joi.string().valid(...LEVEL_DATA.aboutRepertoire),
+    publicExpirence: Joi.string().valid(...LEVEL_DATA.publicExpirence),
+    motivation: Joi.string().valid(...LEVEL_DATA.motivation),
   }),
 };
 
@@ -95,11 +97,13 @@ const editProfile = {
 
 const editQuestionnaire = {
   body: Joi.object().keys({
-    proficient: Joi.string(),
-    improvisationalSkill: Joi.string(),
-    motivation: Joi.string(),
-    aboutRepertoire: Joi.string(),
-    publicExpirence: Joi.string(),
+    proficient: Joi.string().valid(...LEVEL_DATA.proficient),
+    improvisationalSkill: Joi.string().valid(
+      ...LEVEL_DATA.improvisationalSkill
+    ),
+    motivation: Joi.string().valid(...LEVEL_DATA.motivation),
+    aboutRepertoire: Joi.string().valid(...LEVEL_DATA.aboutRepertoire),
+    publicExpirence: Joi.string().valid(...LEVEL_DATA.publicExpirence),
   }),
 };
 
@@ -135,6 +139,13 @@ const userInfo = {
   }),
 };
 
+const location = {
+  body: Joi.object().keys({
+    latitude: Joi.number().default(0.0).min(-90).max(90),
+    longitude: Joi.number().default(0.0).min(-180).max(180),
+  }),
+};
+
 export default {
   signup,
   verifyOtp,
@@ -150,4 +161,5 @@ export default {
   forgotPage,
   resetForgotPassword,
   userInfo,
+  location,
 };

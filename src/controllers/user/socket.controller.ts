@@ -1,33 +1,36 @@
 import { Request, Response, NextFunction } from "express";
+import { socketService } from "../../services";
 import { successResponse } from "../../utils/response";
-import { userCommonService } from "../../services";
 import {
   USER_TYPE,
   SUCCESS_MESSAGES,
   STATUS_CODES,
 } from "../../config/appConstant";
 import { catchAsync } from "../../utils/universalFunctions";
-import { TokenDocument, UserDocument } from "../../interfaces";
 
-const contactUs = catchAsync(async (req: Request, res: Response) => {
-  await userCommonService.contactUs(req.body);
-  return successResponse(
-    req,
-    res,
-    STATUS_CODES.SUCCESS,
-    SUCCESS_MESSAGES.SUCCESS
+const notificationListing = catchAsync(async (req: Request, res: Response) => {
+  const notification = await socketService.notificationListing(
+    req.query,
+    req.token
   );
-});
-
-const report = catchAsync(async (req: Request, res: Response) => {
- const data = await userCommonService.report(req.body, req.token.user._id);
   return successResponse(
     req,
     res,
     STATUS_CODES.SUCCESS,
     SUCCESS_MESSAGES.SUCCESS,
-    data
+    notification
   );
 });
 
-export default { contactUs, report };
+const getChats = catchAsync(async (req: Request, res: Response) => {
+  const chats = await socketService.getChats(req.query);
+  return successResponse(
+    req,
+    res,
+    STATUS_CODES.SUCCESS,
+    SUCCESS_MESSAGES.SUCCESS,
+    chats
+  );
+});
+
+export default { getChats, notificationListing };

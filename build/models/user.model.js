@@ -46,17 +46,26 @@ const userSchema = new mongoose_1.Schema({
         type: String,
     },
     countryCode: {
-        type: String
+        type: String,
     },
     zipCode: {
-        type: String
+        type: String,
+    },
+    loc: {
+        type: { type: String, default: "Point" },
+        coordinates: {
+            type: [Number],
+            default: [0, 0],
+        },
     },
     genre: { type: String },
     instrument: { type: String },
     //  commitmentLevel:{type: String},
-    repertoire: [{
-            type: String
-        }],
+    repertoire: [
+        {
+            type: String,
+        },
+    ],
     bio: { type: String },
     document: [{ type: String }],
     proficient: { type: String },
@@ -66,7 +75,7 @@ const userSchema = new mongoose_1.Schema({
     publicExpirence: { type: String },
     caption: { type: String },
     level: { type: String },
-    favMembers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: 'users' }],
+    favMembers: [{ type: mongoose_1.Schema.Types.ObjectId, ref: "users" }],
     isBlocked: {
         type: Boolean,
         default: false,
@@ -77,11 +86,11 @@ const userSchema = new mongoose_1.Schema({
     },
     isVerified: {
         type: Boolean,
-        default: false
+        default: false,
     },
     isRegistered: {
         type: Boolean,
-        default: false
+        default: false,
     },
     isPayment: {
         type: Boolean,
@@ -89,4 +98,5 @@ const userSchema = new mongoose_1.Schema({
     },
 }, { timestamps: true });
 const User = mongoose_1.default.model("users", userSchema);
+userSchema.index({ loc: "2dsphere" });
 exports.default = User;

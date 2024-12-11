@@ -9,16 +9,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const response_1 = require("../../utils/response");
 const services_1 = require("../../services");
+const response_1 = require("../../utils/response");
 const appConstant_1 = require("../../config/appConstant");
 const universalFunctions_1 = require("../../utils/universalFunctions");
-const contactUs = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield services_1.userCommonService.contactUs(req.body);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS);
+const notificationListing = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const notification = yield services_1.socketService.notificationListing(req.query, req.token);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, notification);
 }));
-const report = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const data = yield services_1.userCommonService.report(req.body, req.token.user._id);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, data);
+const getChats = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const chats = yield services_1.socketService.getChats(req.query);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, chats);
 }));
-exports.default = { contactUs, report };
+exports.default = { getChats, notificationListing };

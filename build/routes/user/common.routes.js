@@ -10,4 +10,5 @@ const common_controller_1 = __importDefault(require("../../controllers/user/comm
 const auth_1 = __importDefault(require("../../middlewares/auth"));
 const appConstant_1 = require("../../config/appConstant");
 const router = express_1.default.Router();
-router.post('/contactUs', (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(common_validation_1.default.contactUs), common_controller_1.default.contactUs);
+router.post("/contactUs", (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(common_validation_1.default.contactUs), common_controller_1.default.contactUs);
+router.post("/report", (0, auth_1.default)(appConstant_1.USER_TYPE.USER), (0, validate_1.validate)(common_validation_1.default.report), common_controller_1.default.report);

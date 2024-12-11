@@ -100,6 +100,12 @@ const STATUS_CODES = {
   GATEWAY_TIMEOUT: 504,
 };
 
+const MESSAGE_TYPE = {
+  TEXT: "text",
+  IMAGE: "image",
+  VIDEO: "video",
+};
+
 const COMMITMENT_LEVEL = {
   FOCUSED: "Focused, serious practice",
   JOYFUL_GROUP: "Joyful group music session",
@@ -157,6 +163,11 @@ const LEVEL_DATA = {
   ],
 };
 
+const REPORT_TYPE = {
+  USER: "user",
+  JAM: "jam",
+};
+
 export {
   TOKEN_TYPE,
   USER_TYPE,
@@ -166,8 +177,10 @@ export {
   SUCCESS_MESSAGES,
   ERROR_MESSAGES,
   STATUS_CODES,
+  MESSAGE_TYPE,
   COMMITMENT_LEVEL,
   GENRE,
   LEVEL,
   LEVEL_DATA,
+  REPORT_TYPE,
 };

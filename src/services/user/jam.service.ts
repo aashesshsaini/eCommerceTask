@@ -69,6 +69,8 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     );
   }
 
+  const userListing = await User.find({genre:genre, })
+
   return jamData;
 };
 
@@ -148,34 +150,14 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
 
     filter = {
       ...filter,
-      $expr: {
-        $and: [
-          { $ne: ["$availableDates", []] }, 
-          { $gte: [{ $min: "$availableDates.date" }, startOfToday] },
-        ],
-      },
+      availableDates: { $ne: [] },
+      "availableDates.date": { $gte: startOfToday },
     };
-
     nearByJamsFilter = {
       ...nearByJamsFilter,
-      $expr: {
-        $and: [
-          { $ne: ["$availableDates", []] }, 
-          { $gte: [{ $min: "$availableDates.date" }, startOfToday] }, 
-        ],
-      },
+      availableDates: { $ne: [] },
+      "availableDates.date": { $gte: startOfToday },
     };
-
-    // filter = {
-    //   ...filter,
-    //   availableDates: { $ne: [] },
-    //   "availableDates.date": { $gte: startOfToday },
-    // };
-    // nearByJamsFilter = {
-    //   ...nearByJamsFilter,
-    //   availableDates: { $ne: [] },
-    //   "availableDates.date": { $gte: startOfToday },
-    // };
   }
 
   if (startDate && endDate) {
@@ -708,7 +690,7 @@ const acceptJam = async (body: Dictionary, userId: ObjectId) => {
       );
       return { message: "User added to the jam successfully." };
     case "reject":
-      return { message: "User added to the jam successfully." };
+      return { message: "User reject the jam invitation." };
     default:
       return { message: "Invalid case action." };
   }
