@@ -8,6 +8,8 @@ import { Request, Response, NextFunction } from "express";
 
 const router: Router = express.Router();
 
+console.log("in common routes.............")
+
 router.post(
   "/contactUs",
   auth(USER_TYPE.USER),
