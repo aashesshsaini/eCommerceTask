@@ -54,7 +54,7 @@ import { join } from "path";
 
 const jamCreate = {
   body: Joi.object().keys({
-    tryMyLuck: Joi.boolean().required(),
+    tryMyLuck: Joi.boolean().default(false),
     jamName: Joi.string().required(),
     availableDates: Joi.array()
       .items(

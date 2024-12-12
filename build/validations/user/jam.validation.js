@@ -56,7 +56,7 @@ const appConstant_1 = require("../../config/appConstant");
 // };
 const jamCreate = {
     body: joi_1.default.object().keys({
-        tryMyLuck: joi_1.default.boolean().required(),
+        tryMyLuck: joi_1.default.boolean().default(false),
         jamName: joi_1.default.string().required(),
         availableDates: joi_1.default.array()
             .items(joi_1.default.object({

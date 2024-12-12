@@ -54,7 +54,45 @@ const jamCreate = (body, user) => __awaiter(void 0, void 0, void 0, function* ()
     if (!jamData) {
         throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.JAM_NOT_FOUND);
     }
-    const userListing = yield models_1.User.find({ genre: genre, });
+    // const instruments = bandFormation.map((item: Dictionary) => { return item.instrument });
+    // let userQuery: Dictionary = {
+    //   isDeleted: false, isBlocked: false, genre: genre, instrument: { $in: instruments }, loc: {
+    //     $near: {
+    //       $geometry: { type: "Point", coordinates: [longitude, latitude] },
+    //       $maxDistance: 10000,
+    //       // $minDistance: 0,
+    //     },
+    //   },
+    // }
+    // if (level === LEVEL.NOVOICE) {
+    //   userQuery = {
+    //     ...userQuery,
+    //     level: { $in: [LEVEL.NOVOICE, LEVEL.BEGINNER, LEVEL.INTERMEDIATE, LEVEL.ADVANCE, LEVEL.PRO] }
+    //   };
+    // } else if (level === LEVEL.BEGINNER) {
+    //   userQuery = {
+    //     ...userQuery,
+    //     level: { $in: [LEVEL.BEGINNER, LEVEL.INTERMEDIATE, LEVEL.ADVANCE, LEVEL.PRO] }
+    //   };
+    // } else if (level === LEVEL.INTERMEDIATE) {
+    //   userQuery = {
+    //     ...userQuery,
+    //     level: { $in: [LEVEL.INTERMEDIATE, LEVEL.ADVANCE, LEVEL.PRO] }
+    //   };
+    // } else if (level === LEVEL.ADVANCE) {
+    //   userQuery = {
+    //     ...userQuery,
+    //     level: { $in: [LEVEL.ADVANCE, LEVEL.PRO] }
+    //   };
+    // } else if (level === LEVEL.PRO) {
+    //   userQuery = {
+    //     ...userQuery,
+    //     level: LEVEL.PRO
+    //   };
+    // }
+    // const userIds = await User.find(userQuery, { _id: 1 }).lean()
+    // const deviceTokens = await Token.find({ user: { $in: userIds } }).distinct("device.token")
+    // sendPushNotification("New jam created", deviceTokens, "New jam created which match your profile")
     return jamData;
 });
 exports.jamCreate = jamCreate;
@@ -256,12 +294,6 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
         isVerified: true,
         _id: { $ne: userId },
     };
-    //  if(commitmentLevel){
-    //      userQuery = {
-    //     ...userQuery,
-    //     commitmentLevel
-    //   }
-    //  }
     if (instrument) {
         userQuery = Object.assign(Object.assign({}, userQuery), { instrument });
     }
@@ -274,7 +306,6 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
                 { email: { $regex: RegExp(search, "i") } },
             ] });
     }
-    // console.log(userQuery, "suerQuery...........");
     let jamInvitedMembers = [];
     if (jamId) {
         const jam = yield models_1.Jam.findById(jamId).select("invitedMembers").lean();
@@ -283,20 +314,15 @@ const getUsers = (query, userId) => __awaiter(void 0, void 0, void 0, function* 
             jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
         }
     }
+    const userData = yield models_1.User.findById(userId).select("favMembers").lean();
+    const favMembers = (userData === null || userData === void 0 ? void 0 : userData.favMembers) || [];
     if (isFavMemberOnly) {
-        userQuery = Object.assign({}, userQuery);
+        userQuery = Object.assign(Object.assign({}, userQuery), { _id: { $in: favMembers } });
     }
-    const [Users, countUser, userData] = yield Promise.all([
+    const [Users, countUser] = yield Promise.all([
         models_1.User.find(userQuery, { password: 0 }, (0, universalFunctions_1.paginationOptions)(page, limit)),
         models_1.User.countDocuments(userQuery),
-        models_1.User.findById(userId).select("favMembers"),
     ]);
-    //  if(!Users || countUser===0){
-    //   throw new OperationalError(
-    //     STATUS_CODES.ACTION_FAILED,
-    //     ERROR_MESSAGES.USER_NOT_FOUND
-    //   )
-    //  }
     console.log(userData, "userData...........`");
     const updatedUsers = yield Promise.all(Users.map((user) => __awaiter(void 0, void 0, void 0, function* () {
         var _a;

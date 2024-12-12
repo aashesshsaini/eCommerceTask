@@ -1,5 +1,5 @@
 import { Jam, Token, User } from "../../models";
-import { STATUS_CODES, ERROR_MESSAGES } from "../../config/appConstant";
+import { STATUS_CODES, ERROR_MESSAGES, LEVEL } from "../../config/appConstant";
 import { OperationalError } from "../../utils/error";
 import config from "../../config/config";
 import { Dictionary } from "../../types";
@@ -10,6 +10,7 @@ import { paginationOptions } from "../../utils/universalFunctions";
 import moment from "moment-timezone";
 import QRCode from "qrcode";
 import { exist } from "joi";
+import sendPushNotification from "../../utils/sendPushNotification";
 // import sendPushNotification from '../../utils/notification';
 
 const getDateInTimeZone = (date: Date, timeZone: string) => {
@@ -69,7 +70,48 @@ const jamCreate = async (body: Dictionary, user: ObjectId) => {
     );
   }
 
-  const userListing = await User.find({genre:genre, })
+  // const instruments = bandFormation.map((item: Dictionary) => { return item.instrument });
+
+  // let userQuery: Dictionary = {
+  //   isDeleted: false, isBlocked: false, genre: genre, instrument: { $in: instruments }, loc: {
+  //     $near: {
+  //       $geometry: { type: "Point", coordinates: [longitude, latitude] },
+  //       $maxDistance: 10000,
+  //       // $minDistance: 0,
+  //     },
+  //   },
+  // }
+  // if (level === LEVEL.NOVOICE) {
+  //   userQuery = {
+  //     ...userQuery,
+  //     level: { $in: [LEVEL.NOVOICE, LEVEL.BEGINNER, LEVEL.INTERMEDIATE, LEVEL.ADVANCE, LEVEL.PRO] }
+  //   };
+  // } else if (level === LEVEL.BEGINNER) {
+  //   userQuery = {
+  //     ...userQuery,
+  //     level: { $in: [LEVEL.BEGINNER, LEVEL.INTERMEDIATE, LEVEL.ADVANCE, LEVEL.PRO] }
+  //   };
+  // } else if (level === LEVEL.INTERMEDIATE) {
+  //   userQuery = {
+  //     ...userQuery,
+  //     level: { $in: [LEVEL.INTERMEDIATE, LEVEL.ADVANCE, LEVEL.PRO] }
+  //   };
+  // } else if (level === LEVEL.ADVANCE) {
+  //   userQuery = {
+  //     ...userQuery,
+  //     level: { $in: [LEVEL.ADVANCE, LEVEL.PRO] }
+  //   };
+  // } else if (level === LEVEL.PRO) {
+  //   userQuery = {
+  //     ...userQuery,
+  //     level: LEVEL.PRO
+  //   };
+  // }
+
+
+  // const userIds = await User.find(userQuery, { _id: 1 }).lean()
+  // const deviceTokens = await Token.find({ user: { $in: userIds } }).distinct("device.token")
+  // sendPushNotification("New jam created", deviceTokens, "New jam created which match your profile")
 
   return jamData;
 };
@@ -90,7 +132,7 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
     distance,
   } = query;
 
-  const currentDate = new Date(); 
+  const currentDate = new Date();
 
   const currentUser = await User.findById(user);
   const favMembers = currentUser?.favMembers || [];
@@ -111,8 +153,8 @@ const jamGet = async (query: Dictionary, user: ObjectId, timeZone?: string) => {
   var hostedJamsFilter: Dictionary = {
     user: user,
     isDeleted: false,
-    isCancelled:false,
-    availableDates: { 
+    isCancelled: false,
+    availableDates: {
       $elemMatch: {
         date: { $gte: currentDate },
       },
@@ -432,17 +474,12 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
     jamId,
     isFavMemberOnly,
   } = query;
+
   let userQuery: Dictionary = {
     isDeleted: false,
     isVerified: true,
     _id: { $ne: userId },
   };
-  //  if(commitmentLevel){
-  //      userQuery = {
-  //     ...userQuery,
-  //     commitmentLevel
-  //   }
-  //  }
 
   if (instrument) {
     userQuery = {
@@ -467,7 +504,6 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
       ],
     };
   }
-  // console.log(userQuery, "suerQuery...........");
   let jamInvitedMembers: string[] = [];
   if (jamId) {
     const jam = await Jam.findById(jamId).select("invitedMembers").lean();
@@ -476,23 +512,20 @@ const getUsers = async (query: Dictionary, userId: ObjectId) => {
       jamInvitedMembers = jam.invitedMembers.map((member) => member.toString());
     }
   }
-
+  const userData = await User.findById(userId).select("favMembers").lean();
+  const favMembers = userData?.favMembers || [];
   if (isFavMemberOnly) {
     userQuery = {
       ...userQuery,
+      _id: { $in: favMembers },
     };
   }
-  const [Users, countUser, userData] = await Promise.all([
+
+  const [Users, countUser] = await Promise.all([
     User.find(userQuery, { password: 0 }, paginationOptions(page, limit)),
     User.countDocuments(userQuery),
-    User.findById(userId).select("favMembers"),
   ]);
-  //  if(!Users || countUser===0){
-  //   throw new OperationalError(
-  //     STATUS_CODES.ACTION_FAILED,
-  //     ERROR_MESSAGES.USER_NOT_FOUND
-  //   )
-  //  }
+
   console.log(userData, "userData...........`");
   const updatedUsers = await Promise.all(
     Users.map(async (user: Dictionary) => {
