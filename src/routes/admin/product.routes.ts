@@ -13,5 +13,6 @@ router.route('/')
     .put(auth(USER_TYPE.ADMIN), validate(validation.updateProduct), controller.updateProduct)
     .delete(auth(USER_TYPE.ADMIN), validate(validation.deleteProduct), controller.deleteProduct);
 
+router.get('/orderListing', auth(USER_TYPE.ADMIN), validate(validation.orderListing), controller.orderListing)
 
 export default router;

@@ -35,5 +35,13 @@ const deleteProduct = {
     })
 }
 
+const orderListing = {
+    query: Joi.object().keys({
+        page: JOI.PAGE,
+        limit: JOI.LIMIT,
+        search: Joi.string().allow('')
+    })
+}
 
-export default { createProduct, getProduct, updateProduct, deleteProduct }
+
+export default { createProduct, getProduct, updateProduct, deleteProduct, orderListing }

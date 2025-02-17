@@ -658,6 +658,60 @@
     }
   }
 },
+ "/admin/product/orderListing": {
+      "get": {
+        "tags": ["Admin"],
+        "summary": "list Orders",
+        "parameters": [
+            {
+        "in": "header",
+        "name": "Authorization",
+        "description": "Bearer <your-token>",
+        "required": true,
+        "type": "string"
+      },
+          {
+            "in": "query",
+            "name": "page",
+            "description": "page",
+            "required": false
+          },
+          {
+            "in": "query",
+            "name": "limit",
+            "description": "limit",
+            "required": false
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Details successfully fetched.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                },
+                "data": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Oops! Something went wrong. Please try again.",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "message": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/user/auth/signup": {
       "post": {
         "tags": ["Users"],

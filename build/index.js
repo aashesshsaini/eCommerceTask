@@ -7,6 +7,7 @@ const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("./config/config"));
 const bootstrap_1 = __importDefault(require("./utils/bootstrap"));
 const app_1 = __importDefault(require("./app"));
+const socket_1 = require("./utils/socket");
 const mongooseOptions = {
 // useNewUrlParser: true,
 // useUnifiedTopology: true,
@@ -16,6 +17,7 @@ mongoose_1.default.connect(config_1.default.mongoose.url, mongooseOptions).then(
     console.log("Connected to MongoDB");
     (0, bootstrap_1.default)();
     const server = app_1.default.listen(config_1.default.port, () => {
+        (0, socket_1.connectSocket)(server);
         console.log(`Listening to port ${config_1.default.port}`);
     });
 });

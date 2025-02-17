@@ -34,4 +34,11 @@ const deleteProduct = {
         productId: appConstant_1.JOI.OBJECTID
     })
 };
-exports.default = { createProduct, getProduct, updateProduct, deleteProduct };
+const orderListing = {
+    query: joi_1.default.object().keys({
+        page: appConstant_1.JOI.PAGE,
+        limit: appConstant_1.JOI.LIMIT,
+        search: joi_1.default.string().allow('')
+    })
+};
+exports.default = { createProduct, getProduct, updateProduct, deleteProduct, orderListing };

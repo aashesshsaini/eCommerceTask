@@ -51,4 +51,15 @@ const deleteProduct = catchAsync(async (req: Request, res: Response) => {
     );
 });
 
-export default { createProduct, getProduct, updateProduct, deleteProduct }
+const orderListing = catchAsync(async (req: Request, res: Response) => {
+    const products = await adminProductService.orderListing(req.query);
+    return successResponse(
+        req,
+        res,
+        STATUS_CODES.SUCCESS,
+        SUCCESS_MESSAGES.SUCCESS,
+        products
+    );
+});
+
+export default { createProduct, getProduct, updateProduct, deleteProduct, orderListing }

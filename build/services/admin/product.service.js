@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.updateProduct = exports.getProduct = exports.createProduct = void 0;
+exports.orderListing = exports.deleteProduct = exports.updateProduct = exports.getProduct = exports.createProduct = void 0;
 const models_1 = require("../../models");
 const appConstant_1 = require("../../config/appConstant");
 const error_1 = require("../../utils/error");
@@ -80,3 +80,22 @@ const deleteProduct = (query) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.deleteProduct = deleteProduct;
+const orderListing = (query) => __awaiter(void 0, void 0, void 0, function* () {
+    const { page = 0, limit = 10, search } = query;
+    try {
+        var filter = {
+            isDeleted: false,
+            isPayment: true
+        };
+        const [orderListing, orderCount] = yield Promise.all([
+            models_1.Order.find(filter, {}, (0, universalFunctions_1.paginationOptions)(page, limit)).populate([{ path: "product", select: "productName" }, { path: "user", select: "email firstName lastName" }]),
+            models_1.Order.countDocuments(filter),
+        ]);
+        return { orderListing, orderCount };
+    }
+    catch (error) {
+        console.log(error, "error...........");
+        throw error;
+    }
+});
+exports.orderListing = orderListing;

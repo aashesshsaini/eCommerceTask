@@ -15,4 +15,5 @@ router.route('/')
     .get((0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(product_validation_1.default.getProduct), product_controller_1.default.getProduct)
     .put((0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(product_validation_1.default.updateProduct), product_controller_1.default.updateProduct)
     .delete((0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(product_validation_1.default.deleteProduct), product_controller_1.default.deleteProduct);
+router.get('/orderListing', (0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(product_validation_1.default.orderListing), product_controller_1.default.orderListing);
 exports.default = router;

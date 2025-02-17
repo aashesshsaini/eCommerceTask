@@ -1,4 +1,4 @@
-import { Product } from "../../models";
+import { Order, Product } from "../../models";
 import { STATUS_CODES, ERROR_MESSAGES } from "../../config/appConstant";
 import { OperationalError } from "../../utils/error";
 import { Dictionary } from "../../types";
@@ -85,5 +85,30 @@ const deleteProduct = async (query: Dictionary) => {
     }
 }
 
+const orderListing = async (query: Dictionary) => {
+    const { page = 0, limit = 10, search } = query
+    try {
+        var filter: {
+            isDeleted: boolean;
+            isPayment: boolean;
+            $or?: Array<
+                | { productName?: { $regex: RegExp } }
+            >;
+        } = {
+            isDeleted: false,
+            isPayment: true
+        };
+        const [orderListing, orderCount] = await Promise.all([
+            Order.find(filter, {}, paginationOptions(page, limit)).populate([{ path: "product", select: "productName" }, { path: "user", select: "email firstName lastName" }]),
+            Order.countDocuments(filter),
+        ]);
 
-export { createProduct, getProduct, updateProduct, deleteProduct }
+        return { orderListing, orderCount };
+    } catch (error: any) {
+        console.log(error, "error...........")
+        throw error
+    }
+}
+
+
+export { createProduct, getProduct, updateProduct, deleteProduct, orderListing }

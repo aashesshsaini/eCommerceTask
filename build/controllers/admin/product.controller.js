@@ -29,4 +29,8 @@ const deleteProduct = (0, universalFunctions_1.catchAsync)((req, res) => __await
     const deleteProduct = yield services_1.adminProductService.deleteProduct(req.query);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, deleteProduct);
 }));
-exports.default = { createProduct, getProduct, updateProduct, deleteProduct };
+const orderListing = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const products = yield services_1.adminProductService.orderListing(req.query);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, products);
+}));
+exports.default = { createProduct, getProduct, updateProduct, deleteProduct, orderListing };
