@@ -34,7 +34,7 @@ const saveToken = (data) => __awaiter(void 0, void 0, void 0, function* () {
         expires: data.tokenExpires.toDate(),
         type: data.tokenType,
         _id: data.tokenId,
-        device: { type: data.deviceType, token: data.deviceToken },
+        device: { type: data.deviceType, token: data.deviceToken, id: data.deviceId },
         role: data.userType,
         token: data === null || data === void 0 ? void 0 : data.accessToken,
         otp: data.otp
@@ -51,7 +51,7 @@ const saveToken = (data) => __awaiter(void 0, void 0, void 0, function* () {
     console.log(tokenDoc, "tokenDoc.....");
     return tokenDoc;
 });
-const generateAuthToken = (userType, user, deviceToken, deviceType, otp) => __awaiter(void 0, void 0, void 0, function* () {
+const generateAuthToken = (userType, user, deviceToken, deviceType, deviceId, otp) => __awaiter(void 0, void 0, void 0, function* () {
     const tokenExpires = (0, moment_1.default)().add(config_1.default.jwt.accessExpirationMinutes, 'days');
     const tokenId = new mongodb_1.ObjectId();
     const accessToken = generateToken({
@@ -61,6 +61,7 @@ const generateAuthToken = (userType, user, deviceToken, deviceType, otp) => __aw
         tokenId,
         deviceToken,
         deviceType,
+        deviceId
         // user
     });
     yield saveToken({
@@ -69,6 +70,7 @@ const generateAuthToken = (userType, user, deviceToken, deviceType, otp) => __aw
         tokenId,
         deviceToken,
         deviceType,
+        deviceId,
         tokenType: appConstant_1.TOKEN_TYPE.ACCESS,
         userType,
         user,
@@ -105,6 +107,7 @@ const verifyResetPasswordToken = (token) => __awaiter(void 0, void 0, void 0, fu
             isDeleted: false,
             // expires: { $gte: new Date() },
         }).populate('user');
+        console.log(tokenData, "tokenData");
         return tokenData;
     }
     catch (error) {

@@ -8,8 +8,6 @@ import { USER_TYPE } from '../../config/appConstant';
 
 const router = express.Router();
 
-router.post('/addUser', auth(USER_TYPE.ADMIN), validate(validation.addUser), controller.addUser)
-
 router.delete('/deleteUser', auth(USER_TYPE.ADMIN), validate(validation.deleteUser), controller.deleteUser)
 
 router.get('/userInfo', auth(USER_TYPE.ADMIN), validate(validation.userInfo), controller.userInfo)

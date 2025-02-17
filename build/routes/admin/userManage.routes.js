@@ -10,7 +10,6 @@ const userManage_controller_1 = __importDefault(require("../../controllers/admin
 const auth_1 = __importDefault(require("../../middlewares/auth"));
 const appConstant_1 = require("../../config/appConstant");
 const router = express_1.default.Router();
-router.post('/addUser', (0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(userManage_validation_1.default.addUser), userManage_controller_1.default.addUser);
 router.delete('/deleteUser', (0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(userManage_validation_1.default.deleteUser), userManage_controller_1.default.deleteUser);
 router.get('/userInfo', (0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(userManage_validation_1.default.userInfo), userManage_controller_1.default.userInfo);
 router.get('/getUsers', (0, auth_1.default)(appConstant_1.USER_TYPE.ADMIN), (0, validate_1.validate)(userManage_validation_1.default.getUsers), userManage_controller_1.default.getUsers);

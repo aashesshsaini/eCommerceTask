@@ -1,0 +1,913 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "",
+        "version": "1.0.0",
+        "title": "Macher-App",
+        "termsOfService": "",
+        "contact": {
+            "email": "aasheesh@dev-stroy.com"
+        }
+    },
+    "host": "localhost:4500",
+    "schemes": ["http", "https"],
+    "tags": [
+        {
+            "name": "Admin"
+        },
+        {
+            "name": "Users"
+        },
+        {
+            "name": "Service Provider"
+        }
+    ],
+    "paths": {
+        "/admin/auth/login": {
+            "post": {
+                "tags": ["Admin"],
+                "summary": "login by email and password",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "Login/Save Detail",
+                        "description": "Login in admin panel",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": {
+                                "email": true,
+                                "password": true
+                            },
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Admin has been login successfully.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/auth/changePassword": {
+            "put": {
+                "tags": ["Admin"],
+                "summary": "Change Password",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "Change Password",
+                        "description": "Login in and change password",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": {
+                                "oldPassword": true,
+                                "newPassword": true
+                            },
+                            "properties": {
+                                "oldPassword": {
+                                    "type": "string"
+                                },
+                                "newPassword": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password successfully changed.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/auth/logout": {
+            "put": {
+                "tags": ["Admin"],
+                "summary": "logout",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "logout successfully",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/userManage/getUsers": {
+            "get": {
+                "tags": ["Admin"],
+                "summary": "list Users",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "search",
+                        "description": "search using name",
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "page",
+                        "description": "page",
+                        "required": false
+                    },
+                    {
+                        "in": "query",
+                        "name": "limit",
+                        "description": "limit",
+                        "required": false
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details successfully fetched.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/userManage/userBlock": {
+            "put": {
+                "tags": ["Admin"],
+                "summary": "Enable and disable users",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "userId",
+                        "description": "_id of user",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details successfully enabled/disabled.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/userManage/deleteUser": {
+            "delete": {
+                "tags": ["Admin"],
+                "summary": "User Delete",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "query",
+                        "name": "userId",
+                        "description": "_id of user",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details successfully deleted.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/admin/userManage/dashboard": {
+            "get": {
+                "tags": ["Admin"],
+                "summary": "Dashboard",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details successfully fetched.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/auth/signup": {
+            "post": {
+                "tags": ["Users"],
+                "summary": "Signup for new user",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "Signup/Save Detail",
+                        "description": "Signup",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": {
+                                "fullName": true,
+                                "email": true,
+                                "countryCode": true,
+                                "mobileNumber": true,
+                                "password": true
+                            },
+                            "properties": {
+                                "fullName": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                },
+                                "countryCode": {
+                                    "type": "string"
+                                },
+                                "mobileNumber": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User has been successfully registered.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/auth/verifyOtp": {
+            "post": {
+                "tags": ["Users"],
+                "summary": "User OTP verification",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "User OTP",
+                        "description": "User OTP verification",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": {
+                                "code": true
+                            },
+                            "properties": {
+                                "code": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Verification success.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/auth/resendOtp": {
+            "put": {
+                "tags": ["Users"],
+                "summary": "Resend OTP",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "Resend OTP",
+                        "description": "Resend OTP",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Verification code send success.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/user/auth/login": {
+            "post": {
+                "tags": ["Users"],
+                "summary": "User login",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "Login",
+                        "description": "Login in app",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": {
+                                "email": false,
+                                "mobileNumber": false,
+                                "password": true
+                            },
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                },
+                                "mobileNumber": {
+                                    "type": "string"
+                                },
+                                "password": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Login success.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/User/auth/userInfo": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Get User Profile",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "User details has been fetched successfully.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/User/auth/editProfile": {
+            "put": {
+                "tags": ["Users"],
+                "summary": "Edit User Details",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "Edit Profile",
+                        "description": "Login in and Edit Profile",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "fullName": {
+                                    "type": "string"
+                                },
+                                "mobileNumber": {
+                                    "type": "string"
+                                },
+                                "countryCode": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Details successfully updated.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/User/auth/changePassword": {
+            "put": {
+                "tags": ["Users"],
+                "summary": "Change Password",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    },
+                    {
+                        "in": "body",
+                        "name": "Change Password",
+                        "description": "Login in and change password",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": {
+                                "oldPassword": true,
+                                "newPassword": true
+                            },
+                            "properties": {
+                                "oldPassword": {
+                                    "type": "string"
+                                },
+                                "newPassword": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Password successfully changed.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/User/auth/forgotPassword": {
+            "post": {
+                "tags": ["Users"],
+                "summary": "User Forgot password",
+                "parameters": [
+                    {
+                        "in": "body",
+                        "name": "Forgot password",
+                        "description": "Forgot password in app",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "required": {
+                                "email": true
+                            },
+                            "properties": {
+                                "email": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Forgot password in system",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/User/auth/logout": {
+            "get": {
+                "tags": ["Users"],
+                "summary": "Logout",
+                "parameters": [
+                    {
+                        "in": "header",
+                        "name": "token",
+                        "description": "Set authorization token",
+                        "required": true,
+                        "properties": {
+                            "token": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                },
+                                "data": {
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Oops! Something went wrong. Please try again.",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "message": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

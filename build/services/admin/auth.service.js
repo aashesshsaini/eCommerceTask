@@ -19,38 +19,57 @@ const appConstant_1 = require("../../config/appConstant");
 const error_1 = require("../../utils/error");
 const login = (body) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password } = body;
-    const admin = yield models_1.Admin.findOne({ email });
-    if (!admin) {
-        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.EMAIL_NOT_FOUND);
+    try {
+        const admin = yield models_1.Admin.findOne({ email });
+        if (!admin) {
+            throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.EMAIL_NOT_FOUND);
+        }
+        const comparePassword = yield bcryptjs_1.default.compare(password, admin.password);
+        if (!comparePassword) {
+            throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.WRONG_PASSWORD);
+        }
+        console.log(admin);
+        return admin;
     }
-    const comparePassword = yield bcryptjs_1.default.compare(password, admin.password);
-    if (!comparePassword) {
-        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.WRONG_PASSWORD);
+    catch (error) {
+        console.log(error, "error...........");
+        throw error;
     }
-    console.log(admin);
-    return admin;
 });
 exports.login = login;
 const logout = (tokenId) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatedToken = yield models_1.Token.findByIdAndUpdate(tokenId, {
-        isDeleted: true,
-    });
-    return updatedToken;
+    try {
+        const updatedToken = yield models_1.Token.findByIdAndUpdate(tokenId, {
+            isDeleted: true,
+        });
+        return updatedToken;
+    }
+    catch (error) {
+        console.log(error, "error...........");
+        throw error;
+    }
 });
 exports.logout = logout;
-const changePassword = (userId, body) => __awaiter(void 0, void 0, void 0, function* () {
+const changePassword = (adminId, body) => __awaiter(void 0, void 0, void 0, function* () {
     const { newPassword, oldPassword } = body;
-    const adminData = yield models_1.Admin.findById(userId);
-    if (!adminData) {
-        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
+    try {
+        const adminData = yield models_1.Admin.findById(adminId);
+        if (!adminData) {
+            throw new error_1.OperationalError(appConstant_1.STATUS_CODES.NOT_FOUND, appConstant_1.ERROR_MESSAGES.USER_NOT_FOUND);
+        }
+        console.log(body);
+        const compare = yield bcryptjs_1.default.compare(oldPassword, adminData === null || adminData === void 0 ? void 0 : adminData.password);
+        if (!compare) {
+            throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.WRONG_PASSWORD);
+        }
+        const newHashedPassword = yield bcryptjs_1.default.hash(newPassword, 8);
+        let updatedPassword = { password: newHashedPassword };
+        Object.assign(adminData, updatedPassword);
+        yield adminData.save();
     }
-    const compare = yield bcryptjs_1.default.compare(oldPassword, adminData === null || adminData === void 0 ? void 0 : adminData.password);
-    if (!compare) {
-        throw new error_1.OperationalError(appConstant_1.STATUS_CODES.ACTION_FAILED, appConstant_1.ERROR_MESSAGES.WRONG_PASSWORD);
+    catch (error) {
+        console.log(error, "error...........");
+        throw error;
     }
-    const newHashedPassword = yield bcryptjs_1.default.hash(newPassword, 8);
-    let updatedPassword = { password: newPassword };
-    Object.assign(adminData, updatedPassword);
-    yield adminData.save();
 });
 exports.changePassword = changePassword;

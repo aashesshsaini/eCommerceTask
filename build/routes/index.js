@@ -7,8 +7,8 @@ const express_1 = __importDefault(require("express"));
 const auth_routes_1 = __importDefault(require("./admin/auth.routes"));
 const auth_routes_2 = __importDefault(require("./user/auth.routes"));
 const userManage_routes_1 = __importDefault(require("./admin/userManage.routes"));
-const jam_routes_1 = __importDefault(require("./user/jam.routes"));
-// import adminJamManage from "./admin/"
+const product_routes_1 = __importDefault(require("./admin//product.routes"));
+const product_routes_2 = __importDefault(require("./user/product.routes"));
 const router = express_1.default.Router();
 const defaultRoutes = [
     {
@@ -24,8 +24,12 @@ const defaultRoutes = [
         route: userManage_routes_1.default,
     },
     {
-        path: "/user/jam",
-        route: jam_routes_1.default,
+        path: "/admin/product",
+        route: product_routes_1.default,
+    },
+    {
+        path: "/user/product",
+        route: product_routes_2.default,
     },
 ];
 defaultRoutes.forEach((route) => {

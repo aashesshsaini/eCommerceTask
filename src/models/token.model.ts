@@ -7,6 +7,7 @@ const tokenSchema = new Schema<TokenDocument>(
   {
     token: { type: String, unique: true, required: true },
     user: { type: Schema.Types.ObjectId, ref: 'users' },
+    serviceProvider: { type: Schema.Types.ObjectId, ref: 'seviceProviders' },
     admin: { type: Schema.Types.ObjectId, ref: 'admins' },
     role: { type: String, enum: [...Object.values(USER_TYPE)], required: true },
     type: {
@@ -21,8 +22,9 @@ const tokenSchema = new Schema<TokenDocument>(
         enum: [...Object.values(DEVICE_TYPE)],
       },
       token: { type: String },
+      id: { type: String }
     },
-    otp:{
+    otp: {
       code: String,
       expiresAt: Date
     },

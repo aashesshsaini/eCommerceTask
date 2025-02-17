@@ -13,62 +13,75 @@ interface LoginBody {
 
 const login = async (body: LoginBody) => {
   const { email, password } = body;
+  try {
+    const admin = await Admin.findOne({ email });
 
-  const admin = await Admin.findOne({ email });
+    if (!admin) {
+      throw new OperationalError(
+        STATUS_CODES.NOT_FOUND,
+        ERROR_MESSAGES.EMAIL_NOT_FOUND
+      );
+    }
 
-  if (!admin) {
-    throw new OperationalError(
-      STATUS_CODES.NOT_FOUND,
-      ERROR_MESSAGES.EMAIL_NOT_FOUND
-    );
+    const comparePassword = await bcrypt.compare(password, admin.password);
+
+    if (!comparePassword) {
+      throw new OperationalError(
+        STATUS_CODES.ACTION_FAILED,
+        ERROR_MESSAGES.WRONG_PASSWORD
+      );
+    }
+
+    console.log(admin)
+
+    return admin;
+  } catch (error: any) {
+    console.log(error, "error...........")
+    throw error
   }
-
-  const comparePassword = await bcrypt.compare(password, admin.password);
-
-  if (!comparePassword) {
-    throw new OperationalError(
-      STATUS_CODES.ACTION_FAILED,
-      ERROR_MESSAGES.WRONG_PASSWORD
-    );
-  }
-
-  console.log(admin)
-
-  return admin;
 };
 
 const logout = async (tokenId: string | undefined) => {
-  const updatedToken = await Token.findByIdAndUpdate(tokenId, {
-    isDeleted: true,
-  });
+  try {
+    const updatedToken = await Token.findByIdAndUpdate(tokenId, {
+      isDeleted: true,
+    });
 
-  return updatedToken;
+    return updatedToken;
+  } catch (error: any) {
+    console.log(error, "error...........")
+    throw error
+  }
 };
 
-const changePassword = async(userId:ObjectId, body:Dictionary)=>{
-  const {newPassword, oldPassword} = body
-  const adminData = await Admin.findById(userId)
+const changePassword = async (adminId: ObjectId, body: Dictionary) => {
+  const { newPassword, oldPassword } = body
+  try {
+    const adminData = await Admin.findById(adminId)
 
-  if(!adminData){
-    throw new OperationalError(
-      STATUS_CODES.NOT_FOUND,
-      ERROR_MESSAGES.USER_NOT_FOUND
-    )
-  }
+    if (!adminData) {
+      throw new OperationalError(
+        STATUS_CODES.NOT_FOUND,
+        ERROR_MESSAGES.USER_NOT_FOUND
+      )
+    }
+    console.log(body)
+    const compare = await bcrypt.compare(oldPassword, adminData?.password)
 
-  const compare = await bcrypt.compare(oldPassword, adminData?.password);
-
-
-  if(!compare){
+    if (!compare) {
       throw new OperationalError(
         STATUS_CODES.ACTION_FAILED,
         ERROR_MESSAGES.WRONG_PASSWORD
       )
+    }
+    const newHashedPassword = await bcrypt.hash(newPassword, 8)
+    let updatedPassword = { password: newHashedPassword };
+    Object.assign(adminData, updatedPassword)
+    await adminData.save()
+  } catch (error: any) {
+    console.log(error, "error...........")
+    throw error
   }
-  const newHashedPassword = await bcrypt.hash(newPassword, 8)
-  let updatedPassword = { password: newPassword };
-  Object.assign(adminData, updatedPassword)
-  await adminData.save()
 }
 
 export { login, logout, changePassword };

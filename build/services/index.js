@@ -23,12 +23,10 @@ var __importStar = (this && this.__importStar) || function (mod) {
     return result;
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.socketService = exports.adminJamService = exports.userJamService = exports.userCommonService = exports.userManageService = exports.adminAuthService = exports.userAuthService = exports.tokenService = void 0;
+exports.userProductService = exports.adminProductService = exports.userManageService = exports.adminAuthService = exports.userAuthService = exports.tokenService = void 0;
 exports.tokenService = __importStar(require("./token.service"));
 exports.userAuthService = __importStar(require("./user/auth.service"));
 exports.adminAuthService = __importStar(require("./admin/auth.service"));
 exports.userManageService = __importStar(require("./admin/userManage.service"));
-exports.userCommonService = __importStar(require("./user/common.service"));
-exports.userJamService = __importStar(require("./user/jam.service"));
-exports.adminJamService = __importStar(require("./admin/jamAdmin.service"));
-exports.socketService = __importStar(require("./user/socket.service"));
+exports.adminProductService = __importStar(require("./admin/product.service"));
+exports.userProductService = __importStar(require("./user/product.service"));

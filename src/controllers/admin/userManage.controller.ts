@@ -9,18 +9,6 @@ import {
 } from "../../config/appConstant";
 import { catchAsync } from "../../utils/universalFunctions";
 import { TokenDocument, AdminDocument } from "../../interfaces";
-import { Dictionary } from "../../types";
-
-const addUser = catchAsync(async (req: Request, res: Response) => {
-  const user = await userManageService.addUser(req.body);
-  return successResponse(
-    req,
-    res,
-    STATUS_CODES.SUCCESS,
-    SUCCESS_MESSAGES.SUCCESS,
-    user
-  );
-});
 
 const deleteUser = catchAsync(async (req: Request, res: Response) => {
   const user = await userManageService.deleteUser(req.query);
@@ -67,19 +55,18 @@ const userBlock = catchAsync(async (req: Request, res: Response) => {
 });
 
 const dashboard = catchAsync(async (req: Request, res: Response) => {
-  const { countUser, countCreatedJams, countPerformedJams } =
+  const { countUser } =
     await userManageService.dashboard();
   return successResponse(
     req,
     res,
     STATUS_CODES.SUCCESS,
     SUCCESS_MESSAGES.SUCCESS,
-    { countUser, countCreatedJams, countPerformedJams }
+    { countUser }
   );
 });
 
 export default {
-  addUser,
   deleteUser,
   userInfo,
   getUsers,

@@ -15,12 +15,12 @@ const adminSchema = new Schema<AdminDocument>({
     }
 }, {timestamps:true})
 
-adminSchema.pre('save', async function (this: AdminDocument, next) {
-    if (this.isModified('password')) {
-      this.password = await bcrypt.hash(this.password, 8);
-    }
-    next();
-  });
+// adminSchema.pre('save', async function (this: AdminDocument, next) {
+//     if (this.isModified('password')) {
+//       this.password = await bcrypt.hash(this.password, 8);
+//     }
+//     next();
+//   });
 
 const Admin = mongoose.model<AdminDocument>("admins", adminSchema)
 

@@ -2,15 +2,8 @@
 node_modules
 
 # Environment varibales
-.env*
+.env
 !.env*.example
-
-#test file
-test.js
-test1.js
-example.js
-example2.js
-test5.js
 
 /src/middlewares/locales/
 build/middlewares/locales

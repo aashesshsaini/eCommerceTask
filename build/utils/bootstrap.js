@@ -15,11 +15,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const index_1 = require("../models/index");
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const run = () => __awaiter(void 0, void 0, void 0, function* () {
-    let password = 'Jam!@6095';
+    let password = 'eCommerceTaskAdmin@123';
     password = yield bcryptjs_1.default.hash(password, 8);
     const adminDetails = {
-        name: 'JamNation Admin',
-        email: 'admin@jamnation.com',
+        name: 'ECommerceTask Admin',
+        email: 'admin@ecommercetask.com',
         $setOnInsert: { password },
     };
     createAdmin(adminDetails);

@@ -18,9 +18,10 @@ interface Data {
   tokenId: ObjectId;
   deviceToken: string;
   deviceType: string;
+  deviceId: string;
   userType: string;
-  accessToken? :string,
-  otp?:{code:string, expiresAt:string}
+  accessToken?: string,
+  otp?: { code: string, expiresAt: string }
 }
 
 interface TokenDataToBeSaved {
@@ -47,11 +48,11 @@ const generateToken = (data: Data, secret: string = config.jwt.secret): string =
 };
 
 const saveToken = async (data: Data) => {
-  const dataToBeSaved : Partial<TokenDocument> = {
+  const dataToBeSaved: Partial<TokenDocument> = {
     expires: data.tokenExpires.toDate(),
     type: data.tokenType,
     _id: data.tokenId,
-    device: { type: data.deviceType, token: data.deviceToken },
+    device: { type: data.deviceType, token: data.deviceToken, id: data.deviceId },
     role: data.userType,
     token: data?.accessToken,
     otp: data.otp
@@ -74,17 +75,19 @@ const generateAuthToken = async (
   user: UserDocument | AdminDocument,
   deviceToken: string,
   deviceType: string,
-  otp?: {code:string, expiresAt:string}
+  deviceId: string,
+  otp?: { code: string, expiresAt: string }
 ): Promise<{ token: string; expires: Date }> => {
   const tokenExpires = moment().add(config.jwt.accessExpirationMinutes, 'days');
   const tokenId = new ObjectId();
-  const accessToken : string = generateToken({
+  const accessToken: string = generateToken({
     tokenExpires,
     tokenType: TOKEN_TYPE.ACCESS,
     userType,
     tokenId,
     deviceToken,
     deviceType,
+    deviceId
     // user
   });
   await saveToken({
@@ -93,6 +96,7 @@ const generateAuthToken = async (
     tokenId,
     deviceToken,
     deviceType,
+    deviceId,
     tokenType: TOKEN_TYPE.ACCESS,
     userType,
     user,
@@ -115,11 +119,11 @@ const verifyEmailToken = async (token: string) => {
     }
   } catch (error) {
     console.log(error);
-    return null;  
+    return null;
   }
 };
 
-const verifyResetPasswordToken = async(token: string)=>{
+const verifyResetPasswordToken = async (token: string) => {
   try {
     const payload: JwtPayload = jwt.verify(token, config.jwt.secret) as JwtPayload;
 
@@ -130,6 +134,7 @@ const verifyResetPasswordToken = async(token: string)=>{
       isDeleted: false,
       // expires: { $gte: new Date() },
     }).populate('user');
+    console.log(tokenData, "tokenData")
     return tokenData;
   } catch (error) {
     throw error;
@@ -137,4 +142,4 @@ const verifyResetPasswordToken = async(token: string)=>{
 
 }
 
-export { generateAuthToken, verifyEmailToken, verifyResetPasswordToken};
+export { generateAuthToken, verifyEmailToken, verifyResetPasswordToken };

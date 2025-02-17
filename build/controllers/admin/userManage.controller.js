@@ -13,10 +13,6 @@ const services_1 = require("../../services");
 const response_1 = require("../../utils/response");
 const appConstant_1 = require("../../config/appConstant");
 const universalFunctions_1 = require("../../utils/universalFunctions");
-const addUser = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield services_1.userManageService.addUser(req.body);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, user);
-}));
 const deleteUser = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield services_1.userManageService.deleteUser(req.query);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, user);
@@ -34,11 +30,10 @@ const userBlock = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(v
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userBlockedData);
 }));
 const dashboard = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const { countUser, countCreatedJams, countPerformedJams } = yield services_1.userManageService.dashboard();
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, { countUser, countCreatedJams, countPerformedJams });
+    const { countUser } = yield services_1.userManageService.dashboard();
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, { countUser });
 }));
 exports.default = {
-    addUser,
     deleteUser,
     userInfo,
     getUsers,

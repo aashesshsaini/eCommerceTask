@@ -3,12 +3,12 @@ import { USER_TYPE } from '../config/appConstant';
 import bcrypt from 'bcryptjs';
 
 const run = async () => {
-  let password = 'Jam!@6095';
+  let password = 'eCommerceTaskAdmin@123';
   password = await bcrypt.hash(password, 8);
 
   const adminDetails = {
-    name: 'JamNation Admin',
-    email: 'admin@jamnation.com',
+    name: 'ECommerceTask Admin',
+    email: 'admin@ecommercetask.com',
     $setOnInsert: { password },
   };
 

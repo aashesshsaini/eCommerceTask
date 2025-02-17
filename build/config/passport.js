@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const passport_jwt_1 = require("passport-jwt");
 const config_1 = __importDefault(require("./config"));
+const appConstant_1 = require("./appConstant");
 const models_1 = require("../models");
 const error_1 = require("../utils/error");
 const jwtOptions = {
@@ -27,14 +28,19 @@ const jwtVerify = (payload, done) => __awaiter(void 0, void 0, void 0, function*
             throw new error_1.AuthFailedError();
         }
         let token;
-        if (payload.role === 'admin') {
+        if (payload.role === appConstant_1.USER_TYPE.ADMIN) {
             token = yield models_1.Token.findOne({ _id: payload.id, isDeleted: false })
                 .populate({ path: 'admin' })
                 .lean();
         }
-        else {
+        else if (payload.role === appConstant_1.USER_TYPE.USER) {
             token = yield models_1.Token.findOne({ _id: payload.id, isDeleted: false })
                 .populate({ path: 'user' })
+                .lean();
+        }
+        else {
+            token = yield models_1.Token.findOne({ _id: payload.id, isDeleted: false })
+                .populate({ path: 'serviecProvider' })
                 .lean();
         }
         if (!token) {

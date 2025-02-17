@@ -16,50 +16,31 @@ const universalFunctions_1 = require("../../utils/universalFunctions");
 const formatResponse_1 = require("../../utils/formatResponse");
 const signup = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield services_1.userAuthService.signup(req.body);
-    //  const otp = await sendOtp(req.body.phoneNumber as string, req.body.countryCode as string)
-    const otp = { code: "111111", expiresAt: "2024-09-11T13:24:23.676Z" };
     const deviceToken = req.body.deviceToken;
     const deviceType = req.body.deviceType;
-    const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, user, deviceToken, deviceType, otp);
+    const deviceId = req.body.deviceType;
+    const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, user, deviceToken, deviceType, deviceId);
+    console.log(user, "user......");
     const formatUserData = (0, formatResponse_1.formatSignUpUser)(user);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, {
         tokenData: accessToken,
-        formatUserData,
-        hostedJams: [],
-        attendedJams: [],
+        userData: formatUserData,
     });
-}));
-const verifyOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    yield services_1.userAuthService.verifyOtp(req.body.code, req.token._id);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.VERIFIED);
-}));
-const resendOtp = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    yield services_1.userAuthService.resendOtp((_a = req.token) === null || _a === void 0 ? void 0 : _a.user);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS);
-}));
-const createProfile = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const userData = yield services_1.userAuthService.createProfile(req.body, req.token.user._id);
-    const formatUserData = (0, formatResponse_1.formatUser)(userData);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, formatUserData);
 }));
 const login = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const userData = yield services_1.userAuthService.login(req.body);
     const deviceToken = req.body.deviceToken;
     const deviceType = req.body.deviceType;
-    const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, userData.user, deviceToken, deviceType);
-    const formatUserData = (0, formatResponse_1.formatSignUpUser)(userData.user);
+    const deviceId = req.body.deviceType;
+    const accessToken = yield services_1.tokenService.generateAuthToken(appConstant_1.USER_TYPE.USER, userData, deviceToken, deviceType, deviceId);
+    const formatUserData = (0, formatResponse_1.formatSignUpUser)(userData);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, {
         tokenData: accessToken,
-        formatUserData,
-        hostedJams: userData.hostedJams,
-        hostedJamsCount: userData.hostedJamsCount,
-        attendedJams: userData.attendedJams,
-        attendedJamsCount: userData.attendedJamsCount,
+        userData: formatUserData,
     });
 }));
 const changePassword = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    const updatedUser = yield services_1.userAuthService.changePassword(req.body, req === null || req === void 0 ? void 0 : req.token);
+    yield services_1.userAuthService.changePassword(req.body, req === null || req === void 0 ? void 0 : req.token);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS);
 }));
 const deleteAccount = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -77,12 +58,6 @@ const editProfile = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter
     const updatedProfileData = yield services_1.userAuthService.editProfile((_b = (_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id, req === null || req === void 0 ? void 0 : req.body);
     const formatedUpdatedProfileData = (0, formatResponse_1.formatUser)(updatedProfileData);
     return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, formatedUpdatedProfileData);
-}));
-const editQuestionnaire = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a, _b;
-    const updateQuestionnairedData = yield services_1.userAuthService.editQuestionnaire((_b = (_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user) === null || _b === void 0 ? void 0 : _b._id, req === null || req === void 0 ? void 0 : req.body);
-    const formatedUpdateQuestionnairedData = (0, formatResponse_1.formatUser)(updateQuestionnairedData);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, formatedUpdateQuestionnairedData);
 }));
 const forgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const updatedProfileData = yield services_1.userAuthService.forgotPassword(req === null || req === void 0 ? void 0 : req.body);
@@ -126,6 +101,7 @@ const resetForgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => _
     var _a, _b;
     try {
         const token = (_a = req === null || req === void 0 ? void 0 : req.query) === null || _a === void 0 ? void 0 : _a.token;
+        console.log(token, "token.......");
         if (typeof token !== "string") {
             return res.render("commonMessage", {
                 title: "Forgot Password",
@@ -134,7 +110,7 @@ const resetForgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => _
             });
         }
         const tokenData = yield services_1.tokenService.verifyResetPasswordToken(token);
-        // console.log(tokenData, "tokenData.............");
+        console.log(tokenData, "tokenData.............");
         if (!tokenData)
             return res.render("commonMessage", {
                 title: "Forgot Password",
@@ -153,7 +129,7 @@ const resetForgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => _
     catch (error) {
         res.render("commonMessage", {
             title: "Forgot Password",
-            errorMessage: "Sorry, this link has been expiredxxx",
+            errorMessage: "Sorry, this link has been expired",
             // projectName: config.projectName,
         });
     }
@@ -161,28 +137,18 @@ const resetForgotPassword = (0, universalFunctions_1.catchAsync)((req, res) => _
 const userInfo = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     const userInfo = yield services_1.userAuthService.userInfo((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user, req.query);
-    // const formatedUserInfo = formatUser(userInfo.userInfo)
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userInfo);
-}));
-const location = (0, universalFunctions_1.catchAsync)((req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const userData = yield services_1.userAuthService.location((_a = req === null || req === void 0 ? void 0 : req.token) === null || _a === void 0 ? void 0 : _a.user, req.body);
-    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, userData);
+    const formatedUserInfo = (0, formatResponse_1.formatUser)(userInfo);
+    return (0, response_1.successResponse)(req, res, appConstant_1.STATUS_CODES.SUCCESS, appConstant_1.SUCCESS_MESSAGES.SUCCESS, formatedUserInfo);
 }));
 exports.default = {
     signup,
-    verifyOtp,
-    resendOtp,
-    createProfile,
     login,
     changePassword,
     deleteAccount,
     logout,
     editProfile,
-    editQuestionnaire,
     forgotPassword,
     forgotPage,
     resetForgotPassword,
     userInfo,
-    location,
 };

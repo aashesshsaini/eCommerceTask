@@ -8,6 +8,7 @@ const userSchema = new Schema<UserDocument>(
     firstName: {
       type: String,
       trim: true,
+      required: true
     },
     lastName: {
       type: String,
@@ -15,12 +16,11 @@ const userSchema = new Schema<UserDocument>(
     },
     email: {
       type: String,
+      required: true
     },
     password: {
       type: String,
-    },
-    profileImage: {
-      type: String,
+      required: true
     },
     mobileNumber: {
       type: String,
@@ -28,34 +28,7 @@ const userSchema = new Schema<UserDocument>(
     countryCode: {
       type: String,
     },
-    zipCode: {
-      type: String,
-    },
-    loc: {
-      type: { type: String, default: "Point" },
-      coordinates: {
-        type: [Number],
-        default: [0, 0],
-      },
-    },
-    genre: { type: String },
-    instrument: { type: String },
-    //  commitmentLevel:{type: String},
-    repertoire: [
-      {
-        type: String,
-      },
-    ],
-    bio: { type: String },
-    document: [{ type: String }],
-    proficient: { type: String },
-    improvisationalSkill: { type: String },
-    motivation: { type: String },
-    aboutRepertoire: { type: String },
-    publicExpirence: { type: String },
-    caption: { type: String },
-    level: { type: String },
-    favMembers: [{ type: Schema.Types.ObjectId, ref: "users" }],
+    stripeCustomerId: { type: String },
     isBlocked: {
       type: Boolean,
       default: false,
@@ -64,28 +37,10 @@ const userSchema = new Schema<UserDocument>(
       type: Boolean,
       default: false,
     },
-    isVerified: {
-      type: Boolean,
-      default: false,
-    },
-    isRegistered: {
-      type: Boolean,
-      default: false,
-    },
-    isPayment: {
-      type: Boolean,
-      default: false,
-    },
-    tryMyLuck: {
-      type: Boolean,
-      default: false,
-    },
   },
   { timestamps: true }
 );
 
 const User = mongoose.model<UserDocument>("users", userSchema);
-
-userSchema.index({ loc: "2dsphere" });
 
 export default User;

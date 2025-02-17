@@ -10,6 +10,7 @@ dotenv_1.default.config({ path: path_1.default.join(__dirname, '../../.env') });
 const envVarsSchema = joi_1.default.object({
     PORT: joi_1.default.number().required(),
     MONGODB_URL: joi_1.default.string().required().description("Mongo DB url"),
+    REDIS_URL: joi_1.default.string().required().description("Redis cache url"),
     JWT_SECRET: joi_1.default.string().required().description("JWT secret key"),
     JWT_ACCESS_EXPIRATION_MINUTES: joi_1.default.number()
         .default(30)
@@ -27,10 +28,7 @@ const envVarsSchema = joi_1.default.object({
     PASSWORD: joi_1.default.string().description("password for email server"),
     API_BASE_URL: joi_1.default.string().required().description("Api base url"),
     ADMIN_BASE_URL: joi_1.default.string().description("Admin pannel base url"),
-    ACCOUNT_SID: joi_1.default.string().description("account sid for twillio"),
-    ACCOUNT_SECRET: joi_1.default.string().description('secret key for twillio'),
-    PHONE_NUMBER: joi_1.default.string().description("phon enumber for twilio"),
-    // SERVER_BASE_URL: Joi.string().description("Server pannel base url"),
+    STRIPE_SECRET_KEY: joi_1.default.string().description("secret key for stripe"),
     ENVIRONMENT: joi_1.default.string().valid("development", "production").required()
 }).unknown();
 const { value: envVars, error } = envVarsSchema
@@ -48,6 +46,7 @@ const config = {
             useUnifiedTopology: true,
         },
     },
+    redisUrl: envVars.REDIS_URL,
     jwt: {
         secret: envVars.JWT_SECRET,
         accessExpirationMinutes: envVars.JWT_ACCESS_EXPIRATION_MINUTES,
@@ -55,10 +54,10 @@ const config = {
         resetPasswordExpirationMinutes: envVars.JWT_RESET_PASSWORD_EXPIRATION_MINUTES,
         verifyEmailExpirationMinutes: envVars.JWT_VERIFY_EMAIL_EXPIRATION_MINUTES,
     },
-    smtp: { email: envVars.EMAIL, password: envVars.PASSWORD },
-    twilio: { accountSID: envVars.ACCOUNT_SID, accountSecret: envVars.ACCOUNT_SECRET, phoneNumber: envVars.PHONE_NUMBER },
     baseurl: envVars.API_BASE_URL,
     serverurl: envVars.SERVER_BASE_URL,
+    smtp: { email: envVars.EMAIL, password: envVars.PASSWORD },
+    stripeSecretKey: envVars.STRIPE_SECRET_KEY,
     env: envVars.ENVIRONMENT
 };
 exports.default = config;

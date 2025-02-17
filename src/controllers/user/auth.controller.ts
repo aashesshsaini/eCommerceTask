@@ -10,22 +10,24 @@ import { catchAsync } from "../../utils/universalFunctions";
 import { formatSignUpUser, formatUser } from "../../utils/formatResponse";
 import { TokenDocument, UserDocument } from "../../interfaces";
 import { ObjectId } from "mongoose";
-import sendOtp from "../../libs/sendOtp";
+// import sendOtp from "../../libs/sendOtp";
 import { optional } from "joi";
 
 const signup = catchAsync(async (req: Request, res: Response) => {
-  const user = await userAuthService.signup(req.body);
-  //  const otp = await sendOtp(req.body.phoneNumber as string, req.body.countryCode as string)
-  const otp = { code: "111111", expiresAt: "2024-09-11T13:24:23.676Z" };
+  const user = await userAuthService.signup(req.body) as UserDocument;
   const deviceToken = req.body.deviceToken as string;
   const deviceType = req.body.deviceType as string;
+  const deviceId = req.body.deviceType as string;
+
   const accessToken = await tokenService.generateAuthToken(
     USER_TYPE.USER,
     user,
     deviceToken,
     deviceType,
-    otp
+    deviceId
   );
+
+  console.log(user, "user......")
 
   const formatUserData = formatSignUpUser(user);
 
@@ -36,62 +38,25 @@ const signup = catchAsync(async (req: Request, res: Response) => {
     SUCCESS_MESSAGES.SUCCESS,
     {
       tokenData: accessToken,
-      formatUserData,
-      hostedJams: [],
-      attendedJams: [],
+      userData: formatUserData,
     }
   );
 });
 
-const verifyOtp = catchAsync(async (req: Request, res: Response) => {
-  await userAuthService.verifyOtp(req.body.code, req.token._id);
-
-  return successResponse(
-    req,
-    res,
-    STATUS_CODES.SUCCESS,
-    SUCCESS_MESSAGES.VERIFIED
-  );
-});
-
-const resendOtp = catchAsync(async (req: Request, res: Response) => {
-  await userAuthService.resendOtp(req.token?.user);
-
-  return successResponse(
-    req,
-    res,
-    STATUS_CODES.SUCCESS,
-    SUCCESS_MESSAGES.SUCCESS
-  );
-});
-
-const createProfile = catchAsync(async (req: Request, res: Response) => {
-  const userData = await userAuthService.createProfile(
-    req.body,
-    req.token.user._id
-  );
-  const formatUserData = formatUser(userData);
-  return successResponse(
-    req,
-    res,
-    STATUS_CODES.SUCCESS,
-    SUCCESS_MESSAGES.SUCCESS,
-    formatUserData
-  );
-});
-
 const login = catchAsync(async (req: Request, res: Response) => {
-  const userData = await userAuthService.login(req.body);
+  const userData = await userAuthService.login(req.body) as UserDocument;
   const deviceToken = req.body.deviceToken as string;
   const deviceType = req.body.deviceType as string;
+  const deviceId = req.body.deviceType as string;
   const accessToken = await tokenService.generateAuthToken(
     USER_TYPE.USER,
-    userData.user,
+    userData,
     deviceToken,
-    deviceType
+    deviceType,
+    deviceId
   );
 
-  const formatUserData = formatSignUpUser(userData.user);
+  const formatUserData = formatSignUpUser(userData);
 
   return successResponse(
     req,
@@ -100,17 +65,13 @@ const login = catchAsync(async (req: Request, res: Response) => {
     SUCCESS_MESSAGES.SUCCESS,
     {
       tokenData: accessToken,
-      formatUserData,
-      hostedJams: userData.hostedJams,
-      hostedJamsCount: userData.hostedJamsCount,
-      attendedJams: userData.attendedJams,
-      attendedJamsCount: userData.attendedJamsCount,
+      userData: formatUserData,
     }
   );
 });
 
 const changePassword = catchAsync(async (req: Request, res: Response) => {
-  const updatedUser = await userAuthService.changePassword(
+  await userAuthService.changePassword(
     req.body,
     req?.token
   );
@@ -148,7 +109,7 @@ const editProfile = catchAsync(async (req: Request, res: Response) => {
   const updatedProfileData = await userAuthService.editProfile(
     req?.token?.user?._id,
     req?.body
-  );
+  ) as UserDocument;
   const formatedUpdatedProfileData = formatUser(updatedProfileData);
   return successResponse(
     req,
@@ -159,20 +120,6 @@ const editProfile = catchAsync(async (req: Request, res: Response) => {
   );
 });
 
-const editQuestionnaire = catchAsync(async (req: Request, res: Response) => {
-  const updateQuestionnairedData = await userAuthService.editQuestionnaire(
-    req?.token?.user?._id,
-    req?.body
-  );
-  const formatedUpdateQuestionnairedData = formatUser(updateQuestionnairedData);
-  return successResponse(
-    req,
-    res,
-    STATUS_CODES.SUCCESS,
-    SUCCESS_MESSAGES.SUCCESS,
-    formatedUpdateQuestionnairedData
-  );
-});
 
 const forgotPassword = catchAsync(async (req: Request, res: Response) => {
   const updatedProfileData = await userAuthService.forgotPassword(req?.body);
@@ -223,6 +170,7 @@ const forgotPage = catchAsync(async (req, res) => {
 const resetForgotPassword = catchAsync(async (req, res) => {
   try {
     const token = req?.query?.token;
+    console.log(token, "token.......")
     if (typeof token !== "string") {
       return res.render("commonMessage", {
         title: "Forgot Password",
@@ -231,7 +179,7 @@ const resetForgotPassword = catchAsync(async (req, res) => {
       });
     }
     const tokenData = await tokenService.verifyResetPasswordToken(token);
-    // console.log(tokenData, "tokenData.............");
+    console.log(tokenData, "tokenData.............");
     if (!tokenData)
       return res.render("commonMessage", {
         title: "Forgot Password",
@@ -252,7 +200,7 @@ const resetForgotPassword = catchAsync(async (req, res) => {
   } catch (error) {
     res.render("commonMessage", {
       title: "Forgot Password",
-      errorMessage: "Sorry, this link has been expiredxxx",
+      errorMessage: "Sorry, this link has been expired",
       // projectName: config.projectName,
     });
   }
@@ -260,43 +208,26 @@ const resetForgotPassword = catchAsync(async (req, res) => {
 
 const userInfo = catchAsync(async (req: Request, res: Response) => {
   const userInfo = await userAuthService.userInfo(req?.token?.user, req.query);
-  // const formatedUserInfo = formatUser(userInfo.userInfo)
+  const formatedUserInfo = formatUser(userInfo)
 
   return successResponse(
     req,
     res,
     STATUS_CODES.SUCCESS,
     SUCCESS_MESSAGES.SUCCESS,
-    userInfo
-  );
-});
-
-const location = catchAsync(async (req: Request, res: Response) => {
-  const userData = await userAuthService.location(req?.token?.user, req.body);
-
-  return successResponse(
-    req,
-    res,
-    STATUS_CODES.SUCCESS,
-    SUCCESS_MESSAGES.SUCCESS,
-    userData
+    formatedUserInfo
   );
 });
 
 export default {
   signup,
-  verifyOtp,
-  resendOtp,
-  createProfile,
   login,
   changePassword,
   deleteAccount,
   logout,
   editProfile,
-  editQuestionnaire,
   forgotPassword,
   forgotPage,
   resetForgotPassword,
   userInfo,
-  location,
 };

@@ -38,6 +38,8 @@ const passport_2 = __importDefault(require("./config/passport"));
 const i18n_1 = __importDefault(require("./middlewares/i18n"));
 const routes_1 = __importDefault(require("./routes"));
 const common_2 = require("./middlewares/common");
+const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const swagger_json_1 = __importDefault(require("./swagger.json"));
 const app = (0, express_1.default)();
 const file = path_1.default.join(__dirname + "/../");
 app.use(express_1.default.json());
@@ -59,6 +61,7 @@ app.use(body_parser_1.default.urlencoded({
 app.use(passport_1.default.initialize());
 (0, passport_2.default)(passport_1.default);
 app.use("/user/auth", common_1.authLimiter);
+app.use('/api-docs', swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swagger_json_1.default));
 app.use("/", routes_1.default);
 app.use((req, res, next) => {
     (0, common_2.routeNotFoundHandler)(req, res, next);
