@@ -18,7 +18,6 @@ const app = express();
 const file = path.join(__dirname + "/../");
 
 app.use(express.json());
-app.use(bodyParser.json({ limit: '50mb' }));
 app.use(express.static(file));
 app.use((req: Request, res: Response, next: NextFunction) => {
   i18n.init(req as any, res as any, next);
