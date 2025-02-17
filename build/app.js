@@ -43,7 +43,6 @@ const swagger_json_1 = __importDefault(require("./swagger.json"));
 const app = (0, express_1.default)();
 const file = path_1.default.join(__dirname + "/../");
 app.use(express_1.default.json());
-app.use(body_parser_1.default.json({ limit: '50mb' }));
 app.use(express_1.default.static(file));
 app.use((req, res, next) => {
     i18n_1.default.init(req, res, next);

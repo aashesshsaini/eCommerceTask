@@ -19,7 +19,7 @@ const signup = async (body: UserDocument) => {
     body;
   try {
     const [existinguserByEmail, existinguserByMobileNumber] = await Promise.all([
-      User.findOne({ email: email, isDeleted: false}),
+      User.findOne({ email: email, isDeleted: false }),
       User.findOne({
         mobileNumber: mobileNumber,
         isDeleted: false,
@@ -50,14 +50,14 @@ const signup = async (body: UserDocument) => {
       countryCode,
     });
 
-    // const stripeCustomer = await stripeInstance.customers.create({
-    //   name: firstName,
-    //   email,
-    //   phone: `${countryCode}${mobileNumber}`,
-    // });
+    const stripeCustomer = await stripeInstance.customers.create({
+      name: firstName,
+      email,
+      phone: `${countryCode}${mobileNumber}`,
+    });
 
-    // user.stripeCustomerId = stripeCustomer.id;
-    // await user.save();
+    user.stripeCustomerId = stripeCustomer.id;
+    await user.save();
     return user;
   } catch (error: any) {
     console.log(error, "error...........")

@@ -46,13 +46,13 @@ const signup = (body) => __awaiter(void 0, void 0, void 0, function* () {
             mobileNumber,
             countryCode,
         });
-        // const stripeCustomer = await stripeInstance.customers.create({
-        //   name: firstName,
-        //   email,
-        //   phone: `${countryCode}${mobileNumber}`,
-        // });
-        // user.stripeCustomerId = stripeCustomer.id;
-        // await user.save();
+        const stripeCustomer = yield stripeInstance.customers.create({
+            name: firstName,
+            email,
+            phone: `${countryCode}${mobileNumber}`,
+        });
+        user.stripeCustomerId = stripeCustomer.id;
+        yield user.save();
         return user;
     }
     catch (error) {
